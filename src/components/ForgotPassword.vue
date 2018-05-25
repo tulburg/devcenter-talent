@@ -1,6 +1,6 @@
 <template>
 	<section class="forgot-password">
-		<div class="box" v-show="!success">
+		<div class="box" v-if="!success">
 			<h1 class="heading" v-if="loading"><i class="dc-spinner animate-spin"></i></h1>
 			<h1 class="heading" v-else>Forgot Password</h1>
 			<form align="left" v-on:submit.prevent="doResetPassword">
@@ -9,7 +9,7 @@
 			</form>
 		</div>
 
-		<div class="box forgot-password-success" v-show="success">
+		<div class="box forgot-password-success" v-else>
 			<h1 class="heading">Forgot Password</h1>
 			<p>A link to reset your password has been sent to your email</p>
 			<div align="right">

@@ -14,6 +14,9 @@ html, body {
   margin: 0px;
   color: #4a4a4a; }
 
+#app {
+  overflow: hidden; }
+
 .button, button {
   cursor: pointer;
   font-size: 16px;
@@ -165,14 +168,14 @@ a {
 
 section {
   display: flex;
-  justify-content: center;
   align-items: center;
+  top: 90px;
   height: calc(100% - 90px);
-  padding-top: 140px; }
+  position: relative;
+  overflow-y: scroll; }
   section .invert {
-    padding-top: 0px;
-    height: 100%;
-    flex-direction: column; }
+    flex-direction: column;
+    overflow-y: visible; }
 
 .box {
   margin: 10px;
@@ -215,10 +218,11 @@ section {
 
 /* Welcome page definitions  */
 section.welcome {
-  flex-direction: column; }
+  flex-direction: column;
+  justify-content: center; }
 
 section.welcome .box {
-  margin-bottom: 100px;
+  margin-top: -100px;
   width: 500px;
   text-align: left;
   transition: .3s all ease-in-out;
@@ -240,51 +244,57 @@ section.welcome button.login {
   margin-bottom: 20px; }
 
 /* Forgot Password page definitions */
-section.forgot-password .box {
-  width: 420px;
-  margin-bottom: 100px; }
-section.forgot-password h1.heading {
-  margin: 0px;
-  margin-bottom: 20px; }
-section.forgot-password button {
-  margin-top: 10px; }
-section.forgot-password .forgot-password-success {
-  width: 600px; }
-  section.forgot-password .forgot-password-success p {
-    text-align: center;
-    margin-bottom: 40px; }
-
-/* Join Talent Pool page definitions */
-section.join-pool .box {
-  width: 70%;
-  margin-bottom: 100px;
-  padding: 50px 0px;
-  padding-right: 50px; }
-section.join-pool .plain {
-  text-align: left; }
-  section.join-pool .plain h1 {
-    font-size: 32px;
+section.forgot-password {
+  justify-content: center; }
+  section.forgot-password .box {
+    width: 420px;
+    margin-bottom: 100px; }
+  section.forgot-password h1.heading {
     margin: 0px;
     margin-bottom: 20px; }
-  section.join-pool .plain p {
-    margin-top: 20px;
-    margin-bottom: 40px; }
+  section.forgot-password button {
+    margin-top: 10px; }
+  section.forgot-password .forgot-password-success {
+    width: 600px; }
+    section.forgot-password .forgot-password-success p {
+      text-align: center;
+      margin-bottom: 40px; }
+
+/* Join Talent Pool page definitions */
+section.join-pool {
+  justify-content: center; }
+  section.join-pool .box {
+    width: 70%;
+    margin-top: -200px;
+    padding: 50px 0px;
+    padding-right: 50px; }
+  section.join-pool .plain {
+    text-align: left; }
+    section.join-pool .plain h1 {
+      font-size: 32px;
+      margin: 0px;
+      margin-bottom: 20px; }
+    section.join-pool .plain p {
+      margin-top: 20px;
+      margin-bottom: 40px; }
 
 /* Complete Profile process page definitions */
-section.complete-profile .welcome-message {
-  width: 540px;
-  margin-top: -50px; }
-  section.complete-profile .welcome-message h1 {
-    text-align: left;
-    margin-top: 0px; }
-  section.complete-profile .welcome-message .buttons {
-    padding-top: 30px;
-    text-align: right; }
-    section.complete-profile .welcome-message .buttons button.clear {
-      padding-right: 15px; }
-section.complete-profile section.invert {
-  width: 100%;
-  margin-top: -100px; }
+section.complete-profile {
+  justify-content: center; }
+  section.complete-profile .welcome-message {
+    width: 540px;
+    margin-top: -50px; }
+    section.complete-profile .welcome-message h1 {
+      text-align: left;
+      margin-top: 0px; }
+    section.complete-profile .welcome-message .buttons {
+      padding-top: 30px;
+      text-align: right; }
+      section.complete-profile .welcome-message .buttons button.clear {
+        padding-right: 15px; }
+  section.complete-profile section.invert {
+    width: 100%;
+    position: static; }
 
 div.process-stager {
   width: 60%;

@@ -15,8 +15,11 @@
 			<div class="box process-stager">
 				<ul class="grid grid-4">
 					<li class="stage active"><div class="counter"><span v-if="state=='role'||state=='otherRoles'">1</span><i class="dc-tick" v-else></i></div><div>Role</div></li>
-					<li :class="{active: state!='role'&&state!='otherRoles'}" class="stage"><div class="counter">2</div><div>Languages and Skills</div></li>
-					<li class="stage"><div class="counter">3</div><div>Employment Status</div></li>
+					<li :class="{active: state!='role'&&state!='otherRoles'}" class="stage">
+						<div class="counter"><span v-if="state!='employment'&&state!='integration'">2</span><i class="dc-tick" v-else></i></div>
+						<div>Languages and Skills</div>
+					</li>
+					<li :class="{active: state!='role'&&state!='otherRoles'&&state!='langSkills'}" class="stage"><div class="counter">3</div><div>Employment Status</div></li>
 					<li class="stage"><div class="counter">4</div><div>Integrations</div></li>
 				</ul>	
 			</div>
@@ -31,27 +34,26 @@
 				</div>
 				<div v-show="state=='otherRoles'" class="forms">
 					<Title label="What other roles best describer you?" :showAlert="showOtherRoleError" :alert="otherRoleError" />
-					<ul class="grid grid-2 other-roles" style="position:relative;z-index:102;">
-						<li><Select name="other-role-1" :options="roles" v-on:change="(v) => setOtherRoles(v, 1)" label="" :alt="true"  /></li>
-						<li>&nbsp;</li>
-					</ul>
-					<ul class="grid grid-2 other-roles" v-show="moreRoles==2 || moreRoles==3" style="position:relative;z-index:101;">
-						<li><Select name="other-role-2" :options="roles" v-on:change="(v) => setOtherRoles(v, 2)" label="" :alt="true"  /></li>
-						<li>&nbsp;</li>
-					</ul>
-					<ul class="grid grid-2 other-roles" v-show="moreRoles==3">
-						<li><Select name="other-role-3" :options="roles" v-on:change="(v) => setOtherRoles(v, 3)" label="" :alt="true"  /></li>
+					<ul class="grid grid-2 other-roles" :style="'position:relative;z-index:'+(106-i)+';'" v-for="i in moreRoles">
+						<li><Select :name="'other-role-'+i" :options="roles" v-on:change="(v) => setOtherRoles(v, i)" label="" :alt="true"  /></li>
 						<li>&nbsp;</li>
 					</ul>
 					<a href="#" v-on:click.prevent="addMoreRoles" class="add-more-roles-btn">+ Add a Role</a>
 				</div>
 				<div v-show="state=='langSkills'" class="forms">
 					<Title label="What language, frameworks or skills do you know?" :showAlert="showLangSkillsError" :alert="langSkillsError" />
-					<ul class="grid grid-2 other-roles" style="position:relative;z-index:105;">
-						<li><Select name="lang-skills-1" :options="skills" v-on:change="(v) => setLangSkills(v, 1)" label="" :alt="true"  /></li>
-						<li class="alt"><Select name="lang-skills-year-1" :options="years" v-on:change="(v) => setLangSkillsYears(v, 1)" label=""  /></li>
+					<ul class="grid grid-2 other-roles" :style="'position:relative;z-index:'+(200-i)+';'" v-for="i in moreSkill">
+						<li><Select :name="'lang-skills-'+i" :options="skills" v-on:change="(v) => setLangSkills(v, i)" label="" :alt="true"  /></li>
+						<li class="alt"><Select :name="'lang-skills-year-'+i" :options="years" v-on:change="(v) => setLangSkillsYears(v, i)" label=""  /></li>
 					</ul>
-					<a href="#" v-on:click.prevent="addMoreRoles" class="add-more-roles-btn">+ Add a language, framework or skill</a>
+					<a href="#" v-on:click.prevent="addMoreSkill" class="add-more-roles-btn">+ Add a language, framework or skill</a>
+				</div>
+				<div v-show="state=='employment'" class="forms">
+					<Title label="What is your current employment status?" :showAlert="showLangSkillsError" :alert="langSkillsError" />
+					<ul class="grid grid-2">
+						<li><Select :name="employment-status" :options="employment" v-on:change="setEmployment" label="" :alt="true"  /></li>
+						<li>&nbsp;</li>
+					</ul>
 				</div>
 				<div class="form-footer" align="right">
 					<button class="bordered" v-show="canGoBack" v-on:click="previousForm" style="float:left;">Back</button>
@@ -81,7 +83,7 @@
 					{ value: "ux_designer", title: "UX Designer" },
 					{ value: "ui_ux_designer", title: "UI/UX Designer" }
 				],
-				moreRoles: 1, showOtherRoleError: false, otherRoleError: '', canGoBack: false,
+				moreRoles: 1, moreSkill: 1, showOtherRoleError: false, otherRoleError: '', canGoBack: false,
 				skills: [
 					{ value: "", title: "Select one" },
 					{ value: "adobe_xd", title: "Adobe XD" },
@@ -100,20 +102,32 @@
 					{ value: "5_10", title: "5 - 10 years" },
 					{ value: "10_20", title: "10 - 20 years" }
 				],
+				employment: [
+					{ value: "", title: "Select a status" },
+					{ value: "contract", title: "Contract" },
+					{ value: "employed", title: "Employed (Full-time)" },
+					{ value: "freelancer", title: "Freelancer" },
+					{ value: "unemployed", title: "Unemployed" }
+				],
 				showLangSkillsError: false, langSkillsError: '* Please select at least one language, framework or skill',
-				values: { coreRole: '', otherRoles: [], langSkills: [], employment: '', integrations: [] }
+				values: { coreRole: '', otherRoles: [], langSkills: [], employment: '', integrations: [] },
+				showEmploymentError: false, employmentError: "* Please let us know your employment status"
 			}
 		},
 		components: { Select, Title },
 		methods: {
 			nextForm() {
 				if(this.state == 'role') { 
-					if(this.coreRole != ''){
+					if(this.values.coreRole != ''){
 						this.state = 'otherRoles';
 						this.canGoBack = true; 
 					}else { this.showRoleError = true }
-				}else if(this.state == 'otherRoles') {
+				}else if(this.state == 'otherRoles' && this.showOtherRoleError != true) {
 					this.state = 'langSkills';
+				}else if(this.state == 'langSkills' && this.showLangSkillsError != true) {
+					this.state = 'employment';
+				}else if(this.state == 'employment' && this.showEmploymentError != true) {
+					this.state = 'integration';
 				}
 			},
 			previousForm() {
@@ -128,9 +142,17 @@
 				if(value!=="") { this.showRoleError = false; }else { this.showRoleError=true; }
 				this.values.coreRole = value;
 			},
-			setOtherRoles: function(value, id) { this.values.otherRoles[parseInt(id)-1] = value; },
+			setOtherRoles: function(value, id) { 
+				var fields = this.values.otherRoles;
+				this.showOtherRoleError=false;
+				for(var i=0;i<fields.length;i++) { if(fields[i] == value) { this.otherRoleError="* You've already selected that role"; this.showOtherRoleError=true; }}
+				this.values.otherRoles[parseInt(id)-1] = value;
+			},
 			setLangSkills: function(value, id) { 
-				var field = this.values.langSkills[parseInt(id)-1];
+				var field = this.values.langSkills[parseInt(id)-1]; 
+				var all = this.values.langSkills;
+				this.showLangSkillsError=false;
+				for(var i=0;i<all.length;i++) { if(all[i].skill == value) { this.langSkillsError="* You've already selected that skill"; this.showLangSkillsError=true; }}
 				(field) ? field.skill = value : field = { skill: value}; 
 				this.values.langSkills[parseInt(id)-1] = field;
 			},
@@ -138,10 +160,18 @@
 				var field = this.values.langSkills[parseInt(id)-1];
 				(field) ? field.years = value : field = { years: value}; 
 				this.values.langSkills[parseInt(id)-1] = field;
+				console.log(this.values);
 			},
 			addMoreRoles: function() {
 				if(this.moreRoles > 2) { this.otherRoleError = "* You can't add more than 3 more roles"; this.showOtherRoleError = true; }
 				else { this.moreRoles = this.moreRoles+1; }
+			},
+			addMoreSkill: function() {
+				if(this.moreSkill < 10) { this.moreSkill=this.moreSkill+1; }
+				else {
+					this.showLangSkillsError = true;
+					this.langSkillsError = "* You can't add more than 10 skill and languages"
+				}
 			}
 		}
 	}
