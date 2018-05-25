@@ -55,6 +55,9 @@
 						<li>&nbsp;</li>
 					</ul>
 				</div>
+				<div v-show="state=='integration'" class="forms">
+					<Title label="Link your accounts so we can know more about you" :showAlert="showLangSkillsError" :alert="langSkillsError" />
+				</div>
 				<div class="form-footer" align="right">
 					<button class="bordered" v-show="canGoBack" v-on:click="previousForm" style="float:left;">Back</button>
 					<button class="long" v-on:click="nextForm">Next</button>
