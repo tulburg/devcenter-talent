@@ -54,7 +54,7 @@
 						<li><Select :name="employment-status" :options="employment" v-on:change="setEmployment" label="" :alt="true"  /></li>
 						<li>&nbsp;</li>
 					</ul>
-				</div>
+				</div> 
 				<div v-show="state=='integration'" class="forms">
 					<Title label="Link your accounts so we can know more about you" :showAlert="showLangSkillsError" :alert="langSkillsError" />
 				</div>
