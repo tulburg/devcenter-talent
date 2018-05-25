@@ -1,0 +1,2 @@
+var $ = function(id){if(id[0]=="#"){return document.getElementById(id.substring(1,id.length));}else if(id[0]=="."){return document.getElementsByClassName(id.substring(1, id.length))[0];}}
+Element.prototype.$ = function(id){if(id[0]=="#"){return this.getElementById(id.substring(1,id.length));}else if(id[0]=="."){return this.getElementsByClassName(id.substring(1, id.length))[0];}}
