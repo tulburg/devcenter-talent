@@ -50,6 +50,9 @@ html, body {
     min-width: 220px; }
   .button.bar, button.bar {
     width: 100%; }
+  .button.small, button.small {
+    font-size: 13px;
+    padding: 8px 25px; }
 
 input[type="text"], input[type="password"] {
   font-size: 14px;
@@ -361,6 +364,22 @@ div.process-form {
     margin-top: 15px;
     margin-bottom: 15px;
     display: inline-block; }
+  div.process-form .integrations {
+    width: 100%; }
+    div.process-form .integrations .input {
+      width: 70%;
+      display: inline-block;
+      margin-right: 10px; }
+    div.process-form .integrations .name {
+      font-weight: bold; }
+    div.process-form .integrations *[class^="dc-"] {
+      font-size: 34px;
+      vertical-align: middle; }
+    div.process-form .integrations ul.grid {
+      border-bottom: 1px solid #f3f3f3;
+      margin: 0px;
+      padding-top: 10px;
+      padding-left: 0px; }
 
 /* Grid customization */
 ul.grid {

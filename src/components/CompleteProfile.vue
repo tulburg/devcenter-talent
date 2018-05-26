@@ -19,8 +19,11 @@
 						<div class="counter"><span v-if="state!='employment'&&state!='integration'">2</span><i class="dc-tick" v-else></i></div>
 						<div>Languages and Skills</div>
 					</li>
-					<li :class="{active: state!='role'&&state!='otherRoles'&&state!='langSkills'}" class="stage"><div class="counter">3</div><div>Employment Status</div></li>
-					<li class="stage"><div class="counter">4</div><div>Integrations</div></li>
+					<li :class="{active: state!='role'&&state!='otherRoles'&&state!='langSkills'}" class="stage">
+						<div class="counter"><span v-if="state!='integration'">3</span><i class="dc-tick" v-else></i></div>
+						<div>Employment Status</div>
+					</li>
+					<li :class="{active: state=='integration'}" class="stage"><div class="counter">4</div><div>Integrations</div></li>
 				</ul>	
 			</div>
 
@@ -51,16 +54,21 @@
 				<div v-show="state=='employment'" class="forms">
 					<Title label="What is your current employment status?" :showAlert="showLangSkillsError" :alert="langSkillsError" />
 					<ul class="grid grid-2">
-						<li><Select :name="employment-status" :options="employment" v-on:change="setEmployment" label="" :alt="true"  /></li>
+						<li><Select name="employment-status" :options="employment" v-on:change="setEmployment" label="" :alt="true"  /></li>
 						<li>&nbsp;</li>
 					</ul>
 				</div> 
-				<div v-show="state=='integration'" class="forms">
+				<div v-show="state=='integration'" class="forms integrations">
 					<Title label="Link your accounts so we can know more about you" :showAlert="showLangSkillsError" :alert="langSkillsError" />
+					<ul class="grid grid-2" v-for="i in integrations">
+						<li><div class="name"><i :class="i.icon"></i> {{ i.title }}</div></li>
+						<li><Input type="text" label="" :alt="true" placeholder="Enter your link" v-on:change="(v)=>setIntegrationValue(v, i)" /><button class="small" v-on:click="setIntegration(i.key)">Link</button></li>
+					</ul>
 				</div>
 				<div class="form-footer" align="right">
 					<button class="bordered" v-show="canGoBack" v-on:click="previousForm" style="float:left;">Back</button>
-					<button class="long" v-on:click="nextForm">Next</button>
+					<button class="long" v-on:click="finish" v-if="state=='integration'">Finish</button>
+					<button class="long" v-on:click="nextForm" v-else>Next</button>
 				</div>
 			</div>
 		</section>
@@ -70,6 +78,7 @@
 <script>
 	import Select from '@/components/sub/Select'
 	import Title from '@/components/sub/Title'
+	import Input from '@/components/sub/Input'
 	export default {
 		name: 'CompleteProfile',
 		data() { 
@@ -112,12 +121,18 @@
 					{ value: "freelancer", title: "Freelancer" },
 					{ value: "unemployed", title: "Unemployed" }
 				],
+				integrations: [
+					{ icon: "dc-linkedin", title: "LinkedIn", key: "linkedin" },
+					{ icon: "dc-github", title: "Github", key: "github" },
+					{ icon: "dc-behance", title: "Behance", key: "behance" },
+					{ icon: "dc-dribbble", title: "Dribbble", key: "dribbble" }
+				],
 				showLangSkillsError: false, langSkillsError: '* Please select at least one language, framework or skill',
 				values: { coreRole: '', otherRoles: [], langSkills: [], employment: '', integrations: [] },
 				showEmploymentError: false, employmentError: "* Please let us know your employment status"
 			}
 		},
-		components: { Select, Title },
+		components: { Select, Title, Input },
 		methods: {
 			nextForm() {
 				if(this.state == 'role') { 
@@ -139,7 +154,14 @@
 					this.state = 'role';
 				}else if(this.state == 'langSkills') {
 					this.state = 'otherRoles';
+				}else if(this.state == 'employment') {
+					this.state = 'langSkills'
+				}else if(this.state == 'integration') {
+					this.state = 'employment'
 				}
+			},
+			finish() {
+
 			},
 			setCoreRole: function(value) {
 				if(value!=="") { this.showRoleError = false; }else { this.showRoleError=true; }
@@ -164,6 +186,15 @@
 				(field) ? field.years = value : field = { years: value}; 
 				this.values.langSkills[parseInt(id)-1] = field;
 				console.log(this.values);
+			},
+			setEmployment: function() {
+
+			},
+			setIntegration: function() {
+
+			},
+			setIntegrationValue: function() {
+
 			},
 			addMoreRoles: function() {
 				if(this.moreRoles > 2) { this.otherRoleError = "* You can't add more than 3 more roles"; this.showOtherRoleError = true; }
