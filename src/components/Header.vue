@@ -40,7 +40,7 @@
 			Bus.$on("Header_showLinks", (bool) => { self.showLinks = bool });
 			Bus.$on("Header_showGrayLogo", (bool) => { self.showGrayLogo = bool });
 			Bus.$on("Header_showAccount", (bool) => { self.showAccount = bool });
-			Bus.$on("Header_showSignup", (bool) => { self.showSignup = bool; console.log("show signup", bool); });
+			Bus.$on("Header_showSignup", (bool) => { self.showSignup = bool; });
 		}
 	}
 </script>

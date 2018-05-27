@@ -5,9 +5,6 @@
 			<h1 class="heading">Welcome to Devcenter's Talent Pool</h1>
 			<p class="sub-heading">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
 			<button class="open-login long" v-on:click="showLogin=!showLogin">Log In</button>
-			<router-link to="/complete-profile">
-				Log In by Force <i class="dc-caret right"></i>
-			</router-link>
 		</div>
 
 		<div class="box" v-show="showLogin">
@@ -55,6 +52,7 @@
 	import Modal from '@/components/sub/Modal'
 	import store from '@/store'
 	import Bus from '@/Bus'
+	import Cookie from 'js-cookie'
 	export default {
 		name: 'Welcome',
 		components: { Input, Select, Title, Modal },
@@ -69,20 +67,29 @@
 			resetInputs() { var self=this;setTimeout(function(){ self.emailAlert = false; self.passwordAlert = false; }, 2400); },
 			doLogin() { 
 				var self = this; this.loading = true;
-				this.$http.post(store.state.api.development+"login", { email: this.email, password: this.password }).then(res => {
+				this.$http.post(store.state.api.development+"login", { email: self.email, password: self.password }).then(res => {
 					this.loading = false;
+					let user = res.body.extras.user;
+					store.commit("startSession", {token: res.body.extras.token, user: res.body.extras.user});
+					(user.completed_level > 0) ? this.$router.push('/profile') : this.$router.push("/complete-profile");
 				}).catch(err=>{
 					this.loading = false;
+					console.log(err);
 					if(err.status != 200) { self.emailError = "* "+err.body.extras.message; self.emailAlert = true; }
 				});
 			},
-			setEmail: (email) => { this.email = email; },
-			setPassword: (password) => { this.password = password; },
+			setEmail: function(email) { this.email = email; },
+			setPassword: function(password) { this.password = password; },
 			dialogClose() { console.log("dialog closed"); }
 		},
 		mounted() {
 			var self = this;
 			Bus.$emit("Header_showSignup", true);
+			store.dispatch('getSession').then(res => {
+				if(res){
+					(res.completed_level > 0 ) ? self.$router.push("/") : self.$router.push("/complete-profile");
+				}
+			});
 		},
 		destroyed() {
 			Bus.$emit("Header_showSignup", false);
