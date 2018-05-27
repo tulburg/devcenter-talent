@@ -21,11 +21,15 @@ html, body { background-color: $bg; padding: 0px; margin: 0px; color: $color; }
 input[type="text"],input[type="password"] { font-size: 14px; border: 0px; border: 1px solid lighten($light-color, 22%); padding: 10px 15px; background-color: $white; border-radius: 3px; transition: 0.3s all ease-in-out; &:focus { box-shadow: 2px 3px 5px 1px rgba(0, 0, 0, 0.07); border: 1px solid lighten($light-color, 24%); } &.bar { width: 100%; } &.alt { border-color: $primary; border-width: 2px; }  }
 label { font-size: 14px; color: lighten($color, 5%); padding: 5px 0px; display: block; }
 p { line-height: 1.6; text-align: left; }
+ul { padding-left: 0px; }
 header { position: fixed; top: 0px; left: 0px; width: 100vw; height: 90px; z-index: 500; background-color: $white; box-shadow: 0px 4px 4px 0px rgba(204, 204, 204, 0.5); display: flex; justify-content: center; align-items: center; }
 header > div { width: 90%; max-width: 1200px; align-self: center; height: 100%; display: flex; }
 header .logo { width: 25%; text-align: left; display: flex; justify-content: left; align-items: center; }
 header .header-links { width: 50%; }
-header .header-actions { width: 25%; height: 100%; display: flex; justify-content: flex-end; align-items: center; align-self: flex-end; }
+header .header-actions { width: 25%; height: 100%; display: flex; justify-content: flex-end; align-items: center; align-self: flex-end; 
+	.account-holder { position: relative; display: flex; cursor: pointer; .account-photo { width: 30px; height: 30px; background-color: $primary; border-radius: 15px; } .account-name { padding: 0px 10px; margin-top: 3px; } }
+	.account-drop { position: absolute; top: calc(100% + 10px); background-color: $white; width: 180px; right: 0px; border: 1px solid lighten($light-color, 15%); box-shadow: 4px 4px 6px 4px rgba(40, 40, 40, 0.1); list-style: none; li { display: block; text-align: left; a { padding: 15px 20px; font-weight: 100; width: 100%; display: block; color: $light-color; &:hover { color: $primary; } }} &::before { content: ""; position: absolute; top: -9px; right: 10px; width: 15px; height: 15px; border-right: 1px solid lighten($light-color, 15%); border-top: 1px solid lighten($light-color, 15%); display: block; transform: rotate(-45deg); background-color: $white; } }
+}
 header .header-links ul { list-style: none; display: flex; height: 100%; justify-content: center; margin: 0px; }
 header .header-links ul li { width: 25%; display: flex; justify-content: center; align-items: center; height: 100%; flex-direction: column; }
 header .header-links ul li a { position: relative; text-decoration: none; font-weight: bold; @include darken_color_hover($light-color); display: flex; flex-grow: 1; align-items: center; &.active { color: $primary; cursor: default; } &.active::after { display: block; } }
@@ -55,6 +59,8 @@ section.join-pool { justify-content: center; .box { width: 70%; margin-top: -200
 section.complete-profile { justify-content: center;.welcome-message { width: 540px; margin-top: -50px; h1 { text-align: left; margin-top: 0px; } .buttons { padding-top: 30px; text-align: right; button.clear { padding-right: 15px; } } } section.invert { width: 100%; position: static; } }
 div.process-stager { width: 60%; padding: 20px 40px; .stage { position: relative; display: flex; flex-direction: column; align-items: center; padding: 0px; width: 26.66% !important; &::before { content: ""; position: absolute; top: calc(30% - 2px); height: 2px; background-color: lighten($light-color, 20%); left: -46%; width: 90%; z-index: 0; } &.active{ .counter { background-color: $primary; border: 0px; color: $white; } &::before { background-color: $primary; display: block; } } &:first-child { align-self: flex-start; width: 50px !important; margin-right: calc(18% - 50px); &::before { display: none !important; } } .counter { z-index: 1; font-size: 18px; padding-top: 7px; margin-bottom: 10px; border: 1px solid $light-color; color: $light-color; border-radius: 20px; height: 40px; width: 40px; background-color: $white; } } }
 div.process-form { width: 60%; margin-top: 30px; .title { margin-top: 0px; } .forms { text-align: left; width: 70%; ul.grid li { padding: 0px; &.alt { width: 30%; margin-left: 20px; } } .other-roles { .select { margin-bottom: 10px;} } } .form-footer { margin-top: 20px; } .add-more-roles-btn { margin-top: 15px; margin-bottom: 15px; display: inline-block; } .integrations{ .input { width: 70%; display: inline-block; margin-right: 10px; } .name{ font-weight: bold; } *[class^="dc-"]{ font-size: 34px; vertical-align: middle; } width: 100%; ul.grid{ border-bottom: 1px solid lighten($light-color, 25%); margin: 0px; padding-top: 10px; padding-left: 0px; } } }
+/* Profile page definitions */
+section.profile {  }
 /* Grid customization */
 ul.grid{clear:both;box-sizing: content-box;margin:auto -40px; list-style: none;}
 ul.grid::after{visibility:hidden;display:block;content:" ";height:0;font-size:0;clear:both;}
@@ -66,7 +72,7 @@ ul.grid.grid-5 > li{width:20%;}
 ul.grid.separator > li{border-left:1px solid darken(white, 10%);}
 ul.grid.separator > li:first-child{border-left:0px;}
 /* Caret customization */
-.dc-caret { display: inline-block; vertical-align: middle; font-size: 12px; &.right { transform: rotate(270deg); } &.left { transform: rotate(90deg); } &.upward { transform: rotate(180deg); } }
+.dc-caret { display: inline-block; vertical-align: middle; font-size: 12px; transition: all .2s ease-in-out; &.right { transform: rotate(270deg); } &.left { transform: rotate(90deg); } &.upward { transform: rotate(180deg); } }
 /* Select customization */
 div.cs-select{display:inline-block;vertical-align:middle;position:relative;text-align:left;background:#fff;z-index:100;width:100%;max-width:500px;-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}div.cs-select:focus{outline:0}.cs-select select{display:none}.cs-select span{display:block;position:relative;cursor:pointer;padding:1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cs-select>span{padding-right:3em}.cs-select .cs-selected span::after,.cs-select>span::after{speak:none;position:absolute;top:50%;-webkit-transform:translateY(-50%);transform:translateY(-50%);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.cs-select>span::after{font-family:ttv;content:'\e800';right:1em}.cs-select .cs-selected span::after{content:'\e800';margin-left:1em}.cs-select.cs-active>span::after{-webkit-transform:translateY(-50%) rotate(180deg);transform:translateY(-50%) rotate(180deg)}.cs-select .cs-options{position:absolute;overflow:hidden;width:100%;background:#fff;visibility:hidden}.cs-select.cs-active .cs-options{visibility:visible}.cs-select ul{list-style:none;margin:0;padding:0;width:100%}.cs-select ul span{padding:1em}.cs-select ul li.cs-focus span{background-color:#ddd}.cs-select li.cs-optgroup ul{padding-left:1em}.cs-select li.cs-optgroup>span{cursor:default}
 .cs-select { border: 1px solid lighten($light-color, 22%); border-radius: 3px; &:focus { border: 2px solid $primary; } &.alt { border: 2px solid $primary; }}
@@ -96,12 +102,16 @@ div.modal .footer { position: absolute; left: 0px; top: 100%; background-color: 
 .modal-transition-leave-active { animation-name: modalOut; animation-duration: .2s; animation-timing-function: ease-in-out; }
 .overlay-transition-enter-active { animation-name: overlayIn; animation-duration: .2s; animation-timing-function: ease-in-out; }
 .overlay-transition-leave-active { animation-name: overlayOut; animation-duration: .2s; animation-timing-function: ease-in-out; }
-@keyframes slideIn { 0%{ margin-top: -50px; opacity: 0.0; } 100% { margin-top: 0px; opacity: 1; } }
-@keyframes slideOut { 0% { margin-top: 0px; opacity: 1; } 100% { margin-top: -50px; opacity: 0.0; } }
+@keyframes slideIn { 0%{ top: calc(100% - 30px); opacity: 0.0; } 100% { top: calc(100% + 10px); opacity: 1; } }
+@keyframes slideOut { 0% { top: calc(100% + 10px); opacity: 1; } 100% { top: calc(100% - 30px); opacity: 0.0; } }
 @keyframes fadeIn { 0% { opacity: 0.0; } 100% { opacity: 1; } }
 @keyframes fadeOut { 0% { opacity: 1; } 100% { opacity: 0; } }
 .slideup-enter-active { animation-name: slideIn; animation-duration: .4s; animation-timing-function: ease-in-out; }
 .slideup-leave-active { animation-name: slideOut; animation-duration: .4s; animation-timing-function: ease-in-out; }
 .fadeout-enter-active { animation-name: fadeIn; animation-duration: .4s; animation-timing-function: ease-in-out; }
 .fadeout-leave-active { animation-name: fadeOut; animation-duration: .4s; animation-timing-function: ease-in-out; }
+@keyframes account-in { 0%{ top: calc(100% - 30px); opacity: 0.0; } 100% { top: calc(100% + 10px); opacity: 1; } }
+@keyframes account-out { 0% { top: calc(100% + 10px); opacity: 1; } 100% { top: calc(100% - 30px); opacity: 0.0; } }
+.account-drop-enter-active { animation-name: account-in; animation-duration: .4s; animation-timing-function: ease-in-out; }
+.account-drop-leave-active { animation-name: account-out; animation-duration: .4s; animation-timing-function: ease-in-out; }
 

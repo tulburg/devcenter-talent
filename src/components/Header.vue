@@ -12,7 +12,6 @@
 					<li><a href="#" class="active">Profile</a></li>
 					<li><a href="#">Projects</a></li>
 					<li><a href="#">Inbox</a></li>
-					
 				</ul>
 			</div>
 			<div class="header-actions">
@@ -22,6 +21,18 @@
 				<router-link to="/join-talent-pool">
 					<a class="button" v-show="showSignup">Join Our Talent Pool</a>
 				</router-link>
+				<div class="account-holder" v-on:click="showAccountDropDown=!showAccountDropDown">
+					<div class="account-photo"></div>
+					<div class="account-name">John Doemerangler <i :class="{ upward: showAccountDropDown }" class="dc-caret"></i></div>
+					<transition name="account-drop">
+						<ul class="account-drop" v-show="showAccountDropDown">
+							<li v-for="i in accountLinks">
+								<router-link :to="i.url" v-if="i.action == undefined">{{ i.title }}</router-link>
+								<a href="" v-on:click.prevent="i.action" v-else>{{ i.title }}</a>
+							</li>
+						</ul>
+					</transition>
+				</div>
 			</div>
 		</div>
 	</header>
@@ -29,10 +40,18 @@
 
 <script>
 	import Bus from '@/Bus'
+	import store from '@/store'
 	export default {
 		name: 'Header',
 		data() {
-			return { showGrayLogo: false, showLinks: false, showLogin: false, showAccount: false, showSignup: false }
+			return { showGrayLogo: false, showLinks: false, showLogin: false, showAccount: false, showSignup: false, showAccountDropDown: false,
+				accountLinks: [
+					{ url: "/profile/earnings", title: "Earnings" },
+					{ url: "/profile/settings", title: "Account Settings" },
+					{ url: "/feedback", title: "Feedback" },
+					{ action: function() { store.commit('endSession'); this.$router.push("/"); }, title: "Logout" }
+				]
+			}
 		},
 		mounted() {
 			var self = this;
