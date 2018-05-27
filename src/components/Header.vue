@@ -1,5 +1,5 @@
 <template>
-	<header>
+	<header v-on:click="(e) => { toggleDropDown(e) }">
 		<div>
 			<div class="logo">
 				<router-link to="/">
@@ -21,8 +21,10 @@
 				<router-link to="/join-talent-pool">
 					<a class="button" v-show="showSignup">Join Our Talent Pool</a>
 				</router-link>
-				<div class="account-holder" v-on:click="showAccountDropDown=!showAccountDropDown">
-					<div class="account-photo"></div>
+				<div class="account-holder" v-show="showAccount">
+					<div class="account-photo">
+						<img src="../assets/img/placeholder.svg" alt="placeholder" />
+					</div>
 					<div class="account-name">John Doemerangler <i :class="{ upward: showAccountDropDown }" class="dc-caret"></i></div>
 					<transition name="account-drop">
 						<ul class="account-drop" v-show="showAccountDropDown">
@@ -44,13 +46,26 @@
 	export default {
 		name: 'Header',
 		data() {
+			var self = this;
 			return { showGrayLogo: false, showLinks: false, showLogin: false, showAccount: false, showSignup: false, showAccountDropDown: false,
 				accountLinks: [
 					{ url: "/profile/earnings", title: "Earnings" },
 					{ url: "/profile/settings", title: "Account Settings" },
 					{ url: "/feedback", title: "Feedback" },
-					{ action: function() { store.commit('endSession'); this.$router.push("/"); }, title: "Logout" }
+					{ action: function() { self.logOut() }, title: "Log Out" }
 				]
+			}
+		},
+		methods: {
+			toggleDropDown: function(e) {
+				var e = e || window.event;
+				if(this.showAccountDropDown) this.showAccountDropDown = false;
+				else if(e.target && e.target.className.match("account")) this.showAccountDropDown = true;
+			},
+			logOut: function() {
+				this.showAccount = false;
+				store.commit('endSession'); 
+				this.$router.push("/");
 			}
 		},
 		mounted() {
@@ -60,6 +75,7 @@
 			Bus.$on("Header_showGrayLogo", (bool) => { self.showGrayLogo = bool });
 			Bus.$on("Header_showAccount", (bool) => { self.showAccount = bool });
 			Bus.$on("Header_showSignup", (bool) => { self.showSignup = bool; });
+			Bus.$on("Header_hideDropDown", () => { self.toggleDropDown() });
 		}
 	}
 </script>

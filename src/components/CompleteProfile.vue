@@ -79,6 +79,7 @@
 	import Select from '@/components/sub/Select'
 	import Title from '@/components/sub/Title'
 	import Input from '@/components/sub/Input'
+	import store from '@/store'
 	export default {
 		name: 'CompleteProfile',
 		data() { 
@@ -207,6 +208,12 @@
 					this.langSkillsError = "* You can't add more than 10 skill and languages"
 				}
 			}
+		},
+		mounted() {
+			store.dispatch('getSession').then(session => {
+				if(session == null) this.$router.push("/")
+					else console.log(session);
+			});
 		}
 	}
 
