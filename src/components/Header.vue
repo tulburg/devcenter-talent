@@ -23,9 +23,9 @@
 				</router-link>
 				<div class="account-holder" v-show="showAccount">
 					<div class="account-photo">
-						<img src="../assets/img/placeholder.svg" alt="placeholder" />
+						<img src="../assets/img/placeholder.svg" alt="placeholder" class="account-pic" />
 					</div>
-					<div class="account-name">John Doemerangler <i :class="{ upward: showAccountDropDown }" class="dc-caret"></i></div>
+					<div class="account-name">@adebayo <i :class="{ upward: showAccountDropDown }" class="dc-caret"></i></div>
 					<transition name="account-drop">
 						<ul class="account-drop" v-show="showAccountDropDown">
 							<li v-for="i in accountLinks">

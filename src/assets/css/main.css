@@ -81,6 +81,9 @@ label {
 p {
   line-height: 1.6;
   text-align: left; }
+  p span {
+    font-style: normal;
+    color: #18a2dc; }
 
 ul {
   padding-left: 0px; }
@@ -435,8 +438,10 @@ div.process-form {
 
 /* Profile page definitions */
 section.profile {
+  padding-bottom: 100px;
   display: flex;
   justify-content: center;
+  height: auto;
   padding-top: 50px; }
   section.profile .left {
     width: 68%;
@@ -480,21 +485,65 @@ section.profile {
       padding-bottom: 20px; }
       section.profile .right .box h3 {
         margin: 0px; }
-      section.profile .right .box.rank img {
+      section.profile .right .box img {
         height: 100px;
         margin-top: 20px; }
-      section.profile .right .box.rank .grid {
+      section.profile .right .box .grid {
         padding-left: 0px;
         margin-top: 20px; }
-        section.profile .right .box.rank .grid li {
+        section.profile .right .box .grid li {
           padding: 0px;
           text-align: left;
           padding-left: 20px; }
-          section.profile .right .box.rank .grid li h1 {
+          section.profile .right .box .grid li h1 {
             margin: 5px 0px; }
-          section.profile .right .box.rank .grid li:last-child {
+          section.profile .right .box .grid li:last-child {
             padding-left: 50px;
             color: #b3b3b3; }
+      section.profile .right .box button {
+        margin-top: 20px; }
+  section.profile .profile-view .box {
+    padding-left: 100px;
+    padding-right: 100px; }
+  section.profile .profile-view .profile-photo {
+    position: relative;
+    background-color: #18a2dc;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    height: 200px;
+    width: 200px;
+    margin-top: -140px;
+    border-radius: 100px;
+    align-self: center;
+    margin-bottom: 20px; }
+    section.profile .profile-view .profile-photo:hover .cover {
+      display: flex; }
+    section.profile .profile-view .profile-photo img {
+      width: 100%;
+      border-radius: 100px; }
+    section.profile .profile-view .profile-photo img[alt="placeholder"] {
+      width: 120px; }
+    section.profile .profile-view .profile-photo .cover {
+      background-color: rgba(0, 0, 0, 0.65);
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      height: 100%;
+      width: 100%;
+      border-radius: 100px;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      color: #ffffff;
+      padding: 40px;
+      cursor: pointer; }
+  section.profile .personal-pane {
+    border-bottom: 1px solid #e6e6e6;
+    text-align: left; }
+    section.profile .personal-pane h1 a {
+      float: right;
+      font-size: 16px; }
 
 .ratings {
   margin-bottom: 20px; }

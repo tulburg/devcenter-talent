@@ -30,11 +30,14 @@
 		methods: {
 			setEmail(email) { this.email = email; },
 			doResetPassword() { 
-				var self = this; this.loading = true; this.success = true;
+				var self = this; this.loading = true;
 				console.log(self.email) ;
 				this.$http.post(store.state.api.development+"forgot-password", { email: self.email, recovery_url: "http://devcenter.co/forgot-password/"+self.email+"/" }).then((res) => {
+					console.log(res);
 					self.loading = false;
+					self.success = true;
 				}).catch((err) => {
+					console.log(err);
 					self.loading = false;
 					if(err.status != 200) { self.emailError = "* "+err.body.extras.message; self.emailAlert = true; }
 				})
