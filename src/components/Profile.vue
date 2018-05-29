@@ -39,7 +39,7 @@
 							<span v-for="i in 15" :class="{ active: (i < 8) }"></span>
 						</div>
 					</div>
-					<ul class="grid grid-2 separator">
+					<ul class="grid grid-2 separator rating-summary">
 						<li><div>Current rating</div><h1>60</h1></li>
 						<li><div>Max rating</div><h1>300</h1></li>
 					</ul>
@@ -56,6 +56,23 @@
 
 	export const ProfileEmptyState = {
 		name: 'EmptyState',
+		data() { return { placeholder : require("../assets/img/placeholder.svg") }; },
+		template: `<div class="profile-empty">
+						<div class="box">
+							<div class="profile-photo"><img :src="placeholder" alt="placeholder" /></div>
+							<h1>Hi John,</h1>
+							<p>Your profile is looking quite empty. We need to know a bit more about you and what you do so that we know what kind of projects to send you.</p>
+							<p>Click the button below to start filling your profile, it'll only take a couple of minutes, we promise.</p>
+							<button class="long" v-on:click="goToCompleteProfile">Get Started</button>
+						</div>
+					</div>`,
+		methods: {
+			goToCompleteProfile() { this.$router.push('/complete-profile'); }
+		}
+	}
+
+	export const ProfileIncompleteState = {
+		name: 'Incomplete',
 		data() { return { placeholder : require("../assets/img/placeholder.svg") }; },
 		template: `<div class="profile-empty">
 						<div class="box">
@@ -88,8 +105,15 @@
 					<div class="cover" v-on:click="changePhoto"><span>Change your profile picture</span></div>
 				</div>
 				<div class="personal-pane">
-					<h1>{{ fullname }} <a class="clear">Edit</a></h1>
+					<h1>{{ fullname }} <a href="#" class="clear">Edit</a></h1>
 					<p>I'm a <span>{{ role }}</span> developer with experience in <span>{{ otherRole[0] }}</span> development</p> 
+					<div class="integration">
+						<a href="#"><i class="dc-linkedin"></i></a>
+						<a href="#"><i class="dc-github"></i></a>
+					</div>
+				</div>
+				<div class="language-pane">
+					<h2>Language and Skills <a href="#" class="clear">Edit</a></h2>
 				</div>
 			</div>
 		</div>`,

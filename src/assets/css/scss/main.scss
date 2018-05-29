@@ -13,11 +13,14 @@ $red: #e42d43;
 @mixin background_with_icon($background) { background-color: $background; & .ic-button{ @include darken_hover(darken($background, 5%)) } }
 @mixin bg_darken($background) { background-color: $background; & .darken{ background-color:darken($background, 5%); } }
 @mixin darken_color_hover($color) { color: $color; &:hover{color:darken($color, 20%); } }
+@mixin resolve($point) { @if $point == desktop { @media (min-width: 70em) { @content ; } } @else if $point == laptop { @media (min-width: 64em) { @content ; } } @else if $point == tablet { @media (min-width: 50em) { @content ; } } @else if $point == phablet { @media (min-width: 37.5em)  { @content ; } } @else if $point == mobile { @media (max-width: 37.5em)  { @content ; }}}
 /* --- Definitions --- */
-* { outline: none; box-sizing: border-box; font-family: 'Circular', 'Avenir', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+* { outline: none; box-sizing: border-box; font-family: 'Circular', 'Avenir', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
+	@include resolve(mobile) {  }
+}
 html, body { background-color: $bg; padding: 0px; margin: 0px; color: $color; }
 #app { text-align: center; height: 100vh; }
-.button, button { cursor: pointer; font-size: 16px; @include darken_hover_active($primary); font-weight: bold; color: $white; border: 0px; padding: 12px 50px; border-radius: 3px; &.clear { background-color: transparent; @include darken_color_hover($light-color); &:active { background-color: transparent; } } &.bordered { border: 2px solid $primary; @include darken_hover_active($white); color: darken($primary, 5%); padding: 10px 50px; } &.long { min-width: 220px; } &.bar { width: 100%; } &.small { font-size: 13px; padding: 8px 25px; } }
+.button, button { white-space: nowrap; cursor: pointer; font-size: 16px; @include darken_hover_active($primary); font-weight: bold; color: $white; border: 0px; padding: 12px 50px; border-radius: 3px; &.clear { background-color: transparent; @include darken_color_hover($light-color); &:active { background-color: transparent; } } &.bordered { border: 2px solid $primary; @include darken_hover_active($white); color: darken($primary, 5%); padding: 10px 50px; } &.long { min-width: 220px; } &.bar { width: 100%; } &.small { font-size: 13px; padding: 8px 25px; } }
 input[type="text"],input[type="password"] { font-size: 14px; border: 0px; border: 1px solid lighten($light-color, 22%); padding: 10px 15px; background-color: $white; border-radius: 3px; transition: 0.3s all ease-in-out; &:focus { box-shadow: 2px 3px 5px 1px rgba(0, 0, 0, 0.07); border: 1px solid lighten($light-color, 24%); } &.bar { width: 100%; } &.alt { border-color: $primary; border-width: 2px; }  }
 label { font-size: 14px; color: lighten($color, 5%); padding: 5px 0px; display: block; }
 p { line-height: 1.6; text-align: left; span { font-style: normal; color: $primary; } }
@@ -61,11 +64,12 @@ div.process-stager { width: 60%; padding: 20px 40px; .stage { position: relative
 div.process-form { width: 60%; margin-top: 30px; .title { margin-top: 0px; } .forms { text-align: left; width: 70%; ul.grid li { padding: 0px; &.alt { width: 30%; margin-left: 20px; } } .other-roles { .select { margin-bottom: 10px;} } } .form-footer { margin-top: 20px; } .add-more-roles-btn { margin-top: 15px; margin-bottom: 15px; display: inline-block; } .integrations{ .input { width: 70%; display: inline-block; margin-right: 10px; } .name{ font-weight: bold; } *[class^="dc-"]{ font-size: 34px; vertical-align: middle; } width: 100%; ul.grid{ border-bottom: 1px solid lighten($light-color, 25%); margin: 0px; padding-top: 10px; padding-left: 0px; } } }
 /* Profile page definitions */
 section.profile { padding-bottom: 100px; display: flex; justify-content: center; height: auto; padding-top: 50px; .left { width: 68%; margin-right: 40px; padding-top: 100px; .profile-empty { .box { width: 100%; display: flex; align-content: center; flex-direction: column; p { text-align: center; padding-left: 50px; padding-right: 50px; } button { width: 220px; align-self: center; margin-top: 50px; } } .profile-photo { background-color: $primary; display: flex; justify-content: center; align-content: center; height: 200px; width: 200px; margin-top: -140px; border-radius: 100px; align-self: center; margin-bottom: 20px; img { width: 100%; border-radius: 100px; } img[alt="placeholder"] { width: 120px; } } } } 
-	.right { width: 32%; padding-top: 100px; .box { margin-bottom: 30px; padding-top: 20px; padding-bottom: 20px; h3 { margin: 0px; } img { height: 100px; margin-top: 20px; } .grid { padding-left: 0px; margin-top: 20px; li { padding: 0px; text-align: left; padding-left: 20px; h1 { margin: 5px 0px; } &:last-child { padding-left: 50px; color: $light-color;  } } } button { margin-top: 20px; } } } 
+	.right { width: 32%; padding-top: 100px; .box { margin-bottom: 30px; padding-top: 20px; padding-bottom: 20px; h3 { margin: 0px; } img { height: 100px; margin-top: 20px; } .grid { padding-left: 0px; margin-top: 20px; li { padding: 0px; text-align: left; padding-left: 20px; h1 { margin: 5px 0px; } &:last-child { padding-left: 50px; color: $light-color;  } } } button { margin-top: 20px; } } .rating-summary { padding: 10px 0px; } } 
 	.profile-view { .box { padding-left: 100px; padding-right: 100px; } .profile-photo {  position: relative; background-color: $primary; display: flex; justify-content: center; align-content: center; height: 200px; width: 200px; margin-top: -140px; border-radius: 100px; align-self: center; margin-bottom: 20px; &:hover .cover { display: flex; } img { width: 100%; border-radius: 100px; } img[alt="placeholder"] { width: 120px; } .cover { background-color: rgba(0,0,0,0.65); position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; border-radius: 100px; display: none; justify-content: center; align-items: center; color: $white; padding: 40px; cursor: pointer; } } }
-	.personal-pane { border-bottom: 1px solid lighten($light-color, 20%); text-align: left; h1 { a { float: right; font-size: 16px; } } }
+	.personal-pane { padding-bottom: 30px; border-bottom: 1px solid lighten($light-color, 20%); text-align: left; h1 { a { float: right; font-size: 16px; margin-top: 5px; } } .integration { margin-top: 20px; margin-bottom: 10px; i { font-size: 34px; color: $color; } } }
+	.language-pane { padding-bottom: 30px; padding-top: 20px; h2 { font-size: 20px; text-align: left; a { float: right; font-size: 16px; margin-top: 5px; } } }
 }
-.ratings { margin-bottom: 20px; .title { text-align: left; font-weight: bold; margin-bottom: 5px; span { color: $light-color; float: right; } } .bar { width: 100%; min-height: 30px; text-align: left; span { background-color: lighten($light-color, 10%); border-radius: 6px; height: 30px; width: 3.70%; display: inline-block; margin-right: 8px; &.active { background-color: $primary; } &:last-child { margin-right: 0px; } } } }
+.ratings { margin-bottom: 20px; .title { text-align: left; font-weight: bold; margin-bottom: 5px; span { color: $light-color; float: right; } } .bar { width: 100%; min-height: 30px; text-align: left; span { background-color: lighten($light-color, 10%); border-radius: 6px; height: 30px; width: 3.70%; display: inline-block; margin-right: 3.1%; &.active { background-color: $primary; } &:last-child { margin-right: 0px; } } } }
 /* Grid customization */
 ul.grid{clear:both;box-sizing: content-box;margin:auto -40px; list-style: none; padding-left: 40px;}
 ul.grid::after{visibility:hidden;display:block;content:" ";height:0;font-size:0;clear:both;}
@@ -120,3 +124,23 @@ div.modal .footer { position: absolute; left: 0px; top: 100%; background-color: 
 .account-drop-enter-active { animation-name: account-in; animation-duration: .4s; animation-timing-function: ease-in-out; }
 .account-drop-leave-active { animation-name: account-out; animation-duration: .4s; animation-timing-function: ease-in-out; }
 
+
+/* Responsiveness definitions */
+@include resolve(mobile) {
+	header { align-items: center; height: auto; padding-bottom: 10px; .logo, .header-links, .header-actions { width: 100%; } .logo, .header-actions { justify-content: center; padding: 10px 5px; padding-bottom: 0px; a { display: block; } } .logo { padding-top: 10px; padding-bottom: 0px; } }
+	header > div { width: 100%; flex-direction: column; }
+	section { padding-top: 80px; padding-bottom: 100px; height: auto; }
+	section.welcome { h1.heading { font-size: 24px; padding: 0px 20px; } .box { margin-top: 0px; width: calc(100% - 20px); padding: 30px 20px; .login-title { font-size: 22px; } } p { padding: 10px; }}
+	section.join-pool { .box { margin-top: 0px; width: calc(100% - 20px); padding: 30px 20px; ul.grid li { padding: 0px 20px; } ul.grid { width: 100%; } ul.grid.grid-2 li { width: 100%; padding-left: 0px; padding-bottom: 20px; padding-right: 0px; } ul.grid.separator li:last-child { border: 0px; border-top: 1px solid lighten($light-color, 20%); margin-top: 20px; padding-top: 20px; }}}
+	section.forgot-password { padding-top: 20px; padding-bottom: 0px; }
+	section.complete-profile { .welcome-message { a.button { display: block; margin-bottom: 10px; width: 100%; text-align: center; } button { width: 100%; } } }
+}
+@include resolve(phablet) {
+	section { height: auto; padding-top: 120px; padding-bottom: 100px; }
+	section.join-pool { padding-top: 40px; .box { margin-top: 0px; width: calc(100% - 40px); } }
+	section.forgot-password { padding-top: 20px; padding-bottom: 0px; }
+}
+@include resolve(laptop) {
+	section { height: calc(100% - 90px); padding-top: 0px; padding-bottom: 0px; }
+	section.join-pool { .box { width: 70%; margin-top: -100px; } }
+}
