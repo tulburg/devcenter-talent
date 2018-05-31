@@ -11,7 +11,7 @@
 				<ul v-show="showLinks">
 					<li><a href="/profile/tulburg" :class="{ active : (activeLink=='/profile/tulburg') }" v-on:click="setActiveLink('/profile/tulburg')">Profile</a></li>
 					<li><a href="/projects" :class="{ active : (activeLink=='/projects') }" v-on:click="setActiveLink('/projects')">Projects</a></li>
-					<li><a href="/inbox" :class="{ active : (activeLink=='/inbox') }" v-on:click="setActiveLink('/inbox')">Inbox</a></li>
+					<li><a href="/inbox" :class="{ active : (activeLink=='/inbox'), unread: unread }" v-on:click="setActiveLink('/inbox')">Inbox</a></li>
 				</ul>
 			</div>
 			<div class="header-actions">
@@ -57,7 +57,7 @@
 					{ url: "/feedback", title: "Feedback" },
 					{ action: function() { self.logOut() }, title: "Log Out" }
 				],
-				activeLink: ''
+				activeLink: '', unread : true
 			}
 		},
 		methods: {
