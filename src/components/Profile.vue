@@ -53,7 +53,7 @@
 <script>
 	import Bus from '@/Bus'
 	import store from '@/store'
-
+	
 	export const ProfileEmptyState = {
 		name: 'EmptyState',
 		data() { return { placeholder : require("../assets/img/placeholder.svg") }; },
@@ -85,42 +85,6 @@
 					</div>`,
 		methods: {
 			goToCompleteProfile() { this.$router.push('/complete-profile'); }
-		}
-	}
-
-	export const ViewProfile = {
-		name: 'ViewProfile',
-		data() { return {
-			fullname: "John Doe", hasOtherRole: false, role: "Backened", otherRole: ["Frontend"],
-			languages: [
-				{ name: "Python", experience: "15+ years" }
-			],
-			employment_status: "Freelance",
-			placeholder : require("../assets/img/placeholder.svg")
-		}},
-		template: `<div class="profile-view">
-			<div class="box">
-				<div class="profile-photo">
-					<img :src="placeholder" alt="placeholder" />
-					<div class="cover" v-on:click="changePhoto"><span>Change your profile picture</span></div>
-				</div>
-				<div class="personal-pane">
-					<h1>{{ fullname }} <a href="#" class="clear">Edit</a></h1>
-					<p>I'm a <span>{{ role }}</span> developer with experience in <span>{{ otherRole[0] }}</span> development</p> 
-					<div class="integration">
-						<a href="#"><i class="dc-linkedin"></i></a>
-						<a href="#"><i class="dc-github"></i></a>
-					</div>
-				</div>
-				<div class="language-pane">
-					<h2>Language and Skills <a href="#" class="clear">Edit</a></h2>
-				</div>
-			</div>
-		</div>`,
-		methods: {
-			changePhoto() {
-				console.log("preparing to change photo")
-			}
 		}
 	}
 

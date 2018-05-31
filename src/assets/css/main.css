@@ -354,6 +354,13 @@ section.complete-profile {
   section.complete-profile section.invert {
     width: 100%;
     position: static; }
+  section.complete-profile div.loading {
+    text-align: center; }
+    section.complete-profile div.loading i {
+      font-size: 120px;
+      color: #18a2dc; }
+    section.complete-profile div.loading p {
+      text-align: center; }
 
 div.process-stager {
   width: 60%;
@@ -398,6 +405,8 @@ div.process-stager {
       height: 40px;
       width: 40px;
       background-color: #ffffff; }
+      div.process-stager .stage .counter span, div.process-stager .stage .counter i {
+        display: block; }
 
 div.process-form {
   width: 60%;
@@ -557,14 +566,141 @@ section.profile {
         color: #4a4a4a; }
   section.profile .language-pane {
     padding-bottom: 30px;
-    padding-top: 20px; }
+    padding-top: 20px;
+    border-bottom: 1px solid #e6e6e6; }
     section.profile .language-pane h2 {
       font-size: 20px;
-      text-align: left; }
+      text-align: left;
+      margin-bottom: 25px; }
       section.profile .language-pane h2 a {
         float: right;
         font-size: 16px;
         margin-top: 5px; }
+    section.profile .language-pane .taggered {
+      width: 60%;
+      display: flex; }
+      section.profile .language-pane .taggered span {
+        display: block;
+        height: 15px;
+        border-bottom: 1px dashed #b3b3b3;
+        width: 100%; }
+      section.profile .language-pane .taggered .title {
+        color: #18a2dc;
+        background-color: #ffffff;
+        display: inline;
+        padding-right: 10px;
+        white-space: nowrap; }
+      section.profile .language-pane .taggered .counter {
+        white-space: nowrap;
+        padding-left: 10px; }
+  section.profile .employment-pane {
+    padding-bottom: 20px;
+    padding-top: 20px; }
+    section.profile .employment-pane h2 {
+      font-size: 20px;
+      text-align: left;
+      margin-bottom: 25px; }
+      section.profile .employment-pane h2 a {
+        float: right;
+        font-size: 16px;
+        margin-top: 5px; }
+    section.profile .employment-pane p {
+      font-weight: bold;
+      color: #18a2dc; }
+
+/* Profile View & Modals Definitions */
+div.profile-view .roles, div.profile-view .roles-others, div.profile-view .integration, div.profile-view .languages {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e6e6e6; }
+  div.profile-view .roles ul, div.profile-view .roles-others ul, div.profile-view .integration ul, div.profile-view .languages ul {
+    padding-left: 0px; }
+    div.profile-view .roles ul .select label, div.profile-view .roles-others ul .select label, div.profile-view .integration ul .select label, div.profile-view .languages ul .select label {
+      display: none; }
+div.profile-view .roles-others, div.profile-view .integration {
+  padding-top: 30px;
+  padding-bottom: 30px; }
+  div.profile-view .roles-others .select label, div.profile-view .integration .select label {
+    display: none; }
+div.profile-view .integration {
+  border-bottom: 0px; }
+  div.profile-view .integration i {
+    font-size: 34px;
+    color: #4a4a4a; }
+  div.profile-view .integration ul li:last-child {
+    width: 70%; }
+  div.profile-view .integration ul li:first-child {
+    width: 30%; }
+  div.profile-view .integration .input {
+    width: 70%;
+    display: inline-block;
+    margin-right: 10px; }
+  div.profile-view .integration .name {
+    font-weight: bold; }
+  div.profile-view .integration *[class^="dc-"] {
+    font-size: 34px;
+    vertical-align: middle; }
+div.profile-view .languages {
+  border-bottom: 0px; }
+  div.profile-view .languages ul.langs {
+    width: 80%; }
+    div.profile-view .languages ul.langs li {
+      padding-right: 0px; }
+      div.profile-view .languages ul.langs li.alt {
+        width: 30%;
+        padding-left: 10px; }
+
+/* Projects View Definitions */
+section.projects {
+  padding-bottom: 100px;
+  justify-content: center;
+  align-content: center; }
+  section.projects .container {
+    width: 100%;
+    position: static;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 50px; }
+    section.projects .container .box {
+      width: 70%;
+      padding: 10px; }
+  section.projects .project {
+    padding: 0px 15px; }
+    section.projects .project p {
+      margin-top: 5px; }
+    section.projects .project h1 {
+      margin-bottom: 0px;
+      text-align: left; }
+      section.projects .project h1 .badge {
+        margin-bottom: 4px;
+        margin-left: 15px; }
+    section.projects .project li:first-child {
+      width: 72%; }
+    section.projects .project li:last-child {
+      width: 28%;
+      text-align: left;
+      margin-top: 15px; }
+    section.projects .project .label {
+      color: #9a9a9a;
+      font-size: 14px;
+      margin-bottom: 5px; }
+    section.projects .project .value {
+      font-weight: bold; }
+
+.badge {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #ffffff;
+  background-color: #4a4a4a;
+  padding: 2px 5px;
+  display: inline-block;
+  vertical-align: middle;
+  border-radius: 2px; }
+  .badge.success {
+    background-color: #1fb927; }
+  .badge.danger {
+    background-color: #df3029; }
+  .badge.primary {
+    background-color: #18a2dc; }
 
 .ratings {
   margin-bottom: 20px; }
@@ -831,7 +967,8 @@ div.modal .footer {
 @keyframes modalIn {
   0% {
     top: -50px;
-    opacity: 0.0; }
+    opacity: 0.0;
+    transform: skewY(5deg); }
   100% {
     top: 0px;
     opacity: 1; } }
@@ -841,7 +978,8 @@ div.modal .footer {
     opacity: 1; }
   100% {
     top: -50px;
-    opacity: 0.0; } }
+    opacity: 0.0;
+    transform: skewY(5deg); } }
 @keyframes overlayIn {
   0% {
     opacity: 0.0; }
@@ -855,12 +993,12 @@ div.modal .footer {
 .modal-transition-enter-active {
   animation-name: modalIn;
   animation-duration: .2s;
-  animation-timing-function: ease-in-out; }
+  animation-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1); }
 
 .modal-transition-leave-active {
   animation-name: modalOut;
   animation-duration: .2s;
-  animation-timing-function: ease-in-out; }
+  animation-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1); }
 
 .overlay-transition-enter-active {
   animation-name: overlayIn;
@@ -916,6 +1054,30 @@ div.modal .footer {
   animation-duration: .4s;
   animation-timing-function: ease-in-out; }
 
+@keyframes spin-in {
+  0% {
+    opacity: 0.0;
+    transform: scale(0.1, 0.1) rotate(180deg); }
+  100% {
+    opacity: 1;
+    transform: scale(1, 1) rotate(0deg); } }
+@keyframes spin-out {
+  0% {
+    opacity: 1;
+    transform: scale(1, 1) rotate(0deg); }
+  100% {
+    opacity: 0.0;
+    transform: scale(0.1, 0.1) rotate(180deg); } }
+.spin-enter-active {
+  animation-name: account-in;
+  animation-duration: .4s;
+  animation-timing-function: ease-in-out; }
+
+.spin-leave-active {
+  animation-name: account-out;
+  animation-duration: .4s;
+  animation-timing-function: ease-in-out; }
+
 @keyframes account-in {
   0% {
     top: calc(100% - 30px);
@@ -933,12 +1095,12 @@ div.modal .footer {
 .account-drop-enter-active {
   animation-name: account-in;
   animation-duration: .4s;
-  animation-timing-function: ease-in-out; }
+  animation-timing-function: cubic-bezier(0, 0, 0.48, 1.13); }
 
 .account-drop-leave-active {
   animation-name: account-out;
   animation-duration: .4s;
-  animation-timing-function: ease-in-out; }
+  animation-timing-function: cubic-bezier(0, 0, 0.48, 1.13); }
 
 /* Responsiveness definitions */
 @media (max-width: 37.5em) {

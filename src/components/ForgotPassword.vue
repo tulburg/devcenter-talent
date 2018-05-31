@@ -44,6 +44,10 @@
 			}
 		},
 		mounted() {
+			Bus.$emit("Header_showHome", true);
+		},
+		destroyed() {
+			Bus.$emit("Header_showHome", false);
 		}
 	}
 </script>

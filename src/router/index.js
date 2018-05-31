@@ -4,8 +4,10 @@ import Welcome from '@/components/Welcome'
 import ForgotPassword from '@/components/ForgotPassword'
 import JoinPool from '@/components/JoinPool'
 import CompleteProfile from '@/components/CompleteProfile'
-import Profile, { ProfileEmptyState, ViewProfile, ProfileIncompleteState } from '@/components/Profile'
+import Profile, { ProfileEmptyState, ProfileIncompleteState } from '@/components/Profile'
+import ProfileView from '@/components/ProfileView'
 import Settings from '@/components/Settings'
+import Projects from '@/components/Projects'
 
 Vue.use(Router)
 
@@ -18,11 +20,12 @@ export default new Router({
 		{ path: '/profile', component: Profile , children: [
 			{ path: '', component: ProfileEmptyState, name: 'Profile' },
 			{ path: 'incomplete', component: ProfileIncompleteState, name: 'ProfileIncomplete' },
-			{ path: ':username', component: ViewProfile, name: 'ViewProfile' }
+			{ path: ':username', component: ProfileView, name: 'ProfileView' }
 		] },
 		{ path: '/settings', name: 'Settings', component: Settings, children: [
 			{ path: 'account', component: ProfileEmptyState }
-		] }
+		] },
+		{ path: '/projects', name: 'Projects', component: Projects }
   	],
   	mode: 'history'
 })

@@ -59,16 +59,28 @@ section.forgot-password { justify-content: center; .box { width: 420px; margin-b
 /* Join Talent Pool page definitions */
 section.join-pool { justify-content: center; .box { width: 70%; margin-top: -200px; padding: 50px 0px; padding-right: 50px; } .plain { text-align: left; h1 { font-size: 32px; margin: 0px; margin-bottom: 20px; } p { margin-top: 20px; margin-bottom: 40px; } } }
 /* Complete Profile process page definitions */
-section.complete-profile { justify-content: center;.welcome-message { width: 540px; margin-top: -50px; h1 { text-align: left; margin-top: 0px; } .buttons { padding-top: 30px; text-align: right; button.clear { padding-right: 15px; } } } section.invert { width: 100%; position: static; } }
-div.process-stager { width: 60%; padding: 20px 40px; .stage { position: relative; display: flex; flex-direction: column; align-items: center; padding: 0px; width: 26.66% !important; &::before { content: ""; position: absolute; top: calc(30% - 2px); height: 2px; background-color: lighten($light-color, 20%); left: -46%; width: 90%; z-index: 0; } &.active{ .counter { background-color: $primary; border: 0px; color: $white; } &::before { background-color: $primary; display: block; } } &:first-child { align-self: flex-start; width: 50px !important; margin-right: calc(18% - 50px); &::before { display: none !important; } } .counter { z-index: 1; font-size: 18px; padding-top: 7px; margin-bottom: 10px; border: 1px solid $light-color; color: $light-color; border-radius: 20px; height: 40px; width: 40px; background-color: $white; } } }
+section.complete-profile { justify-content: center; .welcome-message { width: 540px; margin-top: -50px; h1 { text-align: left; margin-top: 0px; } .buttons { padding-top: 30px; text-align: right; button.clear { padding-right: 15px; } } } section.invert { width: 100%; position: static; } 
+	div.loading { text-align: center; i { font-size: 120px; color: $primary; } p { text-align: center; } }}
+div.process-stager { width: 60%; padding: 20px 40px; .stage { position: relative; display: flex; flex-direction: column; align-items: center; padding: 0px; width: 26.66% !important; &::before { content: ""; position: absolute; top: calc(30% - 2px); height: 2px; background-color: lighten($light-color, 20%); left: -46%; width: 90%; z-index: 0; } &.active{ .counter { background-color: $primary; border: 0px; color: $white; } &::before { background-color: $primary; display: block; } } &:first-child { align-self: flex-start; width: 50px !important; margin-right: calc(18% - 50px); &::before { display: none !important; } } .counter { z-index: 1; font-size: 18px; padding-top: 7px; margin-bottom: 10px; border: 1px solid $light-color; color: $light-color; border-radius: 20px; height: 40px; width: 40px; background-color: $white; span, i { display: block; } } } }
 div.process-form { width: 60%; margin-top: 30px; .title { margin-top: 0px; } .forms { text-align: left; width: 70%; ul.grid li { padding: 0px; &.alt { width: 30%; margin-left: 20px; } } .other-roles { .select { margin-bottom: 10px;} } } .form-footer { margin-top: 20px; } .add-more-roles-btn { margin-top: 15px; margin-bottom: 15px; display: inline-block; } .integrations{ .input { width: 70%; display: inline-block; margin-right: 10px; } .name{ font-weight: bold; } *[class^="dc-"]{ font-size: 34px; vertical-align: middle; } width: 100%; ul.grid{ border-bottom: 1px solid lighten($light-color, 25%); margin: 0px; padding-top: 10px; padding-left: 0px; } } }
 /* Profile page definitions */
 section.profile { padding-bottom: 100px; display: flex; justify-content: center; height: auto; padding-top: 50px; .left { width: 68%; margin-right: 40px; padding-top: 100px; .profile-empty { .box { width: 100%; display: flex; align-content: center; flex-direction: column; p { text-align: center; padding-left: 50px; padding-right: 50px; } button { width: 220px; align-self: center; margin-top: 50px; } } .profile-photo { background-color: $primary; display: flex; justify-content: center; align-content: center; height: 200px; width: 200px; margin-top: -140px; border-radius: 100px; align-self: center; margin-bottom: 20px; img { width: 100%; border-radius: 100px; } img[alt="placeholder"] { width: 120px; } } } } 
 	.right { width: 32%; padding-top: 100px; .box { margin-bottom: 30px; padding-top: 20px; padding-bottom: 20px; h3 { margin: 0px; } img { height: 100px; margin-top: 20px; } .grid { padding-left: 0px; margin-top: 20px; li { padding: 0px; text-align: left; padding-left: 20px; h1 { margin: 5px 0px; } &:last-child { padding-left: 50px; color: $light-color;  } } } button { margin-top: 20px; } } .rating-summary { padding: 10px 0px; } } 
 	.profile-view { .box { padding-left: 100px; padding-right: 100px; } .profile-photo {  position: relative; background-color: $primary; display: flex; justify-content: center; align-content: center; height: 200px; width: 200px; margin-top: -140px; border-radius: 100px; align-self: center; margin-bottom: 20px; &:hover .cover { display: flex; } img { width: 100%; border-radius: 100px; } img[alt="placeholder"] { width: 120px; } .cover { background-color: rgba(0,0,0,0.65); position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; border-radius: 100px; display: none; justify-content: center; align-items: center; color: $white; padding: 40px; cursor: pointer; } } }
 	.personal-pane { padding-bottom: 30px; border-bottom: 1px solid lighten($light-color, 20%); text-align: left; h1 { a { float: right; font-size: 16px; margin-top: 5px; } } .integration { margin-top: 20px; margin-bottom: 10px; i { font-size: 34px; color: $color; } } }
-	.language-pane { padding-bottom: 30px; padding-top: 20px; h2 { font-size: 20px; text-align: left; a { float: right; font-size: 16px; margin-top: 5px; } } }
-}
+	.language-pane { padding-bottom: 30px; padding-top: 20px; border-bottom: 1px solid lighten($light-color, 20%); h2 { font-size: 20px; text-align: left; margin-bottom: 25px; a { float: right; font-size: 16px; margin-top: 5px; } } .taggered { width: 60%; display: flex; span { display: block; height: 15px; border-bottom: 1px dashed $light-color; width: 100%; } .title { color: $primary; background-color: $white; display: inline; padding-right: 10px; white-space: nowrap; } .counter { white-space: nowrap; padding-left: 10px; } } }
+	.employment-pane { padding-bottom: 20px; padding-top: 20px; h2 { font-size: 20px; text-align: left; margin-bottom: 25px; a { float: right; font-size: 16px; margin-top: 5px; } } p { font-weight: bold; color: $primary; } }}
+/* Profile View & Modals Definitions */
+div.profile-view {
+	.roles, .roles-others, .integration, .languages { padding-bottom: 20px; border-bottom: 1px solid lighten($light-color, 20%); ul { padding-left: 0px; .select label { display: none; }}} .roles-others, .integration { padding-top: 30px; padding-bottom: 30px; .select label { display: none; } } 
+	.integration { border-bottom: 0px; i { font-size: 34px; color: $color; } ul li:last-child { width: 70%; } ul li:first-child { width: 30%; } .input { width: 70%; display: inline-block; margin-right: 10px; } .name{ font-weight: bold; } *[class^="dc-"]{ font-size: 34px; vertical-align: middle; } }
+	.languages { border-bottom: 0px; ul.langs { width: 80%; li { padding-right: 0px; &.alt { width: 30%; padding-left: 10px; } }}}}
+/* Projects View Definitions */
+section.projects { padding-bottom: 100px; justify-content: center; align-content: center; .container { width: 100%; position: static; flex-direction: column; align-items: flex-start; padding-top: 50px; .box { width: 70%; padding: 10px; } }
+	.project { padding: 0px 15px; p { margin-top: 5px; } h1 { margin-bottom: 0px; text-align: left; .badge { margin-bottom: 4px; margin-left: 15px; } } li:first-child { width: 72%; } li:last-child { width: 28%; text-align: left; margin-top: 15px; } .label { color: darken($light-color, 10%); font-size: 14px; margin-bottom: 5px; } .value { font-weight: bold; } }}
+
+
+.badge { font-size: 10px; text-transform: uppercase; color: $white; background-color: $color; padding: 2px 5px; display: inline-block; vertical-align: middle; border-radius: 2px; &.success { background-color: #1fb927; } &.danger { background-color: #df3029; } &.primary { background-color: $primary; } }
 .ratings { margin-bottom: 20px; .title { text-align: left; font-weight: bold; margin-bottom: 5px; span { color: $light-color; float: right; } } .bar { width: 100%; min-height: 30px; text-align: left; span { background-color: lighten($light-color, 10%); border-radius: 6px; height: 30px; width: 3.70%; display: inline-block; margin-right: 3.1%; &.active { background-color: $primary; } &:last-child { margin-right: 0px; } } } }
 /* Grid customization */
 ul.grid{clear:both;box-sizing: content-box;margin:auto -40px; list-style: none; padding-left: 40px;}
@@ -103,12 +115,12 @@ div.modal .dialog .close { position: absolute; top: 10px; right: 10px; padding: 
 div.modal .header { font-size: 18px; font-weight: bold; padding: 15px 40px; text-align: left; border-bottom: 1px solid lighten($light-color, 20%); }
 div.modal .body { padding: 40px; text-align: left; max-height: 600px; overflow-y: scroll; }
 div.modal .footer { position: absolute; left: 0px; top: 100%; background-color: $white; width: 100%; padding: 0px 40px 40px 40px; text-align: right; border-radius: 0px 0px 3px 3px; transition: all .3s ease-in-out; &.offset { border-top: 1px solid lighten($light-color, 20%); padding-top: 20px; }}
-@keyframes modalIn { 0%{ top: -50px; opacity: 0.0; } 100% { top: 0px; opacity: 1; } }
-@keyframes modalOut { 0% { top: 0px; opacity: 1; } 100% { top: -50px; opacity: 0.0; } }
+@keyframes modalIn { 0%{ top: -50px; opacity: 0.0; transform: skewY(5deg); } 100% { top: 0px; opacity: 1; } }
+@keyframes modalOut { 0% { top: 0px; opacity: 1; } 100% { top: -50px; opacity: 0.0; transform: skewY(5deg); } }
 @keyframes overlayIn { 0% { opacity: 0.0; } 100% { opacity: 1; } }
 @keyframes overlayOut { 0% { opacity: 1; } 100% { opacity: 0; } }
-.modal-transition-enter-active { animation-name: modalIn; animation-duration: .2s; animation-timing-function: ease-in-out; }
-.modal-transition-leave-active { animation-name: modalOut; animation-duration: .2s; animation-timing-function: ease-in-out; }
+.modal-transition-enter-active { animation-name: modalIn; animation-duration: .2s; animation-timing-function: cubic-bezier(.25,.1,.25,1); }
+.modal-transition-leave-active { animation-name: modalOut; animation-duration: .2s; animation-timing-function: cubic-bezier(.25,.1,.25,1); }
 .overlay-transition-enter-active { animation-name: overlayIn; animation-duration: .2s; animation-timing-function: ease-in-out; }
 .overlay-transition-leave-active { animation-name: overlayOut; animation-duration: .2s; animation-timing-function: ease-in-out; }
 @keyframes slideIn { 0%{ top: calc(100% - 30px); opacity: 0.0; } 100% { top: calc(100% + 10px); opacity: 1; } }
@@ -119,10 +131,14 @@ div.modal .footer { position: absolute; left: 0px; top: 100%; background-color: 
 .slideup-leave-active { animation-name: slideOut; animation-duration: .4s; animation-timing-function: ease-in-out; }
 .fadeout-enter-active { animation-name: fadeIn; animation-duration: .4s; animation-timing-function: ease-in-out; }
 .fadeout-leave-active { animation-name: fadeOut; animation-duration: .4s; animation-timing-function: ease-in-out; }
+@keyframes spin-in { 0% { opacity: 0.0; transform: scale(0.1, 0.1) rotate(180deg); } 100% { opacity: 1; transform: scale(1, 1) rotate(0deg); } }
+@keyframes spin-out { 0% { opacity: 1; transform: scale(1, 1) rotate(0deg); } 100% { opacity: 0.0; transform: scale(0.1, 0.1) rotate(180deg); } }
+.spin-enter-active { animation-name: account-in; animation-duration: .4s; animation-timing-function: ease-in-out; }
+.spin-leave-active { animation-name: account-out; animation-duration: .4s; animation-timing-function: ease-in-out; } 
 @keyframes account-in { 0%{ top: calc(100% - 30px); opacity: 0.0; } 100% { top: calc(100% + 10px); opacity: 1; } }
 @keyframes account-out { 0% { top: calc(100% + 10px); opacity: 1; } 100% { top: calc(100% - 30px); opacity: 0.0; } }
-.account-drop-enter-active { animation-name: account-in; animation-duration: .4s; animation-timing-function: ease-in-out; }
-.account-drop-leave-active { animation-name: account-out; animation-duration: .4s; animation-timing-function: ease-in-out; }
+.account-drop-enter-active { animation-name: account-in; animation-duration: .4s; animation-timing-function: cubic-bezier(0, 0, 0.48, 1.13); }
+.account-drop-leave-active { animation-name: account-out; animation-duration: .4s; animation-timing-function: cubic-bezier(0, 0, 0.48, 1.13); }
 
 
 /* Responsiveness definitions */

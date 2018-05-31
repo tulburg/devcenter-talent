@@ -16,14 +16,17 @@
 				<ul class="grid grid-4">
 					<li class="stage active"><div class="counter"><span v-if="state=='role'||state=='otherRoles'">1</span><i class="dc-tick" v-else></i></div><div>Role</div></li>
 					<li :class="{active: state!='role'&&state!='otherRoles'}" class="stage">
-						<div class="counter"><span v-if="state!='employment'&&state!='integration'">2</span><i class="dc-tick" v-else></i></div>
+						<div class="counter"><span v-if="state!='employment'&&state!='integration'&&state!='submitting'">2</span><i class="dc-tick" v-else></i></div>
 						<div>Languages and Skills</div>
 					</li>
 					<li :class="{active: state!='role'&&state!='otherRoles'&&state!='langSkills'}" class="stage">
-						<div class="counter"><span v-if="state!='integration'">3</span><i class="dc-tick" v-else></i></div>
+						<div class="counter"><span v-if="state!='integration'&&state!='submitting'">3</span><i class="dc-tick" v-else></i></div>
 						<div>Employment Status</div>
 					</li>
-					<li :class="{active: state=='integration'}" class="stage"><div class="counter">4</div><div>Integrations</div></li>
+					<li :class="{active: state=='integration'||state=='submitting'}" class="stage">
+						<div class="counter"><span v-if="state!='submitting'">4</span><i class="dc-tick" v-else></i></div>
+						<div>Integrations</div>
+					</li>
 				</ul>	
 			</div>
 
@@ -52,20 +55,26 @@
 					<a href="#" v-on:click.prevent="addMoreSkill" class="add-more-roles-btn">+ Add a language, framework or skill</a>
 				</div>
 				<div v-show="state=='employment'" class="forms">
-					<Title label="What is your current employment status?" :showAlert="showLangSkillsError" :alert="langSkillsError" />
+					<Title label="What is your current employment status?" :showAlert="showEmploymentError" :alert="employmentError" />
 					<ul class="grid grid-2">
 						<li><Select name="employment-status" :options="employment" v-on:change="setEmployment" label="" :alt="true"  /></li>
 						<li>&nbsp;</li>
 					</ul>
 				</div> 
 				<div v-show="state=='integration'" class="forms integrations">
-					<Title label="Link your accounts so we can know more about you" :showAlert="showLangSkillsError" :alert="langSkillsError" />
+					<Title label="Link your accounts so we can know more about you" :showAlert="showIntegrationError" :alert="integrationError" />
 					<ul class="grid grid-2" v-for="i in integrations">
 						<li><div class="name"><i :class="i.icon"></i> {{ i.title }}</div></li>
 						<li><Input type="text" label="" :alt="true" placeholder="Enter your link" v-on:change="(v)=>setIntegrationValue(v, i)" /><button class="small" v-on:click="setIntegration(i.key)">Link</button></li>
 					</ul>
 				</div>
-				<div class="form-footer" align="right">
+				<div v-show="state=='submitting'">
+					<div class="loading">
+						<i class="dc-spinner animate-spin"></i>
+						<p>Hold on for a couple of seconds while we build your profile</p>
+					</div>
+				</div>
+				<div class="form-footer" align="right" v-show="state!='submitting'">
 					<button class="bordered" v-show="canGoBack" v-on:click="previousForm" style="float:left;">Back</button>
 					<button class="long" v-on:click="finish" v-if="state=='integration'">Finish</button>
 					<button class="long" v-on:click="nextForm" v-else>Next</button>
@@ -80,6 +89,7 @@
 	import Title from '@/components/sub/Title'
 	import Input from '@/components/sub/Input'
 	import store from '@/store'
+	import Bus from '@/Bus'
 	export default {
 		name: 'CompleteProfile',
 		data() { 
@@ -129,8 +139,9 @@
 					{ icon: "dc-dribbble", title: "Dribbble", key: "dribbble" }
 				],
 				showLangSkillsError: false, langSkillsError: '* Please select at least one language, framework or skill',
-				values: { coreRole: '', otherRoles: [], langSkills: [], employment: '', integrations: [] },
-				showEmploymentError: false, employmentError: "* Please let us know your employment status"
+				values: { preferredRole: [], roles: [], langSkills: [], employment: '', integrations: [] },
+				showEmploymentError: false, employmentError: "* Please let us know your employment status",
+				showIntegrationError: false, integrationError: "* Please link at least one of your accounts"
 			}
 		},
 		components: { Select, Title, Input },
@@ -144,9 +155,14 @@
 				}else if(this.state == 'otherRoles' && this.showOtherRoleError != true) {
 					this.state = 'langSkills';
 				}else if(this.state == 'langSkills' && this.showLangSkillsError != true) {
+					if(this.values.langSkills.length < 1) { this.showLangSkillsError = true; return; }
 					this.state = 'employment';
 				}else if(this.state == 'employment' && this.showEmploymentError != true) {
+					if(this.values.employment == "") { this.showEmploymentError = true; return; }
 					this.state = 'integration';
+				}else if(this.state == 'integration' && this.showIntegrationError != true) {
+					if(this.values.integrations.length < 1) { this.showIntegrationError = true; return; }
+					this.state = 'submitting';
 				}
 			},
 			previousForm() {
@@ -162,34 +178,35 @@
 				}
 			},
 			finish() {
-
+				this.nextForm();
 			},
 			setCoreRole: function(value) {
 				if(value!=="") { this.showRoleError = false; }else { this.showRoleError=true; }
-				this.values.coreRole = value;
+				this.values.preferredRole[0] = {value: value};
 			},
 			setOtherRoles: function(value, id) { 
-				var fields = this.values.otherRoles;
+				var fields = this.values.roles.concat(this.values.preferredRole);
 				this.showOtherRoleError=false;
-				for(var i=0;i<fields.length;i++) { if(fields[i] == value) { this.otherRoleError="* You've already selected that role"; this.showOtherRoleError=true; }}
-				this.values.otherRoles[parseInt(id)-1] = value;
+				for(var i=0;i<fields.length;i++) { if(fields[i].value == value) { this.otherRoleError="* You've already selected that role"; this.showOtherRoleError=true; return; }}
+				this.values.roles.push({ value: value});
 			},
 			setLangSkills: function(value, id) { 
+				if(value!=="") { this.showLangSkillsError = false; }else { this.showLangSkillsError=true; return; }
 				var field = this.values.langSkills[parseInt(id)-1]; 
 				var all = this.values.langSkills;
 				this.showLangSkillsError=false;
-				for(var i=0;i<all.length;i++) { if(all[i].skill == value) { this.langSkillsError="* You've already selected that skill"; this.showLangSkillsError=true; }}
-				(field) ? field.skill = value : field = { skill: value}; 
+				for(var i=0;i<all.length;i++) { if(all[i].value == value) { this.langSkillsError="* You've already selected that skill"; this.showLangSkillsError=true; return; }}
+				(field) ? field.value = value : field = { value: value}; 
 				this.values.langSkills[parseInt(id)-1] = field;
 			},
 			setLangSkillsYears: function(value, id) { 
 				var field = this.values.langSkills[parseInt(id)-1];
-				(field) ? field.years = value : field = { years: value}; 
+				(field) ? field.experience = value : field = { experience: value}; 
 				this.values.langSkills[parseInt(id)-1] = field;
-				console.log(this.values);
 			},
-			setEmployment: function() {
-
+			setEmployment: function(value) {
+				if(value!=="") { this.showEmploymentError = false; }else { this.showEmploymentError=true; return; }
+				this.values.employment = value;
 			},
 			setIntegration: function() {
 
@@ -210,10 +227,16 @@
 			}
 		},
 		mounted() {
+			Bus.$emit("Header_showAccount", true);
 			store.dispatch('getSession').then(session => {
 				if(session == null) this.$router.push("/")
-					else console.log(session);
+					else {
+
+					}
 			});
+		},
+		destroyed() {
+			Bus.$emit("Header_showAccount", false);
 		}
 	}
 

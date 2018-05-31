@@ -15,7 +15,7 @@
 		props : {
 			name: { type: String, default: 'select' },
 			label: { type: String, default: 'Default Label' },
-			alert: { type: String, default: '* default alert notification' }, 
+			alert: { type: String, default: '* default alert' }, 
 			options: { type: Array, default: [
 				{ value: "default", title: "Default Option" }
 			]},

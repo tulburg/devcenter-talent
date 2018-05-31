@@ -68,7 +68,7 @@
 			doLogin() { 
 				var self = this; this.loading = true;
 				this.$http.post(store.state.api.development+"login", { email: self.email, password: self.password }).then(res => {
-					this.loading = false;
+					this.loading = false; console.log(res);
 					let user = res.body.extras.user;
 					store.commit("startSession", {token: res.body.extras.token, user: res.body.extras.user});
 					(user.completed_level > 0) ? this.$router.push('/profile') : this.$router.push("/complete-profile");
