@@ -65,7 +65,12 @@
 					<Title label="Link your accounts so we can know more about you" :showAlert="showIntegrationError" :alert="integrationError" />
 					<ul class="grid grid-2" v-for="i in integrations">
 						<li><div class="name"><i :class="i.icon"></i> {{ i.title }}</div></li>
-						<li><Input type="text" label="" :alt="true" placeholder="Enter your link" v-on:change="(v)=>setIntegrationValue(v, i)" /><button class="small" v-on:click="setIntegration(i.key)">Link</button></li>
+						<li>
+							<p v-show="sets[i.key] != false">{{ values.integrations[i.key] }} <i class="dc-cancel" v-on:click="sets[i.key]=false"></i></p>
+							<div v-show="sets[i.key]==false">
+								<Input type="text" label="" :alt="true" placeholder="Enter your username" v-on:change="(v)=>setIntegrationValue(v, i.key)" /><button class="small" v-on:click="setIntegration(i.key)">Link</button>
+							</div>
+						</li>
 					</ul>
 				</div>
 				<div v-show="state=='submitting'">
@@ -96,34 +101,34 @@
 			return { name: 'John', showWelcomeMessage: true, state: 'role', showRoleError: false, 
 				roles: [
 					{ value: "", title: "Select a Role" }, 
-					{ value: "android_dev", title: "Android Developer" },
-					{ value: "backend_dev", title: "Backend Developer" },
-					{ value: "frontend_dev", title: "Frontend Developer" },
-					{ value: "ios_dev", title: "IOS Developer" },
-					{ value: "mobile_dev", title: "Mobile Developer" },
-					{ value: "ui_designer", title: "UI Designer" },
-					{ value: "ux_researcher", title: "UX Researcher" },
-					{ value: "ux_designer", title: "UX Designer" },
-					{ value: "ui_ux_designer", title: "UI/UX Designer" }
+					{ value: "Android Developer", title: "Android Developer" },
+					{ value: "Backend Developer", title: "Backend Developer" },
+					{ value: "Frontend Developer", title: "Frontend Developer" },
+					{ value: "IOS Developer", title: "IOS Developer" },
+					{ value: "Mobile Developer", title: "Mobile Developer" },
+					{ value: "UI Designer", title: "UI Designer" },
+					{ value: "UX Researcher", title: "UX Researcher" },
+					{ value: "UX Designer", title: "UX Designer" },
+					{ value: "UI/UX Designer", title: "UI/UX Designer" }
 				],
 				moreRoles: 1, moreSkill: 1, showOtherRoleError: false, otherRoleError: '', canGoBack: false,
 				skills: [
 					{ value: "", title: "Select one" },
-					{ value: "adobe_xd", title: "Adobe XD" },
-					{ value: "angular_js", title: "Angular JS" },
-					{ value: "bootstrap", title: "Bootstrap" },
-					{ value: "c++", title: "C++" },
-					{ value: "css", title: "CSS" },
-					{ value: "django", title: "Django" },
-					{ value: "electron_js", title: "Electron JS" },
-					{ value: "go", title: "GO" },
-					{ value: "html", title: "HTML"}
+					{ value: "Adobe XD", title: "Adobe XD" },
+					{ value: "Angular JS", title: "Angular JS" },
+					{ value: "Bootstrap", title: "Bootstrap" },
+					{ value: "C++", title: "C++" },
+					{ value: "CSS", title: "CSS" },
+					{ value: "Django", title: "Django" },
+					{ value: "Electron JS", title: "Electron JS" },
+					{ value: "GO", title: "GO" },
+					{ value: "HTML", title: "HTML"}
 				],
 				years: [
-					{ value: "0_2", title: "0 - 2 years" },
-					{ value: "2_5", title: "2 - 5 years" },
-					{ value: "5_10", title: "5 - 10 years" },
-					{ value: "10_20", title: "10 - 20 years" }
+					{ value: "0 - 2 years", title: "0 - 2 years" },
+					{ value: "2 - 5 years", title: "2 - 5 years" },
+					{ value: "5 - 10 years", title: "5 - 10 years" },
+					{ value: "10 - 20 years", title: "10 - 20 years" }
 				],
 				employment: [
 					{ value: "", title: "Select a status" },
@@ -139,16 +144,17 @@
 					{ icon: "dc-dribbble", title: "Dribbble", key: "dribbble" }
 				],
 				showLangSkillsError: false, langSkillsError: '* Please select at least one language, framework or skill',
-				values: { preferredRole: [], roles: [], langSkills: [], employment: '', integrations: [] },
+				values: { preferredRole: [], roles: [], langSkills: [], employment: '', integrations: {} },
 				showEmploymentError: false, employmentError: "* Please let us know your employment status",
-				showIntegrationError: false, integrationError: "* Please link at least one of your accounts"
+				showIntegrationError: false, integrationError: "* Please link at least one of your accounts",
+				sets: { linkedin: false, github: false, behance: false, dribbble: false }
 			}
 		},
 		components: { Select, Title, Input },
 		methods: {
 			nextForm() {
 				if(this.state == 'role') { 
-					if(this.values.coreRole != ''){
+					if(this.values.preferredRole.length > 0){
 						this.state = 'otherRoles';
 						this.canGoBack = true; 
 					}else { this.showRoleError = true }
@@ -161,9 +167,11 @@
 					if(this.values.employment == "") { this.showEmploymentError = true; return; }
 					this.state = 'integration';
 				}else if(this.state == 'integration' && this.showIntegrationError != true) {
-					if(this.values.integrations.length < 1) { this.showIntegrationError = true; return; }
+					if(!this.values.integrations["linkedin"]&&!this.values.integrations["behance"]
+						&&!this.values.integrations["dribbble"]&&!this.values.integrations["github"]) { this.showIntegrationError = true; return; }
 					this.state = 'submitting';
 				}
+				this.saveState();
 			},
 			previousForm() {
 				if(this.state == 'otherRoles') {
@@ -179,6 +187,12 @@
 			},
 			finish() {
 				this.nextForm();
+				store.dispatch('getSession').then(session => {
+					this.$http.post(store.state.api.development+"profile/roles_and_skills/save", 
+						{ "roles_and_skills_languages": this.values.langSkills, "roles_and_skills_roles" : this.values.roles }, {headers: {'Authorization': 'Basic YXBpOnBhc3N3b3Jk'}}).then(res => {
+							console.log(res, session);
+					}).catch(err => { console.log(err, session); });
+				});
 			},
 			setCoreRole: function(value) {
 				if(value!=="") { this.showRoleError = false; }else { this.showRoleError=true; }
@@ -188,7 +202,7 @@
 				var fields = this.values.roles.concat(this.values.preferredRole);
 				this.showOtherRoleError=false;
 				for(var i=0;i<fields.length;i++) { if(fields[i].value == value) { this.otherRoleError="* You've already selected that role"; this.showOtherRoleError=true; return; }}
-				this.values.roles.push({ value: value});
+				this.values.roles[parseInt(id) - 1] = { value: value };
 			},
 			setLangSkills: function(value, id) { 
 				if(value!=="") { this.showLangSkillsError = false; }else { this.showLangSkillsError=true; return; }
@@ -196,7 +210,7 @@
 				var all = this.values.langSkills;
 				this.showLangSkillsError=false;
 				for(var i=0;i<all.length;i++) { if(all[i].value == value) { this.langSkillsError="* You've already selected that skill"; this.showLangSkillsError=true; return; }}
-				(field) ? field.value = value : field = { value: value}; 
+				(field) ? field.value = value : field = { value: value, experience: "0 - 2 years"}; 
 				this.values.langSkills[parseInt(id)-1] = field;
 			},
 			setLangSkillsYears: function(value, id) { 
@@ -208,11 +222,14 @@
 				if(value!=="") { this.showEmploymentError = false; }else { this.showEmploymentError=true; return; }
 				this.values.employment = value;
 			},
-			setIntegration: function() {
-
+			setIntegration: function(key) {
+				if(this.values.integrations[key].match(/^[a-z_.A-Z0-9\-]+$/)) {
+					this.sets[key]=true;
+					this.showIntegrationError = false;
+				}else { this.showIntegrationError = true, this.integrationError = "Username is invalid, please try again!" }
 			},
-			setIntegrationValue: function() {
-
+			setIntegrationValue: function(value, key) {
+				this.values.integrations[key] = value;
 			},
 			addMoreRoles: function() {
 				if(this.moreRoles > 2) { this.otherRoleError = "* You can't add more than 3 more roles"; this.showOtherRoleError = true; }
@@ -224,14 +241,27 @@
 					this.showLangSkillsError = true;
 					this.langSkillsError = "* You can't add more than 10 skill and languages"
 				}
+			},
+			saveState() {
+				localStorage.setItem("profile_completion_state", this.state);
+				if(this.state == "submitting") { localStorage.removeItem("profile_completion_state"); }
 			}
 		},
 		mounted() {
-			Bus.$emit("Header_showAccount", true);
+			store.dispatch('getSession').then(session => {
+				this.$http.post(store.state.api.development+"profile/roles_and_skills/save", 
+					{ params: { "roles_and_skills_languages": this.values.langSkills, "roles_and_skills_roles" : this.values.roles }, headers: {'Authorization': session.token }}).then(res => {
+						console.log(res, session);
+				}).catch(err => { console.log(err, session); });
+			});
 			store.dispatch('getSession').then(session => {
 				if(session == null) this.$router.push("/")
 					else {
-
+						Bus.$emit("Header_showAccount", true);
+						if(localStorage.getItem("profile_completion_state")) {
+							this.state = localStorage.getItem("profile_completion_state");
+							this.showWelcomeMessage = false;
+						}
 					}
 			});
 		},
