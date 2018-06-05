@@ -6,8 +6,8 @@
 				<div class="cover" v-on:click="changePhoto"><span>Change your profile picture</span></div>
 			</div>
 			<div class="personal-pane">
-				<h1>{{ fullname }} <a href="#" class="clear" v-on:click.prevent="showRolesModal=!showRolesModal">Edit</a></h1>
-				<p>I'm a <span>{{ role }}</span> developer with experience in <span>{{ otherRole[0] }}</span> development</p> 
+				<h1>{{ user.first_name+" "+user.last_name }} <a href="#" class="clear" v-on:click.prevent="showRolesModal=!showRolesModal">Edit</a></h1>
+				<p>I'm a <span>{{ user.preferred_roles[0].value }}</span> developer with experience in <span>{{ otherRole[0] }}</span> development</p> 
 				<div class="integration">
 					<a href="#"><i class="dc-linkedin"></i></a>
 					<a href="#"><i class="dc-github"></i></a>
@@ -23,7 +23,7 @@
 				<p>Freelancer</p>
 			</div>
 		</div>
-		<Modal title="Roles and Integrations" :show="showRolesModalAlt" :sticky="!showRolesModalAlt" :onclose="rolesModalClose">
+		<Modal title="Roles and Integrations" :show="showProfileModal" :sticky="1>0" :onclose="rolesModalClose">
 			<div slot="body">
 				<div class="roles">
 					<Title label="What is your core Role?" :showAlert="showRoleError" alert="* Please select at least one role" />
@@ -75,11 +75,13 @@
 	import Title from '@/components/sub/Title'
 	import Select from '@/components/sub/Select'
 	import Input from '@/components/sub/Input'
+	import store from '@/store'
+
 	export default {
 		name: 'ViewProfile', 
 		components: { Modal, Title, Select, Input },
 		data() { return {
-			moreRoles : 1,
+			moreRoles : 1, user: undefined, loadingComplete: false,
 			fullname: "John Doe", hasOtherRole: false, role: "Backened", otherRole: ["Frontend"],
 			howRoleError: false, 
 			roles: [
@@ -95,6 +97,7 @@
 				{ value: "ui_ux_designer", title: "UI/UX Designer" }
 			],
 			moreRoles: 1, moreSkill: 1, showOtherRoleError: false, otherRoleError: '', canGoBack: false,
+			showRoleError: false,
 			skills: [
 				{ value: "", title: "Select one" },
 				{ value: "adobe_xd", title: "Adobe XD" },
@@ -130,7 +133,7 @@
 			values: { preferredRole: [], roles: [], langSkills: [], employment: '', integrations: [] },
 			showEmploymentError: false, employmentError: "* Please let us know your employment status",
 			showIntegrationError: false, integrationError: "* Please link at least one of your accounts",
-			showRolesModal: false, 
+			showRolesModal: false, showProfileModal: false,
 			languages: [
 				{ name: "Python", experience: "15+ years" }
 			],
@@ -144,6 +147,10 @@
 			rolesModalClose() {
 				this.showRolesModal = false;
 			},
+			setCoreRole: function(value) {
+				if(value!=="") { this.showRoleError = false; }else { this.showRoleError=true; }
+				this.values.preferredRole[0] = {value: value};
+			},
 			addMoreRoles: function() {
 				if(this.moreRoles > 2) { this.otherRoleError = "* You can't add more than 3 more roles"; this.showOtherRoleError = true; }
 				else { this.moreRoles = this.moreRoles+1; }
@@ -155,6 +162,15 @@
 					this.langSkillsError = "* You can't add more than 10 skill and languages"
 				}
 			}
+		},
+		mounted() {
+			var self = this;
+			store.dispatch('getSession').then(session => {
+				if(session){
+					self.user = session.user;
+					console.log(self.user.preferred_roles.json());
+				}
+			});
 		}
 	}
 

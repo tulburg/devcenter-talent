@@ -8,6 +8,7 @@ import Profile, { ProfileEmptyState, ProfileIncompleteState } from '@/components
 import ProfileView from '@/components/ProfileView'
 import Settings from '@/components/Settings'
 import Projects from '@/components/Projects'
+import Inbox from '@/components/Inbox'
 
 Vue.use(Router)
 
@@ -25,7 +26,8 @@ export default new Router({
 		{ path: '/settings', name: 'Settings', component: Settings, children: [
 			{ path: 'account', component: ProfileEmptyState }
 		] },
-		{ path: '/projects', name: 'Projects', component: Projects }
+		{ path: '/projects', name: 'Projects', component: Projects },
+		{ path: '/inbox', name: 'Inbox', component: Inbox }
   	],
   	mode: 'history'
 })

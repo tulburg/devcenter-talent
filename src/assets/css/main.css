@@ -708,6 +708,79 @@ section.projects {
     section.projects .project .value {
       font-weight: bold; }
 
+section.inbox {
+  flex-direction: column; }
+  section.inbox .container {
+    display: inline-block;
+    margin-top: 40px;
+    width: 70%;
+    height: calc(100% - 100px); }
+    section.inbox .container .box {
+      width: 100%;
+      height: 100%;
+      background-color: #fafafa;
+      padding: 0px;
+      display: flex; }
+      section.inbox .container .box .left-pane {
+        width: 35%;
+        height: 100%; }
+      section.inbox .container .box .right-pane {
+        width: 65%;
+        height: 100%;
+        background-color: #ffffff;
+        border-radius: 0px 3px 3px 0px;
+        box-shadow: -4px 0px 3px 3px rgba(0, 0, 0, 0.05); }
+  section.inbox .action-bar {
+    padding: 20px 30px;
+    display: flex; }
+    section.inbox .action-bar .menu {
+      font-weight: bold;
+      cursor: pointer;
+      display: inline;
+      position: relative; }
+      section.inbox .action-bar .menu ul {
+        position: absolute;
+        top: calc(100% + 10px);
+        background-color: #ffffff;
+        width: 180px;
+        right: -10px;
+        border: 1px solid #d9d9d9;
+        box-shadow: 4px 4px 6px 4px rgba(40, 40, 40, 0.1);
+        list-style: none; }
+        section.inbox .action-bar .menu ul li {
+          display: block;
+          text-align: left; }
+          section.inbox .action-bar .menu ul li a {
+            padding: 10px 20px;
+            font-weight: bold;
+            width: 100%;
+            display: block;
+            color: #b3b3b3; }
+            section.inbox .action-bar .menu ul li a:hover {
+              color: #18a2dc; }
+        section.inbox .action-bar .menu ul::before {
+          content: "";
+          position: absolute;
+          top: -9px;
+          right: 10px;
+          width: 15px;
+          height: 15px;
+          border-right: 1px solid #d9d9d9;
+          border-top: 1px solid #d9d9d9;
+          display: block;
+          transform: rotate(-45deg);
+          background-color: #ffffff; }
+    section.inbox .action-bar .search {
+      flex-grow: 1; }
+      section.inbox .action-bar .search i {
+        width: 30px;
+        height: 30px;
+        padding-top: 5px;
+        cursor: pointer;
+        float: right; }
+  section.inbox .mail-list {
+    overflow-y: auto; }
+
 .badge {
   font-size: 10px;
   text-transform: uppercase;
@@ -1116,12 +1189,12 @@ div.modal .footer {
     opacity: 0.0; } }
 .account-drop-enter-active {
   animation-name: account-in;
-  animation-duration: .4s;
+  animation-duration: .3s;
   animation-timing-function: cubic-bezier(0, 0, 0.48, 1.13); }
 
 .account-drop-leave-active {
   animation-name: account-out;
-  animation-duration: .4s;
+  animation-duration: .3s;
   animation-timing-function: cubic-bezier(0, 0, 0.48, 1.13); }
 
 /* Responsiveness definitions */

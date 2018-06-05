@@ -16,7 +16,8 @@ export default new Vuex.Store({
 			Cookie.set("DevTalent", { 
 				userid: payload.user.id, 
 				type: payload.user.account_type,
-				token: payload.token
+				token: payload.token,
+				user: payload.user
 			}, { expires: 7 });
 		},
 		endSession: function(state, payload) {

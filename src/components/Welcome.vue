@@ -71,7 +71,10 @@
 					this.loading = false; console.log(res);
 					let user = res.body.extras.user;
 					store.commit("startSession", {token: res.body.extras.token, user: res.body.extras.user});
-					(user.completed_level > 0) ? this.$router.push('/profile') : this.$router.push("/complete-profile");
+					if(user.completed_level == 0) this.$router.push("/complete-profile");
+					if(user.completed_level == 1) this.$router.push("/profile");
+					if(user.completed_level == 2) this.$router.push("/profile/incomplete");
+					if(user.completed_level == 3) this.$router.push("/profile/"+user.username);
 				}).catch(err=>{
 					this.loading = false;
 					console.log(err);
@@ -87,7 +90,10 @@
 			Bus.$emit("Header_showSignup", true);
 			store.dispatch('getSession').then(res => {
 				if(res){
-					(res.completed_level > 0 ) ? self.$router.push("/") : self.$router.push("/complete-profile");
+					if(res.completed_level == 0) this.$router.push("/complete-profile");
+					if(res.completed_level == 1) this.$router.push("/profile");
+					if(res.completed_level == 2) this.$router.push("/profile/incomplete");
+					if(res.completed_level == 3) this.$router.push("/profile/"+res.username);
 				}
 			});
 		},

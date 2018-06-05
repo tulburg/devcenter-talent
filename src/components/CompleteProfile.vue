@@ -132,22 +132,22 @@
 				],
 				employment: [
 					{ value: "", title: "Select a status" },
-					{ value: "contract", title: "Contract" },
-					{ value: "employed", title: "Employed (Full-time)" },
-					{ value: "freelancer", title: "Freelancer" },
-					{ value: "unemployed", title: "Unemployed" }
+					{ value: "work_preference_employment_type_contract", title: "Contract" },
+					{ value: "work_preference_employment_type_full_time", title: "Employed (Full-time)" },
+					{ value: "work_preference_employment_type_remote", title: "Freelancer" },
+					{ value: "work_preference_employment_type_unemployed", title: "Unemployed" }
 				],
 				integrations: [
-					{ icon: "dc-linkedin", title: "LinkedIn", key: "linkedin" },
-					{ icon: "dc-github", title: "Github", key: "github" },
-					{ icon: "dc-behance", title: "Behance", key: "behance" },
-					{ icon: "dc-dribbble", title: "Dribbble", key: "dribbble" }
+					{ icon: "dc-linkedin", title: "LinkedIn", key: "li_username" },
+					{ icon: "dc-github", title: "Github", key: "git_username" },
+					{ icon: "dc-behance", title: "Behance", key: "behance_username" },
+					{ icon: "dc-dribbble", title: "Dribbble", key: "dribbble_username" }
 				],
 				showLangSkillsError: false, langSkillsError: '* Please select at least one language, framework or skill',
 				values: { preferredRole: [], roles: [], langSkills: [], employment: '', integrations: {} },
 				showEmploymentError: false, employmentError: "* Please let us know your employment status",
 				showIntegrationError: false, integrationError: "* Please link at least one of your accounts",
-				sets: { linkedin: false, github: false, behance: false, dribbble: false }
+				sets: { li_username: false, git_username: false, behance_username: false, dribbble_username: false }
 			}
 		},
 		components: { Select, Title, Input },
@@ -187,12 +187,7 @@
 			},
 			finish() {
 				this.nextForm();
-				store.dispatch('getSession').then(session => {
-					this.$http.post(store.state.api.development+"profile/roles_and_skills/save", 
-						{ "roles_and_skills_languages": this.values.langSkills, "roles_and_skills_roles" : this.values.roles }, {headers: {'Authorization': 'Basic YXBpOnBhc3N3b3Jk'}}).then(res => {
-							console.log(res, session);
-					}).catch(err => { console.log(err, session); });
-				});
+				this.saveRoles();
 			},
 			setCoreRole: function(value) {
 				if(value!=="") { this.showRoleError = false; }else { this.showRoleError=true; }
@@ -245,15 +240,39 @@
 			saveState() {
 				localStorage.setItem("profile_completion_state", this.state);
 				if(this.state == "submitting") { localStorage.removeItem("profile_completion_state"); }
+			},
+			saveRoles() {
+				let self = this;
+				store.dispatch('getSession').then(session => {
+					this.$http.post(store.state.api.development+"profile/roles_and_skills/save", { "roles_and_skills_languages": this.values.langSkills, "roles_and_skills_roles" : this.values.roles }, 
+						{ headers: { 'Authorization': session.token }}).then(res => {
+							self.saveWorkPrefs();
+					}).catch(err => { console.log(err, session); });
+				});
+			},
+			saveWorkPrefs() {
+				let self = this;
+				store.dispatch('getSession').then(session => {
+					let param = { "work_preference_preferred_roles": this.values.preferredRole }
+					param[self.values.employment] = true;
+					console.log(param);
+					this.$http.post(store.state.api.development+"profile/work-preference/save", param, 
+						{ headers: { 'Authorization': session.token }}).then(res => {
+							self.updateProfile();
+					}).catch(err => { console.log(err, session); });
+				});
+			},
+			updateProfile() {
+				let self = this;
+				store.dispatch('getSession').then(session => {
+					this.$http.post(store.state.api.development+"profile/update", this.values.integrations, 
+						{ headers: { 'Authorization': session.token }}).then(res => {
+							self.$router.push('/profile');
+					}).catch(err => { console.log(err, session); });
+				});
 			}
 		},
 		mounted() {
-			store.dispatch('getSession').then(session => {
-				this.$http.post(store.state.api.development+"profile/roles_and_skills/save", 
-					{ params: { "roles_and_skills_languages": this.values.langSkills, "roles_and_skills_roles" : this.values.roles }, headers: {'Authorization': session.token }}).then(res => {
-						console.log(res, session);
-				}).catch(err => { console.log(err, session); });
-			});
 			store.dispatch('getSession').then(session => {
 				if(session == null) this.$router.push("/")
 					else {
