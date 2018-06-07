@@ -1,10 +1,13 @@
 <template>
 	<section class="profile" v-on:click="hideDropDown">
 		<div class="container">
-			<div class="left">
+			<div class="preloader" v-if="!loadComplete">
+				<i class="dc-spinner animate-spin"></i>
+			</div>
+			<div class="left" v-if="loadComplete">
 				<router-view></router-view>
 			</div>
-			<div class="right">
+			<div class="right" v-if="loadComplete">
 				<div class="box rank">
 					<h3>Rank</h3>
 					<img src="../assets/img/rank.svg" alt="rank" />
@@ -53,6 +56,7 @@
 <script>
 	import Bus from '@/Bus'
 	import store from '@/store'
+	import Modal from '@/components/sub/Modal'
 	
 	export const ProfileEmptyState = {
 		name: 'EmptyState',
@@ -90,9 +94,9 @@
 
 	export default {
 		name: 'Profile',
-		components: {  },
+		components: { Modal },
 		data() {
-			return {}
+			return { loadComplete: false }
 		}, 
 		methods: {
 			hideDropDown() { Bus.$emit("Header_hideDropDown"); }
@@ -101,9 +105,20 @@
 			Bus.$emit("Header_showAccount", true);
 			Bus.$emit("Header_showLinks", true);
 			Bus.$emit("Header_showGrayLogo", true);
+			Bus.$emit("Header_activeLink", "/profile/tulburg");
 			store.dispatch('getSession').then(session => {
 				if(session == null) this.$router.push("/")
-					else console.log(session);
+					else {
+						this.$http.get(store.state.api.development+"profile/get",  { 
+							headers: { 'Authorization': session.token }
+						}).then(res => {
+							store.commit("saveProfile", res.body.extras);
+							this.loadComplete = true;
+						}).catch(err => {
+							this.loadComplete = true;
+							this.completeError = err.message;
+						});
+					}
 			});
 		},
 		destroyed: function() {

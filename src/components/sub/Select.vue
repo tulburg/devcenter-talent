@@ -3,7 +3,8 @@
 		<label>{{ label }}</label>
 		<div :class="{ active: showAlert }" class="alert">{{ alert }}</div>
 		<select :class="{ alt: alt }" class="cs-select default" :id="name" :name="name">
-			<option v-for="option in options" :value="option.value">{{ option.title }}</option>
+			<option v-for="option in options" :value="option.value" v-if="option.value != selected">{{ option.title }}</option>
+			<option v-for="option in options" :value="option.value" v-if="option.value == selected" selected>{{ option.title }}</option>
 		</select>
 	</div>
 </template>
@@ -20,7 +21,8 @@
 				{ value: "default", title: "Default Option" }
 			]},
 			showAlert: { type: Boolean, default: false },
-			alt: { type: Boolean, default: false }
+			alt: { type: Boolean, default: false },
+			selected: { type: String, default: '' }
 		},
 		methods: {
 			clear() { this.$emit("clear"); },

@@ -1,12 +1,12 @@
 <template>
-	<div class="modal">
+	<div class="modal" :id="title.toLowerCase().replace(/( )/g, '-')">
 		<transition name="overlay-transition">
 			<div :class="{ active: showing }" class="overlay" v-show="showing"></div>
 		</transition>
 		<transition name="modal-transition">
 			<div class="dialog-container" align="center" v-on:click="close" v-show="showing">
 				<div class="dialog">
-					<div class="dialog-header" v-show="title!=''">
+					<div class="dialog-header" v-show="!plain">
 						<div class="header">{{ title }}</div>
 						<div class="close" v-on:click="closeFinal"><i class="dc-cancel"></i></div>
 					</div>
@@ -25,7 +25,7 @@
 <script>
 	export default {
 		name: "Modal",
-		props: { title: { type: String, default: "" }, show: Boolean, sticky: false, onclose: Function },
+		props: { title: { type: String, default: "" }, show: Boolean, sticky: false, onclose: Function, plain: false },
 		data() {
 			return { showing: false }
 		},
@@ -37,10 +37,12 @@
 			show: function(show) {
 				this.showing = show;
 				if(show) {
-					var $ = function(id){if(id[0]=="#"){return document.getElementById(id.substring(1,id.length));}else if(id[0]=="."){return document.getElementsByClassName(id.substring(1, id.length))[0];}}
+					var $ = function(id, el=document){if(id[0]=="#"){return el.getElementById(id.substring(1,id.length));}else if(id[0]=="."){return el.getElementsByClassName(id.substring(1, id.length))[0];}}
+					let id = this.title.toLowerCase().replace(/( )/g, '-');
 					setTimeout(function() { 
-						if($(".body").scrollHeight > 620) {
-							$(".footer").className = "footer offset";
+						if($(".body", $("#"+id)).offsetHeight > 620) {
+							$(".footer", $("#"+id)).className = "footer offset";
+							$(".body", $("#"+id)).style = "overflow-y: auto; max-height: 600px;";
 						} 
 					}, 500);
 				}

@@ -54,7 +54,7 @@
 				accountLinks: [
 					{ url: "/account/earnings", title: "Earnings" },
 					{ url: "/account/settings", title: "Account Settings" },
-					{ url: "/feedback", title: "Feedback" },
+					{ url: "/account/feedback", title: "Feedback" },
 					{ action: function() { self.logOut() }, title: "Log Out" }
 				],
 				activeLink: '', unread : true
@@ -85,6 +85,7 @@
 			Bus.$on("Header_showAccount", (bool) => { self.showAccount = bool });
 			Bus.$on("Header_showSignup", (bool) => { self.showSignup = bool; });
 			Bus.$on("Header_hideDropDown", () => { self.toggleDropDown() });
+			Bus.$on("Header_activeLink", (string) => { self.setActiveLink(string); });
 			this.activeLink = localStorage.getItem("activeLink");
 		}
 	}

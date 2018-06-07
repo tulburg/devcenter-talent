@@ -55,6 +55,8 @@ html, body {
   .button.small, button.small {
     font-size: 13px;
     padding: 8px 25px; }
+  .button.colored, button.colored {
+    color: #18a2dc; }
 
 input[type="text"], input[type="password"] {
   font-size: 14px;
@@ -508,33 +510,33 @@ section.profile {
         border-radius: 100px; }
       section.profile .left .profile-empty .profile-photo img[alt="placeholder"] {
         width: 120px; }
-  section.profile .right {
+  section.profile div.right {
     width: 32%;
     padding-top: 100px; }
-    section.profile .right .box {
+    section.profile div.right .box {
       margin-bottom: 30px;
       padding-top: 20px;
       padding-bottom: 20px; }
-      section.profile .right .box h3 {
+      section.profile div.right .box h3 {
         margin: 0px; }
-      section.profile .right .box img {
+      section.profile div.right .box img {
         height: 100px;
         margin-top: 20px; }
-      section.profile .right .box .grid {
+      section.profile div.right .box .grid {
         padding-left: 0px;
         margin-top: 20px; }
-        section.profile .right .box .grid li {
+        section.profile div.right .box .grid li {
           padding: 0px;
           text-align: left;
           padding-left: 20px; }
-          section.profile .right .box .grid li h1 {
+          section.profile div.right .box .grid li h1 {
             margin: 5px 0px; }
-          section.profile .right .box .grid li:last-child {
+          section.profile div.right .box .grid li:last-child {
             padding-left: 50px;
             color: #b3b3b3; }
-      section.profile .right .box button {
+      section.profile div.right .box button {
         margin-top: 20px; }
-    section.profile .right .rating-summary {
+    section.profile div.right .rating-summary {
       padding: 10px 0px; }
   section.profile .profile-view .box {
     padding-left: 100px;
@@ -661,6 +663,18 @@ div.profile-view .integration {
   div.profile-view .integration *[class^="dc-"] {
     font-size: 34px;
     vertical-align: middle; }
+  div.profile-view .integration p {
+    font-size: 18px;
+    padding: 0px 15px;
+    margin-top: 0px;
+    margin-bottom: 35px;
+    margin-right: 40px;
+    text-align: right; }
+    div.profile-view .integration p i {
+      font-size: inherit !important;
+      color: #b3b3b3;
+      cursor: pointer;
+      margin-left: 10px; }
 div.profile-view .languages {
   border-bottom: 0px; }
   div.profile-view .languages ul.langs {
@@ -670,6 +684,21 @@ div.profile-view .languages {
       div.profile-view .languages ul.langs li.alt {
         width: 30%;
         padding-left: 10px; }
+div.profile-view #suspend-modal .dialog-container {
+  padding-top: calc(50% - 350px); }
+div.profile-view #suspend-modal .dialog {
+  width: 500px;
+  text-align: center; }
+div.profile-view #suspend-modal .body {
+  text-align: center; }
+  div.profile-view #suspend-modal .body p {
+    text-align: center; }
+div.profile-view #suspend-modal .footer button {
+  padding: 0px 0px 0px 40px; }
+  div.profile-view #suspend-modal .footer button i {
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 3px; }
 
 /* Projects View Definitions */
 section.projects {
@@ -780,6 +809,58 @@ section.inbox {
         float: right; }
   section.inbox .mail-list {
     overflow-y: auto; }
+
+section.account {
+  flex-direction: column; }
+  section.account .settings {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    justify-content: center; }
+    section.account .settings .box {
+      position: relative;
+      padding-top: 20px;
+      margin-top: -100px;
+      width: 500px;
+      text-align: left; }
+      section.account .settings .box p.success {
+        text-align: center;
+        margin-bottom: 40px; }
+      section.account .settings .box h1 {
+        text-align: center; }
+      section.account .settings .box ul.grid li {
+        padding-left: 0px; }
+      section.account .settings .box label {
+        color: #b3b3b3;
+        font-weight: bold; }
+      section.account .settings .box p {
+        margin-top: 5px; }
+      section.account .settings .box label.email {
+        margin-top: 20px; }
+      section.account .settings .box label.check {
+        color: #4a4a4a;
+        font-weight: 100;
+        margin-left: 18px; }
+        section.account .settings .box label.check input {
+          margin-left: -18px; }
+      section.account .settings .box .input label {
+        color: #4a4a4a;
+        font-weight: 100; }
+  section.account .history {
+    position: absolute;
+    top: -50px;
+    left: 0px;
+    color: #b3b3b3; }
+    section.account .history i {
+      margin-bottom: 3px; }
+    section.account .history:hover {
+      color: gray; }
+
+.preloader {
+  text-align: center;
+  width: 100%; }
+  .preloader i {
+    font-size: 96px; }
 
 .badge {
   font-size: 10px;
@@ -1041,9 +1122,7 @@ div.modal .header {
 
 div.modal .body {
   padding: 40px;
-  text-align: left;
-  max-height: 600px;
-  overflow-y: scroll; }
+  text-align: left; }
 
 div.modal .footer {
   position: absolute;

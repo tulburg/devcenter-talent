@@ -22,6 +22,11 @@ export default new Vuex.Store({
 		},
 		endSession: function(state, payload) {
 			Cookie.remove("DevTalent");
+		},
+		saveProfile: function(state, payload) {
+			let cookie = Cookie.getJSON("DevTalent");
+			cookie.user_profile = payload;
+			Cookie.set("DevTalent", cookie);
 		}
 	},
 	actions: {

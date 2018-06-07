@@ -48,16 +48,17 @@
 			Bus.$emit("Header_showAccount", true);
 			Bus.$emit("Header_showLinks", true);
 			store.dispatch("getSession").then(session => {
-				// this.$http.post(store.state.api.development+"chat-auth", { channel_name: 'guest', socket_id: session.user.slack_username }).then(res => {
-				// 	console.log(res);
-				// }).catch(err => {
-				// 	console.log(err);
-				// })
-				this.$http.get(store.state.api.development+"chat-messages/"+session.user.slack_username).then(res => {
+				console.log(session);
+				this.$http.post(store.state.api.development+"chat/generate-dm-code", { username: session.user.username }).then(res => {
 					console.log(res);
 				}).catch(err => {
 					console.log(err);
 				})
+				// this.$http.get(store.state.api.development+"chat-messages/"+session.user.slack_username).then(res => {
+				// 	console.log(res);
+				// }).catch(err => {
+				// 	console.log(err);
+				// })
 			})
 		},
 		destroyed() {

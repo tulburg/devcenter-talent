@@ -88,12 +88,12 @@
 		mounted() {
 			var self = this;
 			Bus.$emit("Header_showSignup", true);
-			store.dispatch('getSession').then(res => {
-				if(res){
-					if(res.completed_level == 0) this.$router.push("/complete-profile");
-					if(res.completed_level == 1) this.$router.push("/profile");
-					if(res.completed_level == 2) this.$router.push("/profile/incomplete");
-					if(res.completed_level == 3) this.$router.push("/profile/"+res.username);
+			store.dispatch('getSession').then(session => {
+				if(session){
+					if(session.user.completed_level == 0) this.$router.push("/complete-profile");
+					if(session.user.completed_level == 1) this.$router.push("/profile");
+					if(session.user.completed_level == 2) this.$router.push("/profile/incomplete");
+					if(session.user.completed_level == 3) this.$router.push("/profile/"+session.user.username);
 				}
 			});
 		},

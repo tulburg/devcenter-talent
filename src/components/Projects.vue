@@ -27,6 +27,7 @@
 <script>
 	
 	import Bus from '@/Bus'
+	import store from '@/store'
 
 	export default {
 		name: 'Projects',
@@ -34,10 +35,21 @@
 		mounted() {
 			Bus.$emit("Header_showAccount", true);
 			Bus.$emit("Header_showLinks", true);
+			Bus.$emit("Header_showGrayLogo", true);
+			store.dispatch("getSession").then(session => {
+				this.$http.get(store.state.api.development+"user/projects", { 
+					headers: { 'Authorization': session.token }
+				}).then(res => {
+					console.log(res);
+				}).catch(err => {
+					console.log(err);
+				})
+			})
 		},
 		destroyed() {
 			Bus.$emit("Header_showAccount", false);
 			Bus.$emit("Header_showLinks", false);
+			Bus.$emit("Header_showGrayLogo", false);
 		}
 	}
 </script>
