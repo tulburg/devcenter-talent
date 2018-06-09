@@ -9,7 +9,7 @@
 			</div>
 			<div class="header-links">
 				<ul v-show="showLinks">
-					<li><a href="/profile/tulburg" :class="{ active : (activeLink=='/profile/tulburg') }" v-on:click="setActiveLink('/profile/tulburg')">Profile</a></li>
+					<li><a :href="'/profile/'+username" :class="{ active : (activeLink=='/profile/'+username) }" v-on:click="setActiveLink('/profile/'+username)">Profile</a></li>
 					<li><a href="/projects" :class="{ active : (activeLink=='/projects') }" v-on:click="setActiveLink('/projects')">Projects</a></li>
 					<li><a href="/inbox" :class="{ active : (activeLink=='/inbox'), unread: unread }" v-on:click="setActiveLink('/inbox')">Inbox</a></li>
 				</ul>
@@ -28,7 +28,7 @@
 					<div class="account-photo">
 						<img src="../assets/img/placeholder.svg" alt="placeholder" class="account-pic" />
 					</div>
-					<div class="account-name">@adebayo <i :class="{ upward: showAccountDropDown }" class="dc-caret"></i></div>
+					<div class="account-name">{{ fullname }} <i :class="{ upward: showAccountDropDown }" class="dc-caret"></i></div>
 					<transition name="account-drop">
 						<ul class="account-drop" v-show="showAccountDropDown">
 							<li v-for="i in accountLinks">
@@ -57,7 +57,7 @@
 					{ url: "/account/feedback", title: "Feedback" },
 					{ action: function() { self.logOut() }, title: "Log Out" }
 				],
-				activeLink: '', unread : true
+				activeLink: '', unread : true, fullname: 'John Doe', username: 'john_doe'
 			}
 		},
 		methods: {
@@ -87,6 +87,13 @@
 			Bus.$on("Header_hideDropDown", () => { self.toggleDropDown() });
 			Bus.$on("Header_activeLink", (string) => { self.setActiveLink(string); });
 			this.activeLink = localStorage.getItem("activeLink");
+			store.dispatch('getSession').then(session => {
+				if(session) { 
+					if(session.user.first_name != undefined) { this.fullname = session.user.first_name }
+					if(session.user.last_name != undefined) { this.fullname = this.fullname+" "+session.user.last_name }
+					if(session.user.username != undefined){ this.username = session.user.username; }
+				}
+			});
 		}
 	}
 </script>

@@ -6,7 +6,7 @@ import JoinPool from '@/components/JoinPool'
 import CompleteProfile from '@/components/CompleteProfile'
 import Profile, { ProfileEmptyState, ProfileIncompleteState } from '@/components/Profile'
 import ProfileView from '@/components/ProfileView'
-import Account, { ChangePassword, Feedback, Earnings, Settings } from '@/components/Account'
+import Account, { ChangePassword, Feedback, Settings } from '@/components/Account'
 import Projects from '@/components/Projects'
 import Inbox from '@/components/Inbox'
 
@@ -26,7 +26,6 @@ export default new Router({
 		{ path: '/account', component: Account, children : [
 			{ path: 'settings', component: Settings, name: 'AccountSettings' },
 			{ path: 'edit', component: ChangePassword, name: 'ChangePassword' },
-			{ path: 'earnings', component: Earnings, name: 'Earnings' },
 			{ path: 'feedback', component: Feedback, name: 'Feedback' }
 		] },
 		{ path: '/projects', name: 'Projects', component: Projects },

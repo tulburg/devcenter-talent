@@ -574,6 +574,9 @@ section.profile {
       color: #ffffff;
       padding: 40px;
       cursor: pointer; }
+      section.profile .profile-view .profile-photo .cover i {
+        font-size: 60px;
+        color: #ffffff; }
   section.profile .personal-pane {
     padding-bottom: 30px;
     border-bottom: 1px solid #e6e6e6;
@@ -855,6 +858,29 @@ section.account {
       margin-bottom: 3px; }
     section.account .history:hover {
       color: gray; }
+  section.account .feedback {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    justify-content: center; }
+    section.account .feedback .box {
+      padding-top: 30px;
+      margin-top: -100px;
+      width: 700px;
+      text-align: center; }
+      section.account .feedback .box p {
+        text-align: center; }
+      section.account .feedback .box textarea {
+        width: 100%;
+        font: inherit;
+        padding: 15px;
+        border: 1px solid #d9d9d9;
+        border-radius: 3px;
+        resize: none;
+        height: 300px;
+        margin-bottom: 30px; }
+    section.account .feedback div.success {
+      margin-top: 40px; }
 
 .preloader {
   text-align: center;

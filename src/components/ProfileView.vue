@@ -2,12 +2,13 @@
 	<div class="profile-view" v-if="userProfile.work_preference">
 		<div class="box">
 			<div class="profile-photo">
-				<img :src="placeholder" alt="placeholder" />
-				<div class="cover" v-on:click="changePhoto"><span>Change your profile picture</span></div>
+				<img :src="placeholder" :alt="photoClass" />
+				<div class="cover" v-on:click="changePhoto"><span v-if="!uploadingProfilePhoto">Change your profile picture</span><i v-else class="dc-spinner animate-spin"></i></div>
+				<input type="file" id="profile-file" v-on:change="setPhoto" style="display:none;visibility: hidden;" name="file" accept=".png,.jpg,.jpeg">
 			</div>
 			<div class="personal-pane">
-				<h1>{{ }} <a href="#" class="clear" v-on:click.prevent="showProfileModal=true">Edit</a></h1>
-				<p>I'm a <span>{{ userProfile.work_preference.preferred_roles[0].value }}</span> developer with experience in <span>{{ userProfile.roles_and_skills.roles.map((r,i) => { return " "+r.value;  }).toString() }}</span> development</p> 
+				<h1>{{ fullname }} <a href="#" class="clear" v-on:click.prevent="showProfileModal=true">Edit</a></h1>
+				<p>I'm a <span>{{ (userProfile.work_preference.preferred_roles[0]) ? userProfile.work_preference.preferred_roles[0].value : 'Unknown' }}</span> developer with experience in <span>{{ userProfile.roles_and_skills.roles.map((r,i) => { return " "+r.value;  }).toString() }}</span> development</p> 
 				<div class="integration">
 					<a :href="'https://linkedin.com/in/'+user.li_username" v-if="user.li_username" target="_new"><i class="dc-linkedin"></i></a>
 					<a :href="'https://github.com/'+user.git_username" v-if="user.git_username" target="_new"><i class="dc-github"></i></a>
@@ -32,7 +33,7 @@
 				<div class="roles" v-if="!savingRolesIntegration">
 					<Title label="What is your core Role?" :showAlert="showRoleError" :alert="roleError" />
 					<ul class="grid grid-2" style="position: relative; z-index: 110; ">
-						<li><Select name="core-role" :options="roles" v-on:change="setCoreRole" label="" :alt="true" :selected="userProfile.work_preference.preferred_roles[0].value" /></li>
+						<li><Select name="core-role" :options="roles" v-on:change="setCoreRole" label="" :alt="true" :selected="(userProfile.work_preference.preferred_roles[0]) ? userProfile.work_preference.preferred_roles[0].value : ''" /></li>
 						<li>&nbsp;</li>
 					</ul>
 				</div>
@@ -57,7 +58,7 @@
 					</ul>
 				</div>
 			</div>
-			<div slot="footer">
+			<div slot="footer" v-if="!savingRolesIntegration">
 				<button class="long" v-on:click="saveRolesIntegration">Save</button>
 			</div>
 		</Modal>
@@ -84,16 +85,17 @@
 		</Modal>
 		<Modal title="Employment Status" :show="showEmploymentModal" :sticky="!showEmploymentModal" :onclose="closeModal">
 			<div slot="body">
-				<div class="roles">
+				<div class="preloader" v-if="savingEmployment"><i class="dc-spinner animate-spin"></i></div>
+				<div class="roles" v-else>
 					<Title label="What is your current employment status?" :showAlert="showEmploymentError" :alert="employmentError" />
 					<ul class="grid grid-2">
-						<li><Select name="employment-status-value" :options="employment" v-on:change="setEmployment" label="" :alt="true" :selected="(userProfile.work_preference.employment_type_contract) ? 'work_preference_employment_type_contract' : (userProfile.work_preference.employment_type_full_time) ? 'work_preference_employment_type_full_time' : (userProfile.work_preference.employment_type_internship) ? 'work_preference_employment_type_internship' : (userProfile.work_preference.employment_type_remote) ? 'work_preference_employment_type_remote' : ''"  /></li>
+						<li><Select name="employment-status-value" :options="employment" v-on:change="setEmployment" label="" :alt="true" :selected="(userProfile.work_preference.employment_type_contract) ? 'work_preference_employment_type_contract' : (userProfile.work_preference.employment_type_full_time) ? 'work_preference_employment_type_full_time' : (userProfile.work_preference.employment_type_internship) ? 'work_preference_employment_type_unemployed' : (userProfile.work_preference.employment_type_remote) ? 'work_preference_employment_type_remote' : 'work_preference_employment_type_unemployed'"  /></li>
 						<li>&nbsp;</li>
 					</ul>
 				</div>
 			</div>
-			<div slot="footer">
-				<button class="long">Save</button>
+			<div slot="footer" v-if="!savingEmployment">
+				<button class="long" v-on:click="saveEmployment">Save</button>
 			</div>
 		</Modal>
 		<Modal title="suspend modal" :show="showSuspendedModal" :sticky="1>0" :plain="1>0" :onclose="closeModal">
@@ -123,7 +125,7 @@
 		data() { return {
 			moreRoles : 1, user: undefined, loadingComplete: false, userProfile: {}, showSuspendedModal: false,
 			fullname: "John Doe", hasOtherRole: false, role: "Backened", otherRole: ["Frontend"],
-			howRoleError: false, savingRolesIntegration: false,
+			howRoleError: false, savingRolesIntegration: false, savingEmployment: false, uploadingProfilePhoto: false, photoClass: 'placeholder',
 			roles: [
 				{ value: "", title: "Select a Role" }, 
 				{ value: "Android Developer", title: "Android Developer" },
@@ -183,7 +185,28 @@
 		}},
 		methods: {
 			changePhoto() {
-				console.log("preparing to change photo")
+				document.getElementById("profile-file").click();
+			},
+			setPhoto(e) {
+				var files = (e.dataTransfer) ? e.dataTransfer.files : e.target.files;
+				document.getElementsByClassName("cover")[0].style = "display: flex";
+				this.uploadingProfilePhoto = true;
+				let formData = new FormData();
+				formData.append('profile_image', files[0]);
+				store.dispatch('getSession').then(session => {
+					this.$http.post(store.state.api.development+"profile/update/profile-image", formData, {
+						header: { 'Authorization': session.token }
+					}).then(res => {
+						document.getElementsByClassName("cover")[0].style = "display: none";
+						this.uploadingProfilePhoto = false;
+						this.photoClass = 'profile photo';
+						console.log(res);
+					}).catch(err => {
+						document.getElementsByClassName("cover")[0].style = "";
+						this.uploadingProfilePhoto = false;
+						console.log(err);
+					})
+				});
 			},
 			closeModal() {
 				this.showRolesModal = false;
@@ -231,7 +254,7 @@
 				this.values.integrations[key] = value;
 			},
 			removeIntegration: function(key) {
-				delete this.values.integrations[key];
+				this.values.integrations[key] = "";
 			},
 			addMoreRoles: function() {
 				if(this.moreRoles > 2) { this.otherRoleError = "* You can't add more than 3 more roles"; this.showOtherRoleError = true; }
@@ -246,6 +269,7 @@
 			},
 			saveRolesIntegration: function() {
 				let self = this;
+				if(this.showRoleError || this.showIntegrationError || this.showOtherRoleError) { console.log(this.showRoleError, this.showIntegrationError, this.showOtherRoleError); return; }
 				this.savingRolesIntegration = true;
 				store.dispatch('getSession').then(session => {
 					this.$http.post(store.state.api.development+"profile/roles_and_skills/save", { "roles_and_skills_roles" : this.values.roles }, 
@@ -260,6 +284,31 @@
 											self.savingRolesIntegration = false;
 									}).catch(err => { console.log(err, session); });
 							}).catch(err => { console.log(err, session, self.values.integrations); });
+					}).catch(err => { console.log(err, session); });
+				});
+			},
+			saveLangSkills: function() {
+				let self = this;
+				store.dispatch('getSession').then(session => {
+					this.$http.post(store.state.api.development+"profile/roles_and_skills/save", { "roles_and_skills_languages": this.values.langSkills }, 
+						{ headers: { 'Authorization': session.token }}).then(res => {
+							// self.saveWorkPrefs();
+							console.log(res);
+					}).catch(err => { console.log(err, session); });
+				});
+			},
+			saveEmployment: function() {
+				let self = this; this.savingEmployment = true;
+				store.dispatch('getSession').then(session => {
+					let param = { "work_preference_preferred_roles": this.values.preferredRole }
+					param[self.values.employment] = true;
+					this.$http.post(store.state.api.development+"profile/work-preference/save", param, 
+						{ headers: { 'Authorization': session.token }}).then(res => {
+							self.savingEmployment = false;
+							(self.values.employment == "work_preference_employment_type_contract") ? self.userProfile.work_preference.employment_type_contract = true : self.userProfile.work_preference.employment_type_contract = false;
+							(self.values.employment == "work_preference_employment_type_full_time") ? self.userProfile.work_preference.employment_type_full_time = true : self.userProfile.work_preference.employment_type_full_time = false;
+							(self.values.employment == "work_preference_employment_type_unemployed") ? self.userProfile.work_preference.employment_type_internship = true : self.userProfile.work_preference.employment_type_internship = false;
+							(self.values.employment == "work_preference_employment_type_remote") ? self.userProfile.work_preference.employment_type_remote = true : self.userProfile.work_preference.employment_type_remote = false;
 					}).catch(err => { console.log(err, session); });
 				});
 			}
@@ -282,6 +331,8 @@
 					this.values.preferredRole = this.userProfile.work_preference.preferred_roles;
 					this.values.roles = this.userProfile.roles_and_skills.roles;
 					this.values.langSkills = this.userProfile.roles_and_skills.languages;
+					if(this.user.first_name != undefined) { this.fullname = this.user.first_name }else { this.fullname = " "; }
+					if(this.user.last_name != undefined) { this.fullname = this.fullname+" "+this.user.last_name }
 				}
 			});
 			// setTimeout(function() {

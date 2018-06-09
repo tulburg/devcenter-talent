@@ -12,6 +12,10 @@
 	export default {
 		name: 'Account',
 		mounted() {
+			var self = this;
+			store.dispatch('getSession').then(session => {
+				if(session == null) self.$router.push("/")
+			});
 			Bus.$emit("Header_showGrayLogo", true);
 			Bus.$emit("Header_showLinks", true);
 			Bus.$emit("Header_showAccount", true);
@@ -26,12 +30,13 @@
 
 	export const Settings = {
 		name: 'Settings',
+		data() { return { email: 'example@domain.com' } },
 		template: `
 			<div class="settings">
 				<div class="box">
 					<h1>Account Settings</h1>
 					<label>Email address</label>
-					<p>tulburg@yahoo.com</p>
+					<p>{{ email }}</p>
 					<ul class="grid grid-2">
 						<li><label>Password</label></li><li></li>
 					</ul>
@@ -42,7 +47,15 @@
 					<label class="check"><input type="checkbox" checked /> Receive email notifications when you have been assigned to a project</label>
 				</div>
 			</div>
-		`
+		`,
+		mounted() {
+			store.dispatch('getSession').then(session => {
+				if(session) { 
+					if(session.user.email != undefined) { this.email = session.user.email }
+						console.log(session.user);
+				}
+			});
+		}
 	}
 
 	export const ChangePassword = {
@@ -110,16 +123,48 @@
 		}
 	}
 
-	export const Earnings = {
-		name: 'Earnings'
-	}
-
 	export const Feedback = {
 		name: 'Feedback',
+		data() { return { feedback: '', loading: false, success: false } },
 		template: `
 			<div class="feedback">
-
+				<div class="box" v-if="!success">
+					<p>We'd like to hear from you about how we can improve Devcenter's talent pool. Feel free to let us know both good and bad experiences you have had.</p>
+					<form v-on:submit.prevent="submit" v-if="!loading">
+						<textarea placeholder="Write your feedback here" v-on:change="setValue"></textarea>
+						<button>Submit</button>
+					</form>
+					<div class="preloader" v-else><i class="dc-spinner animate-spin"></i></div>
+				</div>
+				<div class="box" v-else>
+					<p>Thanks for giving us your feedback, you're a star.<br/>We'll review it and act on it accordingly.</p>
+					<div align="right" class="success"><router-link to="/profile/tulburg">Back to Profile <i class="dc-caret right"></i></router-link></div>
+				</div>
 			</div>
-		`
+		`,
+		methods: {
+			setValue(e) { this.feedback = e.target.value; },
+			submit() {
+				if(this.feedback != '') {
+					var self = this; self.loading = true;
+					store.dispatch('getSession').then(session => {
+						if(session == null) self.$router.push("/")
+							else {
+								this.$http.post(store.state.api.development+"mail/send", { 
+									"subject": "DevCenter Pool Feedback",
+									"mail_from": "feedback@devcenter.co",
+									"mail_to": "projects@devcenter.co",
+									"body": self.feedback
+								}, { headers: { 'Authorization': session.token }}).then(res => {
+									self.loading = false; console.log(res);
+									if(res.body.type == 'success') { self.success = true; }
+								}).catch(err => {
+									self.loading = false; console.log(err);
+								});
+							}
+					});
+				}
+			}
+		}
 	}
 </script>
