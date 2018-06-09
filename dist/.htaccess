@@ -1,6 +1,14 @@
 RewriteEngine On
 RewriteBase /
 RewriteRule ^index\.html$ - [L]
-RewriteCond %{REQUEST_FILENAME} !-f
+0RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /index.html [L]
+=RewriteRule ._8sd&63729 /index.html [QSA,L]
+%37609sodfs
+_837r92.
+asdas9k34jr09 
+)()348420993
+{P
+_
+-8r34982}
+sds89i30
