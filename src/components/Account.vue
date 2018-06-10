@@ -125,7 +125,7 @@
 
 	export const Feedback = {
 		name: 'Feedback',
-		data() { return { feedback: '', loading: false, success: false } },
+		data() { return { feedback: '', loading: false, success: false, user: undefined } },
 		template: `
 			<div class="feedback">
 				<div class="box" v-if="!success">
@@ -138,7 +138,7 @@
 				</div>
 				<div class="box" v-else>
 					<p>Thanks for giving us your feedback, you're a star.<br/>We'll review it and act on it accordingly.</p>
-					<div align="right" class="success"><router-link to="/profile/tulburg">Back to Profile <i class="dc-caret right"></i></router-link></div>
+					<div align="right" class="success"><router-link :to="'/profile/'+user.username">Back to Profile <i class="dc-caret right"></i></router-link></div>
 				</div>
 			</div>
 		`,
@@ -150,6 +150,7 @@
 					store.dispatch('getSession').then(session => {
 						if(session == null) self.$router.push("/")
 							else {
+								this.user = session.user;
 								this.$http.post(store.state.api.development+"mail/send", { 
 									"subject": "DevCenter Pool Feedback",
 									"mail_from": "feedback@devcenter.co",

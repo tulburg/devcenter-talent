@@ -119,7 +119,6 @@
 			Bus.$emit("Header_showAccount", true);
 			Bus.$emit("Header_showLinks", true);
 			Bus.$emit("Header_showGrayLogo", true);
-			Bus.$emit("Header_activeLink", "/profile/tulburg");
 			let self = this;
 			store.dispatch('getSession').then(session => {
 				if(session == null) this.$router.push("/")
@@ -129,8 +128,9 @@
 								headers: { 'Authorization': session.token }
 							}).then(res => {
 								store.commit("saveProfile", res.body.extras);
-								self.loadComplete = true;
+								setTimeout(()=>{self.loadComplete = true;}, 1000);
 								self.ratings = res.body.extras.user_rating;
+								Bus.$emit("Header_activeLink", "/profile/"+session.user.username);
 							}).catch(err => {
 								self.loadComplete = true;
 								self.completeError = err.message;
