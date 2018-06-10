@@ -50,7 +50,7 @@
 					<Title label="What language, frameworks or skills do you know?" :showAlert="showLangSkillsError" :alert="langSkillsError" />
 					<ul class="grid grid-2 other-roles" :style="'position:relative;z-index:'+(200-i)+';'" v-for="i in moreSkill">
 						<li><Select :name="'lang-skills-'+i" :options="skills" v-on:change="(v) => setLangSkills(v, i)" label="" :alt="true"  /></li>
-						<li class="alt"><Select :name="'lang-skills-year-'+i" :options="years" v-on:change="(v) => setLangSkillsYears(v, i)" label=""  /></li>
+						<li class="alt"><Select :name="'lang-skills-year-'+i" :options="years" v-on:change="(v) => setLangSkillsYears(v, i)" label="" :style="'position:relative;z-index:0;'"  /></li>
 					</ul>
 					<a href="#" v-on:click.prevent="addMoreSkill" class="add-more-roles-btn">+ Add a language, framework or skill</a>
 				</div>
@@ -281,6 +281,7 @@
 							this.state = localStorage.getItem("profile_completion_state");
 							this.showWelcomeMessage = false;
 						}
+						this.name = session.user.first_name;
 					}
 			});
 		},

@@ -1364,13 +1364,109 @@ div.modal .footer {
     padding-top: 20px;
     padding-bottom: 0px; }
 
-  section.complete-profile .welcome-message a.button {
-    display: block;
-    margin-bottom: 10px;
+  section.complete-profile .invert {
+    padding-top: 20px; }
+  section.complete-profile .welcome-message {
+    padding: 20px;
+    margin-top: 5px; }
+    section.complete-profile .welcome-message a.button {
+      display: block;
+      margin-bottom: 10px;
+      width: 100%;
+      text-align: center; }
+    section.complete-profile .welcome-message button {
+      width: 100%; }
+  section.complete-profile .process-stager {
+    width: calc(100% - 20px);
+    margin: 10px;
+    padding: 10px 20px; }
+    section.complete-profile .process-stager .stage > div:not(.counter) {
+      display: none; }
+  section.complete-profile .process-form {
+    width: calc(100% - 20px);
+    margin: 10px;
+    padding: 20px; }
+    section.complete-profile .process-form ul.grid-2 li {
+      width: 86%; }
+      section.complete-profile .process-form ul.grid-2 li.alt {
+        width: 60%; }
+    section.complete-profile .process-form .form-footer {
+      text-align: center; }
+      section.complete-profile .process-form .form-footer button {
+        float: none !important;
+        width: 86%; }
+    section.complete-profile .process-form .forms {
+      width: 100%; }
+    section.complete-profile .process-form .integrations ul.grid {
+      padding-bottom: 20px; }
+      section.complete-profile .process-form .integrations ul.grid li {
+        width: 100%; }
+
+  section.profile .container {
     width: 100%;
-    text-align: center; }
-  section.complete-profile .welcome-message button {
-    width: 100%; } }
+    display: inline-block; }
+    section.profile .container .left, section.profile .container .right {
+      width: calc(100% - 20px);
+      margin: 10px; }
+    section.profile .container .right {
+      padding-top: 20px; }
+      section.profile .container .right .box {
+        margin: 0px; }
+    section.profile .container .profile-empty .box {
+      margin: 0px;
+      padding: 20px; }
+      section.profile .container .profile-empty .box p {
+        padding-left: 0px;
+        padding-right: 0px; }
+      section.profile .container .profile-empty .box .profile-photo {
+        width: 150px;
+        height: 150px;
+        margin-top: -80px;
+        border-radius: 75px; }
+        section.profile .container .profile-empty .box .profile-photo img[alt="placeholder"] {
+          width: 90px; }
+    section.profile .container .profile-view .body ul.grid-2 li {
+      width: 100%; }
+    section.profile .container .profile-view .integration .input {
+      width: 100%; }
+    section.profile .container .profile-view .integration ul.grid {
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #f0f0f0; }
+    section.profile .container .profile-view .languages ul.langs {
+      width: calc(100% + 40px);
+      padding-right: 0px;
+      margin-right: 0px; }
+      section.profile .container .profile-view .languages ul.langs li.alt {
+        padding-left: 40px; }
+    section.profile .container .profile-view .box {
+      margin: 0px;
+      padding-left: 20px;
+      padding-right: 20px; }
+    section.profile .container .profile-view .profile-photo {
+      width: 150px;
+      height: 150px;
+      margin-top: -120px;
+      border-radius: 75px; }
+      section.profile .container .profile-view .profile-photo img[alt="placeholder"] {
+        width: 90px; }
+    section.profile .container .profile-view .language-pane .taggered {
+      width: 100%; }
+
+  section.account div.settings .box {
+    padding: 20px;
+    margin-top: -50px; }
+    section.account div.settings .box ul.grid li {
+      width: 100%; }
+      section.account div.settings .box ul.grid li a {
+        width: 100%; }
+  section.account div.feedback {
+    flex-direction: column;
+    padding-top: 20px; }
+    section.account div.feedback .box {
+      width: calc(100% - 20px);
+      margin: 20px;
+      padding: 20px; } }
 @media (min-width: 37.5em) {
   section {
     height: auto;
