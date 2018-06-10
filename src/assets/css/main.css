@@ -1468,6 +1468,9 @@ div.modal .footer {
       margin: 20px;
       padding: 20px; } }
 @media (min-width: 37.5em) {
+  header .header-actions .account-holder .account-photo {
+    display: none; }
+
   section {
     height: auto;
     padding-top: 120px;
@@ -1481,7 +1484,226 @@ div.modal .footer {
 
   section.forgot-password {
     padding-top: 20px;
-    padding-bottom: 0px; } }
+    padding-bottom: 0px; }
+
+  section.complete-profile {
+    padding-top: 40px; }
+    section.complete-profile .invert {
+      padding-top: 20px; }
+    section.complete-profile .welcome-message {
+      margin-top: 5px; }
+      section.complete-profile .welcome-message a.button {
+        display: block;
+        margin-bottom: 10px;
+        width: 100%;
+        text-align: center; }
+      section.complete-profile .welcome-message button {
+        width: 100%; }
+    section.complete-profile .process-stager {
+      width: calc(100% - 80px);
+      margin: 10px;
+      padding: 10px 20px; }
+    section.complete-profile .process-form {
+      width: calc(100% - 80px);
+      margin: 10px;
+      padding: 20px; }
+      section.complete-profile .process-form .forms {
+        width: 100%; }
+      section.complete-profile .process-form .integrations ul.grid {
+        padding-bottom: 20px; }
+
+  section.profile .container {
+    width: calc(100% - 40px);
+    display: inline-block; }
+  section.profile .left {
+    width: calc(100% - 20px);
+    margin: 10px; }
+  section.profile div.right {
+    width: calc(100% - 20px);
+    margin: 10px; }
+    section.profile div.right .box {
+      margin: 0px;
+      padding: 80px; }
+    section.profile div.right .profile-empty .box {
+      margin: 0px; }
+      section.profile div.right .profile-empty .box p {
+        padding-left: 0px;
+        padding-right: 0px; }
+    section.profile div.right .profile-view .integration ul.grid {
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #f0f0f0; }
+    section.profile div.right .profile-view .language-pane .taggered {
+      width: 100%; } }
+@media (min-width: 50em) {
+  header .header-actions .account-holder .account-photo {
+    display: flex; }
+
+  section.profile {
+    padding-bottom: 100px;
+    display: flex;
+    justify-content: center;
+    height: auto;
+    padding-top: 50px; }
+    section.profile .container {
+      display: flex; }
+    section.profile .left {
+      width: 68%;
+      margin-right: 40px;
+      padding-top: 100px; }
+      section.profile .left .profile-empty .box {
+        width: 100%;
+        display: flex;
+        align-content: center;
+        flex-direction: column; }
+        section.profile .left .profile-empty .box p {
+          text-align: center;
+          padding-left: 50px;
+          padding-right: 50px; }
+        section.profile .left .profile-empty .box button {
+          width: 220px;
+          align-self: center;
+          margin-top: 50px; }
+      section.profile .left .profile-empty .profile-photo {
+        background-color: #18a2dc;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        height: 200px;
+        width: 200px;
+        margin-top: -140px;
+        border-radius: 100px;
+        align-self: center;
+        margin-bottom: 20px; }
+        section.profile .left .profile-empty .profile-photo img {
+          width: 100%;
+          border-radius: 100px; }
+        section.profile .left .profile-empty .profile-photo img[alt="placeholder"] {
+          width: 120px; }
+    section.profile div.right {
+      width: 32%;
+      padding-top: 100px; }
+      section.profile div.right .box {
+        margin-bottom: 30px;
+        padding: 20px 40px; }
+        section.profile div.right .box h3 {
+          margin: 0px; }
+        section.profile div.right .box img {
+          height: 100px;
+          margin-top: 20px; }
+        section.profile div.right .box .grid {
+          padding-left: 0px;
+          margin-top: 20px; }
+          section.profile div.right .box .grid li {
+            padding: 0px;
+            text-align: left;
+            padding-left: 20px; }
+            section.profile div.right .box .grid li h1 {
+              margin: 5px 0px; }
+            section.profile div.right .box .grid li:last-child {
+              padding-left: 50px;
+              color: #b3b3b3; }
+        section.profile div.right .box button {
+          margin-top: 20px;
+          padding: 5px 10px; }
+      section.profile div.right .rating-summary {
+        padding: 10px 0px; }
+    section.profile .profile-view .box {
+      padding-left: 100px;
+      padding-right: 100px; }
+    section.profile .profile-view .profile-photo {
+      position: relative;
+      background-color: #18a2dc;
+      display: flex;
+      justify-content: center;
+      align-content: center;
+      height: 200px;
+      width: 200px;
+      margin-top: -140px;
+      border-radius: 100px;
+      align-self: center;
+      margin-bottom: 20px; }
+      section.profile .profile-view .profile-photo:hover .cover {
+        display: flex; }
+      section.profile .profile-view .profile-photo img {
+        width: 100%;
+        border-radius: 100px; }
+      section.profile .profile-view .profile-photo img[alt="placeholder"] {
+        width: 120px; }
+      section.profile .profile-view .profile-photo .cover {
+        background-color: rgba(0, 0, 0, 0.65);
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        height: 100%;
+        width: 100%;
+        border-radius: 100px;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        color: #ffffff;
+        padding: 40px;
+        cursor: pointer; }
+        section.profile .profile-view .profile-photo .cover i {
+          font-size: 60px;
+          color: #ffffff; }
+    section.profile .personal-pane {
+      padding-bottom: 30px;
+      border-bottom: 1px solid #e6e6e6;
+      text-align: left; }
+      section.profile .personal-pane h1 a {
+        float: right;
+        font-size: 16px;
+        margin-top: 5px; }
+      section.profile .personal-pane .integration {
+        margin-top: 20px;
+        margin-bottom: 10px; }
+        section.profile .personal-pane .integration i {
+          font-size: 34px;
+          color: #4a4a4a; }
+    section.profile .language-pane {
+      padding-bottom: 30px;
+      padding-top: 20px;
+      border-bottom: 1px solid #e6e6e6; }
+      section.profile .language-pane h2 {
+        font-size: 20px;
+        text-align: left;
+        margin-bottom: 25px; }
+        section.profile .language-pane h2 a {
+          float: right;
+          font-size: 16px;
+          margin-top: 5px; }
+      section.profile .language-pane .taggered {
+        width: 60%;
+        display: flex; }
+        section.profile .language-pane .taggered span {
+          display: block;
+          height: 15px;
+          border-bottom: 1px dashed #b3b3b3;
+          width: 100%; }
+        section.profile .language-pane .taggered .title {
+          color: #18a2dc;
+          background-color: #ffffff;
+          display: inline;
+          padding-right: 10px;
+          white-space: nowrap; }
+        section.profile .language-pane .taggered .counter {
+          white-space: nowrap;
+          padding-left: 10px; }
+    section.profile .employment-pane {
+      padding-bottom: 20px;
+      padding-top: 20px; }
+      section.profile .employment-pane h2 {
+        font-size: 20px;
+        text-align: left;
+        margin-bottom: 25px; }
+        section.profile .employment-pane h2 a {
+          float: right;
+          font-size: 16px;
+          margin-top: 5px; }
+      section.profile .employment-pane p {
+        font-weight: bold;
+        color: #18a2dc; } }
 @media (min-width: 64em) {
   section {
     height: calc(100% - 90px);
@@ -1490,6 +1712,9 @@ div.modal .footer {
 
   section.join-pool .box {
     width: 70%;
-    margin-top: -100px; } }
+    margin-top: -100px; }
+
+  section.profile div.right .box button {
+    padding: 12px 50px; } }
 
 /*# sourceMappingURL=main.css.map */

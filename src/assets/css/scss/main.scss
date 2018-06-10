@@ -167,11 +167,28 @@ div.modal .footer { position: absolute; left: 0px; top: 100%; background-color: 
 	section.account { div.settings { .box { padding: 20px; margin-top: -50px; ul.grid li { width: 100%; a { width: 100%; } } } } div.feedback { flex-direction: column; padding-top: 20px; .box { width: calc(100% - 20px); margin: 20px; padding: 20px; } } }
 }
 @include resolve(phablet) {
+	header { .header-actions { .account-holder { .account-photo { display: none; } } } }
 	section { height: auto; padding-top: 120px; padding-bottom: 100px; }
 	section.join-pool { padding-top: 40px; .box { margin-top: 0px; width: calc(100% - 40px); } }
 	section.forgot-password { padding-top: 20px; padding-bottom: 0px; }
+	section.complete-profile { padding-top: 40px; .invert { padding-top: 20px; }
+		.welcome-message { margin-top: 5px; a.button { display: block; margin-bottom: 10px; width: 100%; text-align: center; } button { width: 100%; } }
+		.process-stager { width: calc(100% - 80px); margin: 10px; padding: 10px 20px; } 
+		.process-form { width: calc(100% - 80px); margin: 10px; padding: 20px; .forms { width: 100%; } .integrations ul.grid { padding-bottom: 20px; } }
+	}
+	section.profile { .container { width: calc(100% - 40px); display: inline-block; } .left { width: calc(100% - 20px); margin: 10px; } div.right { width: calc(100% - 20px); margin: 10px; .box { margin: 0px; padding: 80px; } .profile-empty { .box { margin: 0px; p { padding-left: 0px; padding-right: 0px; } }} .profile-view { .integration {  ul.grid { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #f0f0f0; } } .language-pane { .taggered { width: 100%; } } }} }
+}
+@include resolve(tablet) {
+	header { .header-actions { .account-holder { .account-photo { display: flex; } } } }
+	section.profile { .container { display: flex; } padding-bottom: 100px; display: flex; justify-content: center; height: auto; padding-top: 50px; .left { width: 68%; margin-right: 40px; padding-top: 100px; .profile-empty { .box { width: 100%; display: flex; align-content: center; flex-direction: column; p { text-align: center; padding-left: 50px; padding-right: 50px; } button { width: 220px; align-self: center; margin-top: 50px; } } .profile-photo { background-color: $primary; display: flex; justify-content: center; align-content: center; height: 200px; width: 200px; margin-top: -140px; border-radius: 100px; align-self: center; margin-bottom: 20px; img { width: 100%; border-radius: 100px; } img[alt="placeholder"] { width: 120px; } } } } 
+		div.right { width: 32%; padding-top: 100px; .box { margin-bottom: 30px; padding: 20px 40px; h3 { margin: 0px; } img { height: 100px; margin-top: 20px; } .grid { padding-left: 0px; margin-top: 20px; li { padding: 0px; text-align: left; padding-left: 20px; h1 { margin: 5px 0px; } &:last-child { padding-left: 50px; color: $light-color;  } } } button { margin-top: 20px; padding: 5px 10px; } } .rating-summary { padding: 10px 0px; } } 
+		.profile-view { .box { padding-left: 100px; padding-right: 100px; } .profile-photo {  position: relative; background-color: $primary; display: flex; justify-content: center; align-content: center; height: 200px; width: 200px; margin-top: -140px; border-radius: 100px; align-self: center; margin-bottom: 20px; &:hover .cover { display: flex; } img { width: 100%; border-radius: 100px; } img[alt="placeholder"] { width: 120px; } .cover { background-color: rgba(0,0,0,0.65); position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; border-radius: 100px; display: none; justify-content: center; align-items: center; color: $white; padding: 40px; cursor: pointer;  i { font-size: 60px; color: $white; } } } }
+		.personal-pane { padding-bottom: 30px; border-bottom: 1px solid lighten($light-color, 20%); text-align: left; h1 { a { float: right; font-size: 16px; margin-top: 5px; } } .integration { margin-top: 20px; margin-bottom: 10px; i { font-size: 34px; color: $color; } } }
+		.language-pane { padding-bottom: 30px; padding-top: 20px; border-bottom: 1px solid lighten($light-color, 20%); h2 { font-size: 20px; text-align: left; margin-bottom: 25px; a { float: right; font-size: 16px; margin-top: 5px; } } .taggered { width: 60%; display: flex; span { display: block; height: 15px; border-bottom: 1px dashed $light-color; width: 100%; } .title { color: $primary; background-color: $white; display: inline; padding-right: 10px; white-space: nowrap; } .counter { white-space: nowrap; padding-left: 10px; } } }
+		.employment-pane { padding-bottom: 20px; padding-top: 20px; h2 { font-size: 20px; text-align: left; margin-bottom: 25px; a { float: right; font-size: 16px; margin-top: 5px; } } p { font-weight: bold; color: $primary; } }}
 }
 @include resolve(laptop) {
 	section { height: calc(100% - 90px); padding-top: 0px; padding-bottom: 0px; }
 	section.join-pool { .box { width: 70%; margin-top: -100px; } }
+	section.profile div.right .box button { padding: 12px 50px; }
 }
