@@ -73,6 +73,7 @@
 					self.$http.get(store.state.api.development+"profile/get",  { 
 						headers: { 'Authorization': res.body.extras.token }
 					}).then(res => {
+						console.log(res);
 						store.commit("saveProfile", res.body.extras);
 						this.loading = false;
 						if(user.completed_level == 0) this.$router.push("/complete-profile");
