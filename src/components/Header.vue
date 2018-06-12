@@ -1,5 +1,5 @@
 <template>
-	<header v-on:click="(e) => { toggleDropDown(e) }">
+	<header>
 		<div>
 			<div class="logo">
 				<router-link to="/">
@@ -26,11 +26,11 @@
 				</router-link>
 				<div class="account-holder" v-show="showAccount">
 					<div class="account-photo">
-						<img src="../assets/img/placeholder.svg" alt="placeholder" class="account-pic" />
+						<img src="../assets/img/placeholder.svg" alt="placeholder" class="account-pic acc-d" />
 					</div>
-					<div class="account-name">{{ fullname }} <i :class="{ upward: showAccountDropDown }" class="dc-caret"></i></div>
+					<div class="account-name acc-d">{{ fullname }} <i :class="{ upward: showAccountDropDown }" class="dc-caret acc-d"></i></div>
 					<transition name="account-drop">
-						<ul class="account-drop" v-show="showAccountDropDown">
+						<ul class="account-drop acc-d" v-show="showAccountDropDown">
 							<li v-for="i in accountLinks">
 								<router-link :to="i.url" v-if="i.action == undefined">{{ i.title }}</router-link>
 								<a href="" v-on:click.prevent="i.action" v-else>{{ i.title }}</a>
@@ -64,7 +64,7 @@
 			toggleDropDown: function(e) {
 				var e = e || window.event;
 				if(this.showAccountDropDown) this.showAccountDropDown = false;
-				else if(e.target && e.target.className.match("account")) this.showAccountDropDown = true;
+				else if(e.target && e.target.className.match("acc-d")) this.showAccountDropDown = true;
 			},
 			logOut: function() {
 				this.showAccount = false;
@@ -84,7 +84,6 @@
 			Bus.$on("Header_showGrayLogo", (bool) => { self.showGrayLogo = bool });
 			Bus.$on("Header_showAccount", (bool) => { self.showAccount = bool });
 			Bus.$on("Header_showSignup", (bool) => { self.showSignup = bool; });
-			Bus.$on("Header_hideDropDown", () => { self.toggleDropDown() });
 			Bus.$on("Header_activeLink", (string) => { self.setActiveLink(string); });
 			this.activeLink = localStorage.getItem("activeLink");
 			store.dispatch('getSession').then(session => {
@@ -94,6 +93,7 @@
 					if(session.user.username != undefined){ this.username = session.user.username; }
 				}
 			});
+			document.addEventListener("click", function(e) { self.toggleDropDown(e); });
 		}
 	}
 </script>

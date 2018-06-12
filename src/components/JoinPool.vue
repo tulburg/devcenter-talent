@@ -11,9 +11,9 @@
 				</li>
 				<li>
 					<div class="plain">
-						<h1>Product Designer</h1>
-						<p>Expert product thinker designing beautiful, seamless and intuitive software applications</p>
-						<a href="https://devcenter-talent.typeform.com/to/PTtgyj" class="button long">Apply as a Designer</a>
+						<h1>Software Developer</h1>
+						<p>Experienced software engineer, coder with expertise across different technologies</p>
+						<a href="https://devcenter-talent.typeform.com/to/PTtgyj" class="button long">Apply as a Developer</a>
 					</div>
 				</li>
 			</ul>

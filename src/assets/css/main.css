@@ -374,101 +374,99 @@ section.complete-profile {
       color: #18a2dc; }
     section.complete-profile div.loading p {
       text-align: center; }
-
-div.process-stager {
-  width: 60%;
-  padding: 20px 40px; }
-  div.process-stager .stage {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0px;
-    width: 26.66% !important; }
-    div.process-stager .stage::before {
-      content: "";
-      position: absolute;
-      top: calc(30% - 2px);
-      height: 2px;
-      background-color: #e6e6e6;
-      left: -46%;
-      width: 90%;
-      z-index: 0; }
-    div.process-stager .stage.active .counter {
-      background-color: #18a2dc;
-      border: 0px;
-      color: #ffffff; }
-    div.process-stager .stage.active::before {
-      background-color: #18a2dc;
-      display: block; }
-    div.process-stager .stage:first-child {
-      align-self: flex-start;
-      width: 50px !important;
-      margin-right: calc(18% - 50px); }
-      div.process-stager .stage:first-child::before {
-        display: none !important; }
-    div.process-stager .stage .counter {
-      z-index: 1;
-      font-size: 18px;
-      padding-top: 7px;
-      margin-bottom: 10px;
-      border: 1px solid #b3b3b3;
-      color: #b3b3b3;
-      border-radius: 20px;
-      height: 40px;
-      width: 40px;
-      background-color: #ffffff; }
-      div.process-stager .stage .counter span, div.process-stager .stage .counter i {
+  section.complete-profile div.process-stager {
+    width: 60%;
+    padding: 20px 40px; }
+    section.complete-profile div.process-stager .stage {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0px;
+      width: 26.66% !important; }
+      section.complete-profile div.process-stager .stage::before {
+        content: "";
+        position: absolute;
+        top: calc(30% - 2px);
+        height: 2px;
+        background-color: #e6e6e6;
+        left: -46%;
+        width: 90%;
+        z-index: 0; }
+      section.complete-profile div.process-stager .stage.active .counter {
+        background-color: #18a2dc;
+        border: 0px;
+        color: #ffffff; }
+      section.complete-profile div.process-stager .stage.active::before {
+        background-color: #18a2dc;
         display: block; }
-
-div.process-form {
-  width: 60%;
-  margin-top: 30px; }
-  div.process-form .title {
-    margin-top: 0px; }
-  div.process-form .forms {
-    text-align: left;
-    width: 70%; }
-    div.process-form .forms ul.grid li {
-      padding: 0px; }
-      div.process-form .forms ul.grid li.alt {
-        width: 30%;
-        margin-left: 20px; }
-    div.process-form .forms .other-roles .select {
-      margin-bottom: 10px; }
-  div.process-form .form-footer {
-    margin-top: 20px; }
-  div.process-form .add-more-roles-btn {
-    margin-top: 15px;
-    margin-bottom: 15px;
-    display: inline-block; }
-  div.process-form .integrations {
-    width: 100%; }
-    div.process-form .integrations p {
-      font-size: 18px;
-      padding: 0px 15px;
-      margin-top: 0px;
-      margin-bottom: 35px;
-      text-align: right; }
-      div.process-form .integrations p i {
-        font-size: inherit !important;
+      section.complete-profile div.process-stager .stage:first-child {
+        align-self: flex-start;
+        width: 50px !important;
+        margin-right: calc(18% - 50px); }
+        section.complete-profile div.process-stager .stage:first-child::before {
+          display: none !important; }
+      section.complete-profile div.process-stager .stage .counter {
+        z-index: 1;
+        font-size: 18px;
+        padding-top: 7px;
+        margin-bottom: 10px;
+        border: 1px solid #b3b3b3;
         color: #b3b3b3;
-        cursor: pointer;
-        margin-left: 10px; }
-    div.process-form .integrations .input {
-      width: 70%;
-      display: inline-block;
-      margin-right: 10px; }
-    div.process-form .integrations .name {
-      font-weight: bold; }
-    div.process-form .integrations *[class^="dc-"] {
-      font-size: 34px;
-      vertical-align: middle; }
-    div.process-form .integrations ul.grid {
-      border-bottom: 1px solid #f3f3f3;
-      margin: 0px;
-      padding-top: 10px;
-      padding-left: 0px; }
+        border-radius: 20px;
+        height: 40px;
+        width: 40px;
+        background-color: #ffffff; }
+        section.complete-profile div.process-stager .stage .counter span, section.complete-profile div.process-stager .stage .counter i {
+          display: block; }
+  section.complete-profile div.process-form {
+    width: 60%;
+    margin-top: 30px; }
+    section.complete-profile div.process-form .title {
+      margin-top: 0px; }
+    section.complete-profile div.process-form .forms {
+      text-align: left;
+      width: 70%; }
+      section.complete-profile div.process-form .forms ul.grid li {
+        padding: 0px; }
+        section.complete-profile div.process-form .forms ul.grid li.alt {
+          width: 30%;
+          margin-left: 20px; }
+      section.complete-profile div.process-form .forms .other-roles .select {
+        margin-bottom: 10px; }
+    section.complete-profile div.process-form .form-footer {
+      margin-top: 20px; }
+    section.complete-profile div.process-form .add-more-roles-btn {
+      margin-top: 15px;
+      margin-bottom: 15px;
+      display: inline-block; }
+    section.complete-profile div.process-form .integrations {
+      width: 100%; }
+      section.complete-profile div.process-form .integrations p {
+        font-size: 18px;
+        padding: 0px 15px;
+        margin-top: 0px;
+        margin-bottom: 35px;
+        text-align: right; }
+        section.complete-profile div.process-form .integrations p i {
+          font-size: inherit !important;
+          color: #b3b3b3;
+          cursor: pointer;
+          margin-left: 10px; }
+      section.complete-profile div.process-form .integrations .input {
+        width: 70%;
+        display: inline-block;
+        margin-right: 10px; }
+      section.complete-profile div.process-form .integrations .name {
+        font-weight: bold; }
+      section.complete-profile div.process-form .integrations *[class^="dc-"] {
+        font-size: 34px;
+        vertical-align: middle; }
+      section.complete-profile div.process-form .integrations ul.grid {
+        border-bottom: 1px solid #f3f3f3;
+        margin: 0px;
+        padding-top: 10px;
+        padding-left: 0px; }
 
 /* Profile page definitions */
 section.profile {
@@ -1703,7 +1701,24 @@ div.modal .footer {
           margin-top: 5px; }
       section.profile .employment-pane p {
         font-weight: bold;
-        color: #18a2dc; } }
+        color: #18a2dc; }
+
+  section.complete-profile .invert {
+    padding-top: auto;
+    width: 100vw;
+    height: 100vh;
+    padding-top: 100px; }
+  section.complete-profile .welcome-message {
+    margin-top: 5px; }
+    section.complete-profile .welcome-message a.button {
+      display: inline;
+      margin-bottom: 10px;
+      text-align: center; }
+    section.complete-profile .welcome-message button {
+      width: auto; }
+  section.complete-profile .process-form {
+    padding: 48px;
+    margin-bottom: 100px; } }
 @media (min-width: 64em) {
   section {
     height: calc(100% - 90px);

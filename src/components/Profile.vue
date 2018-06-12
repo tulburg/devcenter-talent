@@ -1,5 +1,5 @@
 <template>
-	<section class="profile" v-on:click="hideDropDown">
+	<section class="profile">
 		<div class="container">
 			<div class="preloader" v-if="!loadComplete">
 				<i class="dc-spinner animate-spin"></i>
@@ -19,25 +19,25 @@
 				<div class="box rating">
 					<h3>Rating</h3>
 					<div class="ratings">
-						<div class="title">Attitude <span>{{ ratings.attitude }}</span></div>
+						<div class="title">Attitude <span>{{ ratings.attitude }}/75</span></div>
 						<div class="bar">
 							<span v-for="i in 15" :class="{ active: (i <= (ratings.attitude/75)*15) }"></span>
 						</div>
 					</div>
 					<div class="ratings">
-						<div class="title">Communication <span>{{ ratings.communication }}</span></div>
+						<div class="title">Communication <span>{{ ratings.communication }}/75</span></div>
 						<div class="bar">
 							<span v-for="i in 15" :class="{ active: (i <= (ratings.communication/75)*15) }"></span>
 						</div>
 					</div>
 					<div class="ratings">
-						<div class="title">Quality <span>{{ ratings.quality }}</span></div>
+						<div class="title">Quality <span>{{ ratings.quality }}/75</span></div>
 						<div class="bar">
 							<span v-for="i in 15" :class="{ active: (i <= (ratings.quality/75)*15) }"></span>
 						</div>
 					</div>
 					<div class="ratings">
-						<div class="title">Timeliness <span>{{ ratings.timeliness }}</span></div>
+						<div class="title">Timeliness <span>{{ ratings.timeliness }}/75</span></div>
 						<div class="bar">
 							<span v-for="i in 15" :class="{ active: (i <= (ratings.timeliness/75)*15) }"></span>
 						</div>
@@ -113,7 +113,6 @@
 			return { loadComplete: false }
 		}, 
 		methods: {
-			hideDropDown() { Bus.$emit("Header_hideDropDown"); }
 		},
 		mounted: function() {
 			Bus.$emit("Header_showAccount", true);
@@ -123,22 +122,24 @@
 			store.dispatch('getSession').then(session => {
 				if(session == null) this.$router.push("/")
 					else {
-						if(session.user_profile == undefined) {
-							self.$http.get(store.state.api.development+"profile/get",  { 
-								headers: { 'Authorization': session.token }
-							}).then(res => {
-								store.commit("saveProfile", res.body.extras);
-								setTimeout(()=>{self.loadComplete = true;}, 1000);
-								self.ratings = res.body.extras.user_rating;
-								Bus.$emit("Header_activeLink", "/profile/"+session.user.username);
-							}).catch(err => {
-								self.loadComplete = true;
-								self.completeError = err.message;
-							});
-						}else {
-							self.ratings = session.user_profile.user_rating;
-							self.loadComplete = true;
-						}
+						// if(session.user_profile == undefined) {
+						// 	self.$http.get(store.state.api.development+"profile/get",  { 
+						// 		headers: { 'Authorization': session.token }
+						// 	}).then(res => {
+						// 		store.commit("saveProfile", res.body.extras);
+						// 		setTimeout(()=>{self.loadComplete = true;}, 1000);
+						// 		self.ratings = res.body.extras.user_rating;
+						// 		Bus.$emit("Header_activeLink", "/profile/"+session.user.username);
+						// 	}).catch(err => {
+						// 		self.loadComplete = true;
+						// 		self.completeError = err.message;
+						// 	});
+						// }else {
+							
+						// }
+						self.ratings = session.user_profile.user_rating;
+						self.loadComplete = true;
+						Bus.$emit("Header_activeLink", "/profile/"+session.user.username);
 					}
 			});
 		},

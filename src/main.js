@@ -10,6 +10,12 @@ Vue.config.productionTip = false
 
 Vue.use(VueResource);
 
+window.Element.prototype.$ = window.$ = function(id) {
+	if(id[0] == ".") return (this) ? (this.getElementsByClassName(id.substring(1)).length == 1) ? this.getElementsByClassName(id.substring(1))[0] : this.getElementsByClassName(id.substring(1)) : document.getElementsByClassName(id.substring(1));
+	if(id[0] == "#") return (this) ? this.getElementById(id.substring(1)) : document.getElementById(id.substring(1));
+	return undefined;
+}
+
 /* eslint-disable no-new */
 new Vue({
 	el: '#app',

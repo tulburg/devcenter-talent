@@ -40,7 +40,7 @@
 				<div class="roles-others" v-if="!savingRolesIntegration">
 					<Title label="What other roles best describer you?" :showAlert="showOtherRoleError" :alert="otherRoleError" />
 					<ul class="grid grid-2 other-roles" :style="'position:relative;z-index:'+(106-i)+';'" v-for="i in moreRoles">
-						<li><Select :name="'other-role-'+i" :options="roles" v-on:change="(v) => setOtherRoles(v, i)" label="" :alt="true" :selected="userProfile.roles_and_skills.roles[i-1].value"  /></li>
+						<li><Select :name="'other-role-'+i" :options="roles" v-on:change="(v) => setOtherRoles(v, i)" label="" :alt="true" :selected="(userProfile.roles_and_skills.roles[i-1]) ? userProfile.roles_and_skills.roles[i-1].value : ''"  /></li>
 						<li>&nbsp;</li>
 					</ul>
 					<a href="#" v-on:click.prevent="addMoreRoles" class="add-more-roles-btn">+ Add a Role</a>
@@ -64,7 +64,8 @@
 		</Modal>
 		<Modal title="Language and Skills" :show="showRolesModal" :sticky="!showRolesModal" :onclose="closeModal">
 			<div slot="body">
-				<div class="languages">
+				<div class="preloader" v-if="savingSkills"><i class="dc-spinner animate-spin"></i></div>
+				<div class="languages" v-else>
 					<Title label="What language, frameworks or skills do you know?" :showAlert="showLangSkillsError" :alert="langSkillsError" />
 					<ul class="grid grid-2 langs" :style="'position:relative;z-index:'+(200-i)+';'" v-for="i in moreSkill">
 						<li>
@@ -79,8 +80,8 @@
 					<a href="#" v-on:click.prevent="addMoreSkill" class="add-more-roles-btn">+ Add a language, framework or skill</a>
 				</div>
 			</div>
-			<div slot="footer">
-				<button class="long">Save</button>
+			<div slot="footer" v-if="!savingSkills">
+				<button class="long" v-on:click="saveLangSkills">Save</button>
 			</div>
 		</Modal>
 		<Modal title="Employment Status" :show="showEmploymentModal" :sticky="!showEmploymentModal" :onclose="closeModal">
@@ -125,7 +126,7 @@
 		data() { return {
 			moreRoles : 1, user: undefined, loadingComplete: false, userProfile: {}, showSuspendedModal: false,
 			fullname: "John Doe", hasOtherRole: false, role: "Backened", otherRole: ["Frontend"],
-			howRoleError: false, savingRolesIntegration: false, savingEmployment: false, uploadingProfilePhoto: false, photoClass: 'placeholder',
+			howRoleError: false, savingRolesIntegration: false, savingSkills: false, savingEmployment: false, uploadingProfilePhoto: false, photoClass: 'placeholder',
 			roles: [
 				{ value: "", title: "Select a Role" }, 
 				{ value: "Android Developer", title: "Android Developer" },
@@ -252,12 +253,14 @@
 			},
 			setIntegrationValue: function(value, key) {
 				this.values.integrations[key] = value;
+				this.user[key] = value;
 			},
 			removeIntegration: function(key) {
 				this.values.integrations[key] = "";
+				this.user[key] = "";
 			},
 			addMoreRoles: function() {
-				if(this.moreRoles > 2) { this.otherRoleError = "* You can't add more than 3 more roles"; this.showOtherRoleError = true; }
+				if(this.moreRoles > 10) { this.otherRoleError = "* You can't add more than 10 more roles"; this.showOtherRoleError = true; }
 				else { this.moreRoles = this.moreRoles+1; }
 			},
 			addMoreSkill: function() {
@@ -280,8 +283,12 @@
 									console.log(res);
 									self.$http.post(store.state.api.development+"profile/work-preference/save", { "work_preference_preferred_roles": self.values.preferredRole }, 
 										{ headers: { 'Authorization': session.token }}).then(res => {
-											console.log(res);
 											self.savingRolesIntegration = false;
+											setTimeout(()=>{ self.showProfileModal = false; }, 1000);
+											self.userProfile.work_preference.preferred_roles = self.values.preferredRole;
+											self.userProfile.roles_and_skills.roles = self.values.roles;
+											store.commit("saveProfile", self.userProfile);
+											store.commit("saveUser", self.user);
 									}).catch(err => { console.log(err, session); });
 							}).catch(err => { console.log(err, session, self.values.integrations); });
 					}).catch(err => { console.log(err, session); });
@@ -289,11 +296,14 @@
 			},
 			saveLangSkills: function() {
 				let self = this;
+				self.savingSkills = true;
 				store.dispatch('getSession').then(session => {
 					this.$http.post(store.state.api.development+"profile/roles_and_skills/save", { "roles_and_skills_languages": this.values.langSkills }, 
 						{ headers: { 'Authorization': session.token }}).then(res => {
-							// self.saveWorkPrefs();
-							console.log(res);
+							this.userProfile.roles_and_skills.languages = this.values.langSkills;
+							store.commit("saveProfile", self.userProfile);
+							self.savingSkills = false;
+							setTimeout(()=> { self.showRolesModal = false; }, 1000);
 					}).catch(err => { console.log(err, session); });
 				});
 			},
@@ -309,6 +319,8 @@
 							(self.values.employment == "work_preference_employment_type_full_time") ? self.userProfile.work_preference.employment_type_full_time = true : self.userProfile.work_preference.employment_type_full_time = false;
 							(self.values.employment == "work_preference_employment_type_unemployed") ? self.userProfile.work_preference.employment_type_internship = true : self.userProfile.work_preference.employment_type_internship = false;
 							(self.values.employment == "work_preference_employment_type_remote") ? self.userProfile.work_preference.employment_type_remote = true : self.userProfile.work_preference.employment_type_remote = false;
+							store.commit("saveProfile", self.userProfile);
+							setTimeout(()=> { self.showEmploymentModal = false; }, 1000);
 					}).catch(err => { console.log(err, session); });
 				});
 			}

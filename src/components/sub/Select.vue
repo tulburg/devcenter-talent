@@ -26,13 +26,21 @@
 		},
 		methods: {
 			clear() { this.$emit("clear"); },
-			setValue(value) { this.$emit("change", value); }
+			setValue(value) { 
+				this.$emit("change", value);
+				var gggParent = window.event.target.parentNode.parentNode.parentNode.parentNode;
+			 	if(value == "") gggParent.$(".cs-placeholder").style = "color: #ccc";
+			 	else { gggParent.$(".cs-placeholder").style = "color: inherit"; }
+			}
 		},
 		mounted() {
 			var self = this;
 			var mySelectFx = new SelectFx(document.querySelector("#"+self.name), {
 				onChange: function(value) { self.clear(); self.setValue(value); }
 			});
+			if(this.selected == '') {
+				$("#"+self.name).parentNode.$(".cs-placeholder").style = "color: #ccc";
+			}
 		}
 	}
 </script> 

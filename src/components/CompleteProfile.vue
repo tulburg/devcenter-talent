@@ -4,10 +4,10 @@
 		<div class="box welcome-message" v-show="showWelcomeMessage">
 			<h1>Hi {{ name }},</h1>
 			<p>Once again welcome to Devcenter's Talent Pool.</p>
-			<p>We've pre-filled your profile with the details you provided to use while being screened.</p>
+			<p>We've pre-filled your profile with the details you provided to us while being screened.</p>
 			<p>The next step is to tell us a bit more about what you do so that we can match you to projects you are best suited for. We don't want you missing out on great gigs.</p>
 			<div class="buttons">
-				<router-link to="/profile" class="button clear">Skip for now</router-link> <button v-on:click="showWelcomeMessage=!showWelcomeMessage">Get Started</button>
+				<router-link to="/profile/incomplete" class="button clear">Skip for Now</router-link> <button v-on:click="showWelcomeMessage=!showWelcomeMessage">Get Started</button>
 			</div>
 		</div>
 
@@ -153,6 +153,7 @@
 		components: { Select, Title, Input },
 		methods: {
 			nextForm() {
+				console.log(this.values.integrations);
 				if(this.state == 'role') { 
 					if(this.values.preferredRole.length > 0){
 						this.state = 'otherRoles';
@@ -160,16 +161,24 @@
 					}else { this.showRoleError = true }
 				}else if(this.state == 'otherRoles' && this.showOtherRoleError != true) {
 					this.state = 'langSkills';
+					this.canGoBack = true; 
 				}else if(this.state == 'langSkills' && this.showLangSkillsError != true) {
 					if(this.values.langSkills.length < 1) { this.showLangSkillsError = true; return; }
 					this.state = 'employment';
+					this.canGoBack = true; 
 				}else if(this.state == 'employment' && this.showEmploymentError != true) {
 					if(this.values.employment == "") { this.showEmploymentError = true; return; }
 					this.state = 'integration';
+					this.canGoBack = true; 
 				}else if(this.state == 'integration' && this.showIntegrationError != true) {
-					if(!this.values.integrations["linkedin"]&&!this.values.integrations["behance"]
-						&&!this.values.integrations["dribbble"]&&!this.values.integrations["github"]) { this.showIntegrationError = true; return; }
-					this.state = 'submitting';
+					var errors = 0;
+					if(!this.values.integrations["li_username"]){ errors++; } 
+					if(!this.values.integrations["git_username"]){ errors++; } 
+					if(!this.values.integrations["behance_username"]){ errors++; } 
+					if(!this.values.integrations["dribbble_username"]){ errors++; } 
+					console.log(errors);
+					if(errors == 4) { this.showIntegrationError = true; return; }
+					else { this.state = 'submitting'; }
 				}
 				this.saveState();
 			},
@@ -187,7 +196,10 @@
 			},
 			finish() {
 				this.nextForm();
-				this.saveRoles();
+				if(this.state == 'submitting') {
+					this.saveState();
+					this.saveRoles();
+				}
 			},
 			setCoreRole: function(value) {
 				if(value!=="") { this.showRoleError = false; }else { this.showRoleError=true; }
@@ -239,7 +251,11 @@
 			},
 			saveState() {
 				localStorage.setItem("profile_completion_state", this.state);
-				if(this.state == "submitting") { localStorage.removeItem("profile_completion_state"); }
+				localStorage.setItem("profile_data", JSON.stringify(this.values));
+				if(this.state == "submitting") { 
+					localStorage.removeItem("profile_completion_state");
+					localStorage.removeItem("profile_data");
+				}
 			},
 			saveRoles() {
 				let self = this;
@@ -267,9 +283,21 @@
 				store.dispatch('getSession').then(session => {
 					this.$http.post(store.state.api.development+"profile/update", this.values.integrations, 
 						{ headers: { 'Authorization': session.token }}).then(res => {
-							self.$router.push('/profile');
+							self.$http.get(store.state.api.development+"profile/get",  { 
+								headers: { 'Authorization': session.token }
+							}).then(res => {
+								store.commit("saveProfile", res.body.extras);
+								self.$router.push('/profile/'+session.user.username);
+							}).catch(err => {
+								console.log(err);
+							});
 					}).catch(err => { console.log(err, session); });
 				});
+			}
+		},
+		watch: {
+			values: function(value) {
+				console.log(value);
 			}
 		},
 		mounted() {
@@ -284,6 +312,9 @@
 						this.name = session.user.first_name;
 					}
 			});
+			if(localStorage.getItem("profile_data")) {
+				this.values = JSON.parse(localStorage.getItem("profile_data"));
+			}
 		},
 		destroyed() {
 			Bus.$emit("Header_showAccount", false);

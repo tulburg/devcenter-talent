@@ -27,6 +27,11 @@ export default new Vuex.Store({
 			let cookie = Cookie.getJSON("DevTalent");
 			cookie.user_profile = payload;
 			Cookie.set("DevTalent", cookie);
+		},
+		saveUser: function(state, payload) {
+			let cookie = Cookie.getJSON("DevTalent");
+			cookie.user = payload;
+			Cookie.set("DevTalent", cookie);
 		}
 	},
 	actions: {
