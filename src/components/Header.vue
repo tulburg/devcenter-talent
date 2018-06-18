@@ -1,6 +1,6 @@
 <template>
 	<header>
-		<div>
+		<div :class="{ bootup: bootup, boot: (boot && !bootup) }">
 			<div class="logo">
 				<router-link to="/">
 					<img src="../assets/img/dc_blue.png" alt="logo" v-show="!showGrayLogo">
@@ -50,7 +50,7 @@
 		name: 'Header',
 		data() {
 			var self = this;
-			return { showGrayLogo: false, showLinks: false, showLogin: false, showHome: false, showAccount: false, showSignup: false, showAccountDropDown: false,
+			return { showGrayLogo: false, showLinks: false, showLogin: false, showHome: false, showAccount: false, showSignup: false, showAccountDropDown: false, boot: false, bootup: false,
 				accountLinks: [
 					{ url: "/account/earnings", title: "Earnings" },
 					{ url: "/account/settings", title: "Account Settings" },
@@ -74,7 +74,27 @@
 			setActiveLink(link) {
 				this.activeLink = link;
 				localStorage.setItem("activeLink", link);
+			},
+			bootNow() {
+				var self = this;
+				store.dispatch('getSession').then(session => {
+					if(session) { 
+						if(session.user.first_name != undefined) { this.fullname = session.user.first_name }
+						if(session.user.last_name != undefined) { this.fullname = this.fullname+" "+session.user.last_name }
+						if(session.user.username != undefined){ this.username = session.user.username; }
+						self.bootup = true;
+					}
+				});
 			}
+		},
+		created() {
+			store.dispatch('getSession').then(session => {
+				if(session) { 
+					if(session.user.first_name != undefined) { this.fullname = session.user.first_name }
+					if(session.user.last_name != undefined) { this.fullname = this.fullname+" "+session.user.last_name }
+					if(session.user.username != undefined){ this.username = session.user.username; }
+				}
+			});
 		},
 		mounted() {
 			var self = this;
@@ -85,14 +105,9 @@
 			Bus.$on("Header_showAccount", (bool) => { self.showAccount = bool });
 			Bus.$on("Header_showSignup", (bool) => { self.showSignup = bool; });
 			Bus.$on("Header_activeLink", (string) => { self.setActiveLink(string); });
+			Bus.$on("Header_setBoot", (bool) => { self.boot = bool });
+			Bus.$on("Header_startBoot", (bool) => { self.bootNow() });
 			this.activeLink = localStorage.getItem("activeLink");
-			store.dispatch('getSession').then(session => {
-				if(session) { 
-					if(session.user.first_name != undefined) { this.fullname = session.user.first_name }
-					if(session.user.last_name != undefined) { this.fullname = this.fullname+" "+session.user.last_name }
-					if(session.user.username != undefined){ this.username = session.user.username; }
-				}
-			});
 			document.addEventListener("click", function(e) { self.toggleDropDown(e); });
 		}
 	}

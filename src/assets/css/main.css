@@ -288,6 +288,26 @@ section {
   background-color: #ffffff;
   font-weight: bold; }
 
+.select .select-wrap {
+  position: relative; }
+  .select .select-wrap .delete-button {
+    position: absolute;
+    right: -40px;
+    top: calc(50% - 13px);
+    height: 26px;
+    width: 26px;
+    background-color: #b3b3b3;
+    border-radius: 15px;
+    text-align: center;
+    padding-top: 5px;
+    color: #ffffff;
+    font-size: 12px;
+    cursor: pointer; }
+    .select .select-wrap .delete-button:hover {
+      background-color: #a6a6a6; }
+      .select .select-wrap .delete-button:hover:active {
+        background-color: #9a9a9a; }
+
 /* Welcome page definitions  */
 section.welcome {
   flex-direction: column;
@@ -880,6 +900,24 @@ section.account {
     section.account .feedback div.success {
       margin-top: 40px; }
 
+section.set-password {
+  justify-content: center; }
+  section.set-password .box {
+    width: 500px;
+    margin-top: -100px;
+    text-align: left; }
+    section.set-password .box h1 {
+      margin-bottom: 0px;
+      text-align: center; }
+    section.set-password .box p {
+      text-align: center;
+      margin-top: 0px;
+      color: #3d3d3d; }
+  section.set-password form {
+    padding-right: 40px;
+    padding-left: 40px;
+    margin-top: 40px; }
+
 .preloader {
   text-align: center;
   width: 100%; }
@@ -1299,6 +1337,19 @@ div.modal .footer {
   animation-name: account-out;
   animation-duration: .3s;
   animation-timing-function: cubic-bezier(0, 0, 0.48, 1.13); }
+
+@keyframes boot-up {
+  0% {
+    opacity: 0.1; }
+  100% {
+    opacity: 1; } }
+.bootup {
+  animation-name: boot-up;
+  animation-duration: .5s;
+  animation-timing-function: ease-in-out; }
+
+.boot {
+  opacity: 0.1; }
 
 /* Responsiveness definitions */
 @media (max-width: 37.5em) {

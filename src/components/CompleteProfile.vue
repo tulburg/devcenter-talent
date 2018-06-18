@@ -34,14 +34,14 @@
 				<div v-show="state=='role'" class="forms">
 					<Title label="What is your core Role?" :showAlert="showRoleError" alert="* Please select at least one role" />
 					<ul class="grid grid-2">
-						<li><Select name="core-role" :options="roles" v-on:change="setCoreRole" label="" :alt="true" /></li>
+						<li><Select name="core-role" :options="roles" v-on:change="setCoreRole" label="" :alt="true" :selected="(values.preferredRole.length > 0) ? values.preferredRole[0].value : ''" /></li>
 						<li>&nbsp;</li>
 					</ul>
 				</div>
 				<div v-show="state=='otherRoles'" class="forms">
 					<Title label="What other roles best describer you?" :showAlert="showOtherRoleError" :alert="otherRoleError" />
 					<ul class="grid grid-2 other-roles" :style="'position:relative;z-index:'+(106-i)+';'" v-for="i in moreRoles">
-						<li><Select :name="'other-role-'+i" :options="roles" v-on:change="(v) => setOtherRoles(v, i)" label="" :alt="true"  /></li>
+						<li><Select :name="'other-role-'+i" :options="roles" v-on:change="(v) => setOtherRoles(v, i)" v-on:delete="() => deleteRole(i)" label="" :alt="true" :showDelete="i>1" :selected="(values.roles[i-1]) ? values.roles[i-1].value : ''"  /></li>
 						<li>&nbsp;</li>
 					</ul>
 					<a href="#" v-on:click.prevent="addMoreRoles" class="add-more-roles-btn">+ Add a Role</a>
@@ -49,15 +49,15 @@
 				<div v-show="state=='langSkills'" class="forms">
 					<Title label="What language, frameworks or skills do you know?" :showAlert="showLangSkillsError" :alert="langSkillsError" />
 					<ul class="grid grid-2 other-roles" :style="'position:relative;z-index:'+(200-i)+';'" v-for="i in moreSkill">
-						<li><Select :name="'lang-skills-'+i" :options="skills" v-on:change="(v) => setLangSkills(v, i)" label="" :alt="true"  /></li>
-						<li class="alt"><Select :name="'lang-skills-year-'+i" :options="years" v-on:change="(v) => setLangSkillsYears(v, i)" label="" :style="'position:relative;z-index:0;'"  /></li>
+						<li><Select :name="'lang-skills-'+i" :options="skills" v-on:change="(v) => setLangSkills(v, i)" label="" :alt="true" :selected="(values.langSkills[i-1]) ? values.langSkills[i-1].value : ''"  /></li>
+						<li class="alt"><Select :name="'lang-skills-year-'+i" :options="years" v-on:change="(v) => setLangSkillsYears(v, i)" v-on:delete="() => deleteSkills(i)" label="" :showDelete="i>1" :style="'position:relative;z-index:0;'" :selected="(values.langSkills[i-1]) ? values.langSkills[i-1].experience : ''"  /></li>
 					</ul>
 					<a href="#" v-on:click.prevent="addMoreSkill" class="add-more-roles-btn">+ Add a language, framework or skill</a>
 				</div>
 				<div v-show="state=='employment'" class="forms">
 					<Title label="What is your current employment status?" :showAlert="showEmploymentError" :alert="employmentError" />
 					<ul class="grid grid-2">
-						<li><Select name="employment-status" :options="employment" v-on:change="setEmployment" label="" :alt="true"  /></li>
+						<li><Select name="employment-status" :options="employment" v-on:change="setEmployment" label="" :alt="true" :selected="(values.employment != '') ? values.employment : ''"  /></li>
 						<li>&nbsp;</li>
 					</ul>
 				</div> 
@@ -68,7 +68,7 @@
 						<li>
 							<p v-show="sets[i.key] != false">{{ values.integrations[i.key] }} <i class="dc-cancel" v-on:click="sets[i.key]=false"></i></p>
 							<div v-show="sets[i.key]==false">
-								<Input type="text" label="" :alt="true" placeholder="Enter your username" v-on:change="(v)=>setIntegrationValue(v, i.key)" /><button class="small" v-on:click="setIntegration(i.key)">Link</button>
+								<Input type="text" label="" :alt="true" placeholder="Enter your username" v-on:change="(v)=>setIntegrationValue(v, i.key)" :value="(values.integrations[i.key]) ? values.integrations[i.key] : ''" /><button class="small" v-on:click="setIntegration(i.key)">Link</button>
 							</div>
 						</li>
 					</ul>
@@ -155,7 +155,7 @@
 			nextForm() {
 				console.log(this.values.integrations);
 				if(this.state == 'role') { 
-					if(this.values.preferredRole.length > 0){
+					if(this.values.preferredRole.length > 0 && this.showRoleError != true){
 						this.state = 'otherRoles';
 						this.canGoBack = true; 
 					}else { this.showRoleError = true }
@@ -211,6 +211,11 @@
 				for(var i=0;i<fields.length;i++) { if(fields[i].value == value) { this.otherRoleError="* You've already selected that role"; this.showOtherRoleError=true; return; }}
 				this.values.roles[parseInt(id) - 1] = { value: value };
 			},
+			deleteRole(id) {
+				delete this.values.roles[parseInt(id) - 1];
+				this.moreRoles--;
+				this.saveState();
+			},
 			setLangSkills: function(value, id) { 
 				if(value!=="") { this.showLangSkillsError = false; }else { this.showLangSkillsError=true; return; }
 				var field = this.values.langSkills[parseInt(id)-1]; 
@@ -225,6 +230,11 @@
 				(field) ? field.experience = value : field = { experience: value}; 
 				this.values.langSkills[parseInt(id)-1] = field;
 			},
+			deleteSkills(id) {
+				delete this.values.langSkills[parseInt(id) -1];
+				this.moreSkill--;
+				this.saveState();
+			},
 			setEmployment: function(value) {
 				if(value!=="") { this.showEmploymentError = false; }else { this.showEmploymentError=true; return; }
 				this.values.employment = value;
@@ -237,13 +247,14 @@
 			},
 			setIntegrationValue: function(value, key) {
 				this.values.integrations[key] = value;
+				this.saveState();
 			},
 			addMoreRoles: function() {
-				if(this.moreRoles > 2) { this.otherRoleError = "* You can't add more than 3 more roles"; this.showOtherRoleError = true; }
+				if(this.moreRoles > 10) { this.otherRoleError = "* You can't add more than 3 more roles"; this.showOtherRoleError = true; }
 				else { this.moreRoles = this.moreRoles+1; }
 			},
 			addMoreSkill: function() {
-				if(this.moreSkill < 10) { this.moreSkill=this.moreSkill+1; }
+				if(this.moreSkill < 10) { this.moreSkill = this.moreSkill+1; }
 				else {
 					this.showLangSkillsError = true;
 					this.langSkillsError = "* You can't add more than 10 skill and languages"
@@ -251,7 +262,7 @@
 			},
 			saveState() {
 				localStorage.setItem("profile_completion_state", this.state);
-				localStorage.setItem("profile_data", JSON.stringify(this.values));
+				localStorage.setItem("profile_data", JSON.stringify({moreRoles: this.moreRoles, values: this.values, moreSkill: this.moreSkill}));
 				if(this.state == "submitting") { 
 					localStorage.removeItem("profile_completion_state");
 					localStorage.removeItem("profile_data");
@@ -300,6 +311,14 @@
 				console.log(value);
 			}
 		},
+		created() {
+			if(localStorage.getItem("profile_data")) {
+				var data = JSON.parse(localStorage.getItem("profile_data"));
+				this.values = data.values;
+				this.moreSkill = data.moreSkill;
+				this.moreRoles = data.moreRoles;
+			}
+		},
 		mounted() {
 			store.dispatch('getSession').then(session => {
 				if(session == null) this.$router.push("/")
@@ -307,14 +326,12 @@
 						Bus.$emit("Header_showAccount", true);
 						if(localStorage.getItem("profile_completion_state")) {
 							this.state = localStorage.getItem("profile_completion_state");
+							if(this.state != 'role') { this.canGoBack = true; }
 							this.showWelcomeMessage = false;
 						}
 						this.name = session.user.first_name;
 					}
 			});
-			if(localStorage.getItem("profile_data")) {
-				this.values = JSON.parse(localStorage.getItem("profile_data"));
-			}
 		},
 		destroyed() {
 			Bus.$emit("Header_showAccount", false);

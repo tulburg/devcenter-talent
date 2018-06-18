@@ -118,6 +118,8 @@
 			Bus.$emit("Header_showAccount", true);
 			Bus.$emit("Header_showLinks", true);
 			Bus.$emit("Header_showGrayLogo", true);
+			Bus.$emit("Header_setBoot", true);
+			Bus.$emit("Header_startBoot", true);
 			let self = this;
 			store.dispatch('getSession').then(session => {
 				if(session == null) this.$router.push("/")
@@ -142,6 +144,7 @@
 						Bus.$emit("Header_activeLink", "/profile/"+session.user.username);
 					}
 			});
+
 		},
 		destroyed: function() {
 			Bus.$emit("Header_showAccount", false);

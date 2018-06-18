@@ -40,7 +40,7 @@
 				<div class="roles-others" v-if="!savingRolesIntegration">
 					<Title label="What other roles best describer you?" :showAlert="showOtherRoleError" :alert="otherRoleError" />
 					<ul class="grid grid-2 other-roles" :style="'position:relative;z-index:'+(106-i)+';'" v-for="i in moreRoles">
-						<li><Select :name="'other-role-'+i" :options="roles" v-on:change="(v) => setOtherRoles(v, i)" label="" :alt="true" :selected="(userProfile.roles_and_skills.roles[i-1]) ? userProfile.roles_and_skills.roles[i-1].value : ''"  /></li>
+						<li><Select :name="'other-role-'+i" :options="roles" v-on:change="(v) => setOtherRoles(v, i)" label="" v-on:delete="() => deleteRole(i)" label="" :alt="true" :showDelete="i>1" :selected="(userProfile.roles_and_skills.roles[i-1]) ? userProfile.roles_and_skills.roles[i-1].value : ''"  /></li>
 						<li>&nbsp;</li>
 					</ul>
 					<a href="#" v-on:click.prevent="addMoreRoles" class="add-more-roles-btn">+ Add a Role</a>
@@ -226,6 +226,10 @@
 				this.showOtherRoleError=false;
 				for(var i=0;i<fields.length;i++) { if(fields[i].value == value) { this.otherRoleError="* You've already selected that role"; this.showOtherRoleError=true; return; }}
 				this.values.roles[parseInt(id) - 1] = { value: value };
+			},
+			deleteRole(id) {
+				delete this.values.roles[parseInt(id) - 1];
+				this.moreRoles--;
 			},
 			setLangSkills: function(value, id) { 
 				if(value!=="") { this.showLangSkillsError = false; }else { this.showLangSkillsError=true; return; }

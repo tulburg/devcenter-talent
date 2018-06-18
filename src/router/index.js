@@ -9,6 +9,7 @@ import ProfileView from '@/components/ProfileView'
 import Account, { ChangePassword, Feedback, Settings } from '@/components/Account'
 import Projects from '@/components/Projects'
 import Inbox from '@/components/Inbox'
+import SetPassword from '@/components/SetPassword'
 
 Vue.use(Router)
 
@@ -29,7 +30,8 @@ export default new Router({
 			{ path: 'feedback', component: Feedback, name: 'Feedback' }
 		] },
 		{ path: '/projects', name: 'Projects', component: Projects },
-		{ path: '/inbox', name: 'Inbox', component: Inbox }
+		{ path: '/inbox', name: 'Inbox', component: Inbox },
+		{ path: '/set-password', name: 'SetPassword', component: SetPassword }
   	],
   	mode: 'history'
 })

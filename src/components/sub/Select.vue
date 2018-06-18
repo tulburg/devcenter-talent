@@ -2,10 +2,13 @@
 	<div class="select">
 		<label>{{ label }}</label>
 		<div :class="{ active: showAlert }" class="alert">{{ alert }}</div>
-		<select :class="{ alt: alt }" class="cs-select default" :id="name" :name="name">
-			<option v-for="option in options" :value="option.value" v-if="option.value != selected">{{ option.title }}</option>
-			<option v-for="option in options" :value="option.value" v-if="option.value == selected" selected>{{ option.title }}</option>
-		</select>
+		<div class="select-wrap">
+			<select :class="{ alt: alt }" class="cs-select default" :id="name" :name="name">
+				<option v-for="option in options" :value="option.value" v-if="option.value != selected">{{ option.title }}</option>
+				<option v-for="option in options" :value="option.value" v-if="option.value == selected" selected>{{ option.title }}</option>
+			</select>
+			<div class="delete-button" v-on:click="doDelete" v-if="showDelete"><i class="dc-cancel"></i></div>
+		</div>
 	</div>
 </template>
 
@@ -22,7 +25,8 @@
 			]},
 			showAlert: { type: Boolean, default: false },
 			alt: { type: Boolean, default: false },
-			selected: { type: String, default: '' }
+			selected: { type: String, default: '' },
+			showDelete: { type: Boolean, default: false }
 		},
 		methods: {
 			clear() { this.$emit("clear"); },
@@ -31,6 +35,9 @@
 				var gggParent = window.event.target.parentNode.parentNode.parentNode.parentNode;
 			 	if(value == "") gggParent.$(".cs-placeholder").style = "color: #ccc";
 			 	else { gggParent.$(".cs-placeholder").style = "color: inherit"; }
+			},
+			doDelete() {
+				this.$emit("delete");
 			}
 		},
 		mounted() {

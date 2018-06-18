@@ -47,6 +47,7 @@ section { display: flex; align-items: center; top: 90px; height: calc(100% - 90p
 .input input, .title .label { position: relative; z-index: 1; }
 .input .alert, .select .alert, .title .alert { position: absolute; z-index: 0; bottom: 0px; font-size: 13px; color: $red; height: 18px; transition: ease-in-out .3s all; &.active { bottom: -18px; }}
 .title .label { background-color: $white; font-weight: bold; }
+.select .select-wrap { position: relative; .delete-button { position: absolute; right: -40px; top: calc(50% - 13px); height: 26px; width: 26px; @include darken_hover_active($light-color); border-radius: 15px; text-align: center; padding-top: 5px; color: $white; font-size: 12px; cursor: pointer; } }
 /* Welcome page definitions  */
 section.welcome { flex-direction: column; justify-content: center; }
 section.welcome .box { margin-top: -100px; width: 500px; text-align: left; transition: .3s all ease-in-out; padding-right: 60px; padding-left: 60px; }
@@ -88,6 +89,9 @@ section.account { flex-direction: column;
 	.settings { display: flex; height: 100vh; width: 100vw; justify-content: center; .box { position: relative; padding-top: 20px; margin-top: -100px; width: 500px; text-align: left; p.success { text-align: center; margin-bottom: 40px; } h1 { text-align: center; } ul.grid li { padding-left: 0px; } label { color: $light-color; font-weight: bold; } p { margin-top: 5px; } label.email { margin-top: 20px; } label.check { color: $color; font-weight: 100; margin-left: 18px; input { margin-left: -18px; } } .input { label { color: $color; font-weight: 100; }} } } 
 	.history { position: absolute; top: -50px; left: 0px; color: $light-color; i { margin-bottom: 3px; } &:hover { color: darken($light-color, 20%); } }
 	.feedback { display: flex; height: 100vh; width: 100vw; justify-content: center; .box { padding-top: 30px; margin-top: -100px; width: 700px; text-align: center; p { text-align: center; } textarea { width: 100%; font: inherit; padding: 15px; border: 1px solid lighten($light-color, 15%); border-radius: 3px; resize: none; height: 300px; margin-bottom: 30px; } } div.success { margin-top: 40px; }}}
+section.set-password { justify-content: center; .box { width: 500px; margin-top: -100px; text-align: left; h1 { margin-bottom: 0px; text-align: center; } p { text-align: center; margin-top: 0px; color: darken($color, 5%); } } form { padding-right: 40px; padding-left: 40px; margin-top: 40px; } }
+
+
 
 .preloader { text-align: center; width: 100%; i { font-size: 96px; } }
 .badge { font-size: 10px; text-transform: uppercase; color: $white; background-color: $color; padding: 2px 5px; display: inline-block; vertical-align: middle; border-radius: 2px; &.success { background-color: #1fb927; } &.danger { background-color: $red; } &.primary { background-color: $primary; } }
@@ -116,6 +120,8 @@ div.cs-select{display:inline-block;vertical-align:middle;position:relative;text-
 .cs-select.default > span::after { content: '\eb1c'; font-family: "dc"; }
 .cs-select.default.alt > span::after { color: $primary; }
 .cs-select.default:disabled { background-color: lighten($light-color, 15%); }
+
+
 
 /* Modal customization */
 div.modal .overlay { left: 0px; top: 0px; position: fixed; height: 100vh; width: 100vw; background-color: rgba(0,0,0,0.32); z-index: 1001; }
@@ -149,8 +155,9 @@ div.modal .footer { position: absolute; left: 0px; top: 100%; background-color: 
 @keyframes account-out { 0% { top: calc(100% + 10px); opacity: 1; } 100% { top: calc(100% - 30px); opacity: 0.0; } }
 .account-drop-enter-active { animation-name: account-in; animation-duration: .3s; animation-timing-function: cubic-bezier(0, 0, 0.48, 1.13); }
 .account-drop-leave-active { animation-name: account-out; animation-duration: .3s; animation-timing-function: cubic-bezier(0, 0, 0.48, 1.13); }
-
-
+@keyframes boot-up { 0%{ opacity: 0.1; } 100% { opacity: 1; } }
+.bootup { animation-name: boot-up; animation-duration: .5s; animation-timing-function: ease-in-out; }
+.boot { opacity: 0.1; }
 /* Responsiveness definitions */
 @include resolve(mobile) {
 	header { align-items: center; height: auto; padding-bottom: 10px; .logo, .header-links, .header-actions { width: 100%; } .logo, .header-actions { justify-content: center; padding: 10px 5px; padding-bottom: 0px; a { display: block; } } .logo { padding-top: 10px; padding-bottom: 0px; } }
