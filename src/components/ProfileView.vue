@@ -217,14 +217,14 @@
 				if(value!=="") { 
 					this.showRoleError = false; 
 					var fields = this.values.roles.concat(this.values.preferredRole);
-					for(var i=0;i<fields.length;i++) { if(fields[i].value == value) { this.roleError="* You've already selected that role"; this.showRoleError=true; return; }}
+					for(var i=0;i<fields.length;i++) { if(fields[i].value == value) { this.roleError="* You've already selected that role"; this.showRoleError=true; }}
 					this.values.preferredRole[0] = {value: value};
 				}else { this.showRoleError=true;  this.roleError="* Please select at least one role"; }
 			},
 			setOtherRoles: function(value, id) { 
 				var fields = this.values.roles.concat(this.values.preferredRole);
 				this.showOtherRoleError=false;
-				for(var i=0;i<fields.length;i++) { if(fields[i].value == value) { this.otherRoleError="* You've already selected that role"; this.showOtherRoleError=true; return; }}
+				for(var i=0;i<fields.length;i++) { if(fields[i].value == value) { this.otherRoleError="* You've already selected that role"; this.showOtherRoleError=true; }}
 				this.values.roles[parseInt(id) - 1] = { value: value };
 			},
 			deleteRole(id) {
@@ -236,7 +236,7 @@
 				var field = this.values.langSkills[parseInt(id)-1]; 
 				var all = this.values.langSkills;
 				this.showLangSkillsError=false;
-				for(var i=0;i<all.length;i++) { if(all[i].value == value) { this.langSkillsError="* You've already selected that skill"; this.showLangSkillsError=true; return; }}
+				for(var i=0;i<all.length;i++) { if(all[i].value == value) { this.langSkillsError="* You've already selected that skill"; this.showLangSkillsError=true; }}
 				(field) ? field.value = value : field = { value: value, experience: "0 - 2 years"}; 
 				this.values.langSkills[parseInt(id)-1] = field;
 			},
