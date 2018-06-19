@@ -46,7 +46,7 @@
 						<li><div>Current rating</div><h1>{{ ratings.total }}</h1></li>
 						<li><div>Max rating</div><h1>300</h1></li>
 					</ul>
-					<button>Request a Review</button>
+					<button v-show="0>1">Request a Review</button>
 				</div>
 			</div>
 		</div>
@@ -144,7 +144,9 @@
 						Bus.$emit("Header_activeLink", "/profile/"+session.user.username);
 					}
 			});
-
+			if(localStorage.getItem("profile_completion_state")) {
+				this.$router.push("/profile/incomplete");
+			}
 		},
 		destroyed: function() {
 			Bus.$emit("Header_showAccount", false);

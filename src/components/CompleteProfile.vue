@@ -7,7 +7,7 @@
 			<p>We've pre-filled your profile with the details you provided to us while being screened.</p>
 			<p>The next step is to tell us a bit more about what you do so that we can match you to projects you are best suited for. We don't want you missing out on great gigs.</p>
 			<div class="buttons">
-				<router-link to="/profile/incomplete" class="button clear">Skip for Now</router-link> <button v-on:click="showWelcomeMessage=!showWelcomeMessage">Get Started</button>
+				<router-link to="/profile" class="button clear">Skip for Now</router-link> <button v-on:click="showWelcomeMessage=!showWelcomeMessage">Get Started</button>
 			</div>
 		</div>
 

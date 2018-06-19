@@ -22,6 +22,8 @@ export default new Vuex.Store({
 		},
 		endSession: function(state, payload) {
 			Cookie.remove("DevTalent");
+			localStorage.removeItem("profile_completion_state");
+			localStorage.removeItem("profile_data");
 		},
 		saveProfile: function(state, payload) {
 			let cookie = Cookie.getJSON("DevTalent");
