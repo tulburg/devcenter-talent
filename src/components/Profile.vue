@@ -60,10 +60,13 @@
 	
 	export const ProfileEmptyState = {
 		name: 'EmptyState',
-		data() { return { placeholder : require("../assets/img/placeholder.svg"), firstname: 'John' } },
+		data() { return { placeholder : require("../assets/img/placeholder.svg"), firstname: 'John', profile_image: undefined } },
 		template: `<div class="profile-empty">
 						<div class="box">
-							<div class="profile-photo"><img :src="placeholder" alt="placeholder" /></div>
+							<div class="profile-photo">
+								<img :src="this.profile_image" alt="photo" v-if="profile_image!=undefined" />
+								<img :src="placeholder" alt="placeholder" v-else />
+							</div>
 							<h1>Hi {{ firstname }},</h1>
 							<p>Your profile is looking quite empty. We need to know a bit more about you and what you do so that we know what kind of projects to send you.</p>
 							<p>Click the button below to start filling your profile, it'll only take a couple of minutes, we promise.</p>
@@ -77,6 +80,7 @@
 			store.dispatch('getSession').then(session => {
 				if(session) { 
 					if(session.user.first_name != undefined) { this.firstname = session.user.first_name }
+					if(session.user.profile_image) { this.profile_image = session.user.profile_image; }
 				}
 			});
 		}
@@ -84,10 +88,13 @@
 
 	export const ProfileIncompleteState = {
 		name: 'Incomplete',
-		data() { return { placeholder : require("../assets/img/placeholder.svg"), ratings: {}, firstname: 'John' }; },
+		data() { return { placeholder : require("../assets/img/placeholder.svg"), ratings: {}, firstname: 'John', profile_image: undefined }; },
 		template: `<div class="profile-empty">
 						<div class="box">
-							<div class="profile-photo"><img :src="placeholder" alt="placeholder" /></div>
+							<div class="profile-photo">
+								<img :src="this.profile_image" alt="photo" v-if="profile_image!=undefined" />
+								<img :src="placeholder" alt="placeholder" v-else />
+							</div>
 							<h1>Hi {{ firstname }},</h1>
 							<p>We noticed that you haven't finished filling your profile. We need to know a bit more about you and what you do so that we know what kind of projects to send you.</p>
 							<p>Click the button below to continue filling your profile, it'll only take a couple of minutes, we promise.</p>
@@ -97,12 +104,22 @@
 		methods: {
 			goToCompleteProfile() { this.$router.push('/complete-profile'); }
 		},
-		mounted() {
+		created() {
 			store.dispatch('getSession').then(session => {
 				if(session) { 
 					if(session.user.first_name != undefined) { this.firstname = session.user.first_name }
+					if(session.user.profile_image) { this.profile_image = session.user.profile_image; }
 				}
 			});
+		},
+		watch: {
+			profile_image() {
+				console.log("set");
+				console.log(this.profile_image);
+			}
+		},
+		mounted() {
+			console.log(this.profile_image);
 		}
 	}
 

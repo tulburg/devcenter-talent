@@ -2,7 +2,8 @@
 	<div class="profile-view" v-if="userProfile.work_preference">
 		<div class="box">
 			<div class="profile-photo">
-				<img :src="placeholder" :alt="photoClass" />
+				<img :src="placeholder" alt="placeholder" v-if="this.profile_image==undefined" />
+				<img :src="this.profile_image" alt="profile photo" v-else />
 				<div class="cover" v-on:click="changePhoto"><span v-if="!uploadingProfilePhoto">Change your profile picture</span><i v-else class="dc-spinner animate-spin"></i></div>
 				<input type="file" id="profile-file" v-on:change="setPhoto" style="display:none;visibility: hidden;" name="file" accept=".png,.jpg,.jpeg">
 			</div>
@@ -119,6 +120,7 @@
 	import Select from '@/components/sub/Select'
 	import Input from '@/components/sub/Input'
 	import store from '@/store'
+	import Bus from '@/Bus'
 
 	export default {
 		name: 'ViewProfile', 
@@ -126,7 +128,7 @@
 		data() { return {
 			moreRoles : 1, user: undefined, loadingComplete: false, userProfile: {}, showSuspendedModal: false,
 			fullname: "John Doe", hasOtherRole: false, role: "Backened", otherRole: ["Frontend"],
-			howRoleError: false, savingRolesIntegration: false, savingSkills: false, savingEmployment: false, uploadingProfilePhoto: false, photoClass: 'placeholder',
+			howRoleError: false, savingRolesIntegration: false, savingSkills: false, savingEmployment: false, uploadingProfilePhoto: false, photoClass: 'placeholder', profile_image: undefined,
 			roles: [
 				{ value: "", title: "Select a Role" }, 
 				{ value: "Android Developer", title: "Android Developer" },
@@ -196,12 +198,16 @@
 				formData.append('profile_image', files[0]);
 				store.dispatch('getSession').then(session => {
 					this.$http.post(store.state.api.development+"profile/update/profile-image", formData, {
-						header: { 'Authorization': session.token }
+						headers: { 'Authorization': session.token, 'Content-type': 'application/json' }
 					}).then(res => {
+						console.log(res);
 						document.getElementsByClassName("cover")[0].style = "display: none";
 						this.uploadingProfilePhoto = false;
-						this.photoClass = 'profile photo';
-						console.log(res);
+						this.profile_image = res.body.extras.user.profile_image;
+						let user = session.user;
+						user.profile_image = this.profile_image;
+						store.commit("saveUser", user);
+						Bus.$emit("Header_updatePhoto", this.profile_image);
 					}).catch(err => {
 						document.getElementsByClassName("cover")[0].style = "";
 						this.uploadingProfilePhoto = false;
@@ -341,6 +347,7 @@
 					self.userProfile = session.user_profile;
 					self.moreRoles = this.userProfile.roles_and_skills.roles.length;
 					self.moreSkill = this.userProfile.roles_and_skills.languages.length;
+					if(this.user.profile_image) { this.profile_image = this.user.profile_image }
 					if(this.user.li_username) { this.values.integrations['li_username'] = this.user.li_username; this.sets['li_username'] = true; }
 					if(this.user.git_username) { this.values.integrations['git_username'] = this.user.git_username; this.sets['git_username'] = true; }
 					if(this.user.behance_username) { this.values.integrations['behance_username'] = this.user.behance_username; this.sets['behance_username'] = true; }
@@ -350,6 +357,7 @@
 					this.values.langSkills = this.userProfile.roles_and_skills.languages;
 					if(this.user.first_name != undefined) { this.fullname = this.user.first_name }else { this.fullname = " "; }
 					if(this.user.last_name != undefined) { this.fullname = this.fullname+" "+this.user.last_name }
+						console.log(this.profile_image);
 				}
 			});
 			// setTimeout(function() {

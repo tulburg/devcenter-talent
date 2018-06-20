@@ -1602,6 +1602,7 @@ div.modal .footer {
       margin-right: 20px;
       padding-top: 100px; }
       section.profile .left .profile-empty .box {
+        margin: 0px;
         width: 100%;
         display: flex;
         align-content: center;

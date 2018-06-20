@@ -26,7 +26,8 @@
 				</router-link>
 				<div class="account-holder" v-show="showAccount">
 					<div class="account-photo">
-						<img src="../assets/img/placeholder.svg" alt="placeholder" class="account-pic acc-d" />
+						<img src="../assets/img/placeholder.svg" alt="placeholder" class="account-pic acc-d" v-if="profile_image==undefined" />
+						<img :src="profile_image" alt="photo" class="account-pic acc-d" v-else />
 					</div>
 					<div class="account-name acc-d">{{ fullname }} <i :class="{ upward: showAccountDropDown }" class="dc-caret acc-d"></i></div>
 					<transition name="account-drop">
@@ -50,7 +51,7 @@
 		name: 'Header',
 		data() {
 			var self = this;
-			return { showGrayLogo: false, showLinks: false, showLogin: false, showHome: false, showAccount: false, showSignup: false, showAccountDropDown: false, boot: false, bootup: false,
+			return { showGrayLogo: false, showLinks: false, showLogin: false, showHome: false, showAccount: false, showSignup: false, showAccountDropDown: false, boot: false, bootup: false, profile_image: undefined,
 				accountLinks: [
 					{ url: "/account/earnings", title: "Earnings" },
 					{ url: "/account/settings", title: "Account Settings" },
@@ -93,6 +94,7 @@
 					if(session.user.first_name != undefined) { this.fullname = session.user.first_name }
 					if(session.user.last_name != undefined) { this.fullname = this.fullname+" "+session.user.last_name }
 					if(session.user.username != undefined){ this.username = session.user.username; }
+					if(session.user.profile_image) { this.profile_image = session.user.profile_image; }
 				}
 			});
 		},
@@ -107,6 +109,7 @@
 			Bus.$on("Header_activeLink", (string) => { self.setActiveLink(string); });
 			Bus.$on("Header_setBoot", (bool) => { self.boot = bool });
 			Bus.$on("Header_startBoot", (bool) => { self.bootNow() });
+			Bus.$on("Header_updatePhoto", (photo) => { self.profile_image = photo; console.log("Header working..."); });
 			this.activeLink = localStorage.getItem("activeLink");
 			document.addEventListener("click", function(e) { self.toggleDropDown(e); });
 		}
