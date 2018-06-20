@@ -242,7 +242,8 @@
 			},
 			setLangSkillsYears: function(value, id) { 
 				var field = this.values.langSkills[parseInt(id)-1];
-				(field) ? field.experience = value : field = { experience: value}; 
+				if(field) { field.experience = value }
+				else { this.langSkillsError = '* Please select a skill first'; this.showLangSkillsError = true; return; }
 				this.values.langSkills[parseInt(id)-1] = field;
 			},
 			setEmployment: function(value) {

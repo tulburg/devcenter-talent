@@ -227,7 +227,13 @@
 			},
 			setLangSkillsYears: function(value, id) { 
 				var field = this.values.langSkills[parseInt(id)-1];
-				(field) ? field.experience = value : field = { experience: value}; 
+				if(field) {
+					field.experience = value;
+				}else {
+					this.showLangSkillsError=true;
+					this.langSkillsError="* Please select a skill first";
+					return;
+				} 
 				this.values.langSkills[parseInt(id)-1] = field;
 			},
 			deleteSkills(id) {
