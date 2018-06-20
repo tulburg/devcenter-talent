@@ -69,7 +69,7 @@
 			logOut: function() {
 				this.showAccount = false;
 				store.commit('endSession'); 
-				this.$router.push("/");
+				this.$router.push("/#logout");
 			},
 			setActiveLink(link) {
 				this.activeLink = link;

@@ -104,6 +104,9 @@
 					if(session.user.completed_level == 3) this.$router.push("/profile/"+session.user.username);
 				}
 			});
+			if(this.$route.hash == '#logout') {
+				this.showLogin = true;
+			}
 		},
 		destroyed() {
 			Bus.$emit("Header_showSignup", false);

@@ -497,7 +497,7 @@ section.profile {
   padding-top: 50px; }
   section.profile .left {
     width: 68%;
-    margin-right: 40px;
+    margin-right: 15px;
     padding-top: 100px; }
     section.profile .left .profile-empty .box {
       width: 100%;
@@ -558,7 +558,8 @@ section.profile {
       padding: 10px 0px; }
   section.profile .profile-view .box {
     padding-left: 100px;
-    padding-right: 100px; }
+    padding-right: 100px;
+    margin: 0px; }
   section.profile .profile-view .profile-photo {
     position: relative;
     background-color: #18a2dc;
@@ -954,7 +955,7 @@ section.set-password {
     min-height: 30px;
     text-align: left; }
     .ratings .bar span {
-      background-color: #cdcdcd;
+      background-color: #eff2f5;
       border-radius: 6px;
       height: 30px;
       width: 3.70%;
@@ -1598,7 +1599,7 @@ div.modal .footer {
       display: flex; }
     section.profile .left {
       width: 68%;
-      margin-right: 40px;
+      margin-right: 20px;
       padding-top: 100px; }
       section.profile .left .profile-empty .box {
         width: 100%;
