@@ -201,6 +201,7 @@
 						headers: { 'Authorization': session.token, 'Content-type': 'application/json' }
 					}).then(res => {
 						console.log(res);
+						document.getElementsByClassName("cover")[0].style = ""
 						this.uploadingProfilePhoto = false;
 						this.profile_image = res.body.extras.user.profile_image;
 						let user = session.user;
