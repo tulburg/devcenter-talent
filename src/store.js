@@ -13,34 +13,39 @@ export default new Vuex.Store({
 	},
 	mutations: {
 		startSession: function(state, payload){
-			Cookie.set("DevTalent", { 
+			localStorage.setItem("DevTalent", JSON.stringify({ 
 				userid: payload.user.id, 
 				type: payload.user.account_type,
 				token: payload.token,
 				user: payload.user
-			}, { expires: 7 });
+			}));
 		},
 		endSession: function(state, payload) {
-			Cookie.remove("DevTalent");
+			localStorage.removeItem("DevTalent");
 			localStorage.removeItem("profile_completion_state");
 			localStorage.removeItem("profile_data");
 		},
 		saveProfile: function(state, payload) {
-			let cookie = Cookie.getJSON("DevTalent");
-			cookie.user_profile = payload;
-			Cookie.set("DevTalent", cookie);
+			let data = JSON.parse(localStorage.getItem("DevTalent"));
+			data.user_profile = payload;
+			localStorage.setItem("DevTalent", JSON.stringify(data));
 		},
 		saveUser: function(state, payload) {
-			let cookie = Cookie.getJSON("DevTalent");
-			cookie.user = payload;
-			Cookie.set("DevTalent", cookie);
+			let data = JSON.parse(localStorage.getItem("DevTalent"));
+			data.user = payload;
+			localStorage.setItem("DevTalent", JSON.stringify(data));
+		},
+		saveProjects: function(state, payload) {
+			let data = JSON.parse(localStorage.getItem("DevTalent"));
+			data.projects = payload;
+			localStorage.setItem("DevTalent", JSON.stringify(data));
 		}
 	},
 	actions: {
 		getSession() {
-			let cookie = Cookie.getJSON("DevTalent");
-			if(cookie) {
-				return cookie;
+			let data = localStorage.getItem("DevTalent");
+			if(data) {
+				return JSON.parse(data);
 			} return null;
 		}
 	}
