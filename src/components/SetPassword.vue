@@ -24,6 +24,7 @@
 		components: { Input },
 		methods: {
 			createPassword() {
+				var self = this;
 				if(this.password == '' || this.confirmPassword == '') {
 					this.passwordError = '* Please enter a valid password'; 
 					this.showPasswordError = true; return;
@@ -38,7 +39,25 @@
 				}, {
 					headers: { 'Content-type': 'application/json' }
 				}).then(res => {
-					this.$router.push("/complete-profile");
+					self.$http.post(store.state.api.development+"login", { email: self.email, password: self.password }).then(res => {
+						let user = res.body.extras.user;
+						store.commit("startSession", {token: res.body.extras.token, user: res.body.extras.user});
+						self.$http.get(store.state.api.development+"profile/get",  { 
+							headers: { 'Authorization': res.body.extras.token }
+						}).then(res => {
+							store.commit("saveProfile", res.body.extras);
+							if(user.account_type == 'developer') {
+								self.$router.push("/complete-profile");
+							}else if(user.account_type == 'project manager') {
+								this.$router.push("/project-manager");
+							}
+						}).catch(err => {
+							console.log(err);
+						});
+					}).catch(err=>{
+						console.log(err);
+					});
+					
 				}).catch(err => { console.log(err); 
 					this.passwordError = '* '+err.body.extras.message;
 					this.showPasswordError = true;
