@@ -76,10 +76,14 @@
 						console.log(res);
 						store.commit("saveProfile", res.body.extras);
 						this.loading = false;
-						if(user.completed_level == 0) this.$router.push("/complete-profile");
-						if(user.completed_level == 1) this.$router.push("/profile");
-						if(user.completed_level == 2) this.$router.push("/profile/incomplete");
-						if(user.completed_level == 3) this.$router.push("/profile/"+user.username);
+						if(user.account_type == 'developer') {
+							if(user.completed_level == 0) this.$router.push("/complete-profile");
+							if(user.completed_level == 1) this.$router.push("/profile");
+							if(user.completed_level == 2) this.$router.push("/profile/incomplete");
+							if(user.completed_level == 3) this.$router.push("/profile/"+user.username);
+						}else if(user.account_type == 'project manager') {
+							console.log("Welcome to Project Manager");
+						}
 					}).catch(err => {
 						console.log(err);
 					});

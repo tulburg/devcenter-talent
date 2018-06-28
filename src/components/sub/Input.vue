@@ -3,6 +3,7 @@
 		<label>{{ label }}</label>
 		<div :class="{ active: showAlert }" class="alert">{{ alert }}</div>
 		<input :type="type" :class="{ alt: alt }" class="bar email" :placeholder="placeholder" v-model="finalValue" v-on:click="clear" v-on:input="change">
+		<slot/>
 	</div>
 </template>
 

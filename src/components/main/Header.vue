@@ -1,17 +1,19 @@
 <template>
 	<header>
-		<div :class="{ bootup: bootup, boot: (boot && !bootup) }">
+		<div :class="{ bootup: bootup, boot: (boot && !bootup) }" class="top">
 			<div class="logo">
 				<router-link to="/">
-					<img src="../assets/img/dc_blue.png" alt="logo" v-show="!showGrayLogo">
-					<img src="../assets/img/dc_gray.png" alt="logo" v-show="showGrayLogo">
+					<img src="../../assets/img/dc_blue.png" alt="logo" v-show="!showGrayLogo">
+					<img src="../../assets/img/dc_gray.png" alt="logo" v-show="showGrayLogo">
 				</router-link>
 			</div>
 			<div class="header-links">
 				<ul v-show="showLinks">
-					<li><a :href="'/profile/'+username" :class="{ active : (activeLink=='/profile/'+username) }" v-on:click="setActiveLink('/profile/'+username)">Profile</a></li>
-					<li><a href="/projects" :class="{ active : (activeLink=='/projects') }" v-on:click="setActiveLink('/projects')">Projects</a></li>
-					<li><a href="/inbox" :class="{ active : (activeLink=='/inbox'), unread: unread }" v-on:click="setActiveLink('/inbox')">Inbox</a></li>
+					<li v-if="!showPMLinks"><a href="#" :class="{ active : (activeLink=='/profile/'+username) }" v-on:click.prevent="setActiveLink('/profile/'+username)">Profile</a></li>
+					<li v-if="!showPMLinks"><a href="#" :class="{ active : (activeLink=='/projects') }" v-on:click.prevent="setActiveLink('/projects')">Projects</a></li>
+					<li v-if="!showPMLinks"><a href="#" :class="{ active : (activeLink=='/inbox'), unread: unread }" v-on:click.prevent="setActiveLink('/inbox')">Inbox</a></li>
+					<li v-if="showPMLinks"><a href="#" :class="{ active : (activeLink=='/project-manager') }" v-on:click.prevent="setActiveLink('/project-manager')">My Projects</a></li>
+					<li v-if="showPMLinks"><a href="#" :class="{ active : (activeLink=='/pool') }" v-on:click.prevent="setActiveLink('/pool')">Talent Pool</a></li>
 				</ul>
 			</div>
 			<div class="header-actions">
@@ -26,7 +28,7 @@
 				</router-link>
 				<div class="account-holder" v-show="showAccount">
 					<div class="account-photo">
-						<img src="../assets/img/placeholder.svg" alt="placeholder" class="account-pic acc-d" v-if="profile_image==undefined" />
+						<img src="../../assets/img/placeholder.svg" alt="placeholder" class="account-pic acc-d" v-if="profile_image==undefined" />
 						<img :src="profile_image" alt="photo" class="account-pic acc-d" v-else />
 					</div>
 					<div class="account-name acc-d">{{ fullname }} <i :class="{ upward: showAccountDropDown }" class="dc-caret acc-d"></i></div>
@@ -41,6 +43,14 @@
 				</div>
 			</div>
 		</div>
+		<div class="bottom" v-if="showPMLinks">
+			<ul>
+				<li><a href="#" :class="{ active : (activeSubLink=='/project-manager/new') }" v-on:click.prevent="setActiveSubLink('/project-manager/new')">New</a></li>
+				<li><a href="#" :class="{ active : (activeSubLink=='/project-manager/pending') }" v-on:click.prevent="setActiveSubLink('/project-manager/pending')">Pending</a></li>
+				<li><a href="#" :class="{ active : (activeSubLink=='/project-manager/in-progress') }" v-on:click.prevent="setActiveSubLink('/project-manager/in-progress')">In Progress</a></li>
+				<li><a href="#" :class="{ active : (activeSubLink=='/project-manager/closed') }" v-on:click.prevent="setActiveSubLink('/project-manager/closed')">Closed</a></li>
+			</ul>
+		</div>
 	</header>
 </template>
 
@@ -51,14 +61,14 @@
 		name: 'Header',
 		data() {
 			var self = this;
-			return { showGrayLogo: false, showLinks: false, showLogin: false, showHome: false, showAccount: false, showSignup: false, showAccountDropDown: false, boot: false, bootup: false, profile_image: undefined,
+			return { showGrayLogo: false, showLinks: false, showLogin: false, showHome: false, showAccount: false, showSignup: false, showAccountDropDown: false, showPMLinks: false, boot: false, bootup: false, profile_image: undefined,
 				accountLinks: [
 					{ url: "/account/earnings", title: "Earnings" },
 					{ url: "/account/settings", title: "Account Settings" },
 					{ url: "/account/feedback", title: "Feedback" },
 					{ action: function() { self.logOut() }, title: "Log Out" }
 				],
-				activeLink: '', unread : true, fullname: 'John Doe', username: 'john_doe'
+				activeLink: '', activeSubLink: '', unread : true, fullname: 'John Doe', username: 'john_doe'
 			}
 		},
 		methods: {
@@ -74,7 +84,11 @@
 			},
 			setActiveLink(link) {
 				this.activeLink = link;
-				localStorage.setItem("activeLink", link);
+				this.$router.push(link);
+			},
+			setActiveSubLink(link) {
+				this.activeSubLink = link;
+				this.$router.push(link);
 			},
 			bootNow() {
 				var self = this;
@@ -103,6 +117,12 @@
 			Bus.$on("Header_showLogin", function(bool){ self.showLogin = bool });
 			Bus.$on("Header_showHome", function(bool){ self.showHome = bool });
 			Bus.$on("Header_showLinks", (bool) => { self.showLinks = bool });
+			Bus.$on("Header_showPMLinks", (bool) => { 
+				self.showPMLinks = bool; 
+				self.activeLink = self.$route.path;
+				self.activeSubLink = self.$route.path;
+				if(this.$route.path.match('/project-manager')) this.activeLink = '/project-manager';
+			});
 			Bus.$on("Header_showGrayLogo", (bool) => { self.showGrayLogo = bool });
 			Bus.$on("Header_showAccount", (bool) => { self.showAccount = bool });
 			Bus.$on("Header_showSignup", (bool) => { self.showSignup = bool; });
@@ -110,7 +130,6 @@
 			Bus.$on("Header_setBoot", (bool) => { self.boot = bool });
 			Bus.$on("Header_startBoot", (bool) => { self.bootNow() });
 			Bus.$on("Header_updatePhoto", (photo) => { self.profile_image = photo; console.log("Header working..."); });
-			this.activeLink = localStorage.getItem("activeLink");
 			document.addEventListener("click", function(e) { self.toggleDropDown(e); });
 		}
 	}

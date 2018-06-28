@@ -141,21 +141,17 @@
 			store.dispatch('getSession').then(session => {
 				if(session == null) this.$router.push("/")
 					else {
-						// if(session.user_profile == undefined) {
-						// 	self.$http.get(store.state.api.development+"profile/get",  { 
-						// 		headers: { 'Authorization': session.token }
-						// 	}).then(res => {
-						// 		store.commit("saveProfile", res.body.extras);
-						// 		setTimeout(()=>{self.loadComplete = true;}, 1000);
-						// 		self.ratings = res.body.extras.user_rating;
-						// 		Bus.$emit("Header_activeLink", "/profile/"+session.user.username);
-						// 	}).catch(err => {
-						// 		self.loadComplete = true;
-						// 		self.completeError = err.message;
-						// 	});
-						// }else {
-							
-						// }
+						// self.$http.get(store.state.api.development+"profile/get",  { 
+						// 	headers: { 'Authorization': session.token }
+						// }).then(res => {
+						// 	store.commit("saveProfile", res.body.extras);
+						// 	setTimeout(()=>{ self.loadComplete = true; }, 1000);
+						// 	self.ratings = res.body.extras.user_rating;
+						// 	Bus.$emit("Header_activeLink", "/profile/"+session.user.username);
+						// }).catch(err => {
+						// 	self.loadComplete = true;
+						// 	self.completeError = err.message;
+						// });
 						self.ratings = session.user_profile.user_rating;
 						self.loadComplete = true;
 						Bus.$emit("Header_activeLink", "/profile/"+session.user.username);

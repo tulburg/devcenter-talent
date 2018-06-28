@@ -1,37 +1,29 @@
 <template>
 	<section class="projects">
 		<div class="container">
-			<div class="box" v-for="i in 5">
-				<ul class="grid grid-2 separator project">
-					<li>
-						<h1>Travel Mall <span :class="{primary : i==2||i==3, success: i==1, danger: i==4}" class="badge">IN PROGRESS</span></h1>
-						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-						consequat</p>
-					</li>
-					<li>
-						<div class="label">Cost</div>
-						<div class="value">NGN 350, 000</div><br/>
-						<div class="label">Due Date</div>
-						<div class="value">24th Aug 2018</div><br/>
-						<router-link to="/">View Milestone <i class="dc-caret right"></i></router-link>
-					</li>
-				</ul>
-			</div>
+			<Project :data="{
+				type: 'talent', // pm, talent, admin
+				title: 'Riby',
+				description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat',
+				cost: '300, 000',
+				assigner: 'Seun Smith',
+				due: '24th Aug 2018',
+				milestone: 'http://google.com'
+			}" />
 			<div style="min-height:100px">&nbsp;</div>
 		</div>
 	</section>
 </template>
 
 <script>
-	
+	import Project from '@/components/main/Project'
 	import Bus from '@/Bus'
 	import store from '@/store'
 
 	export default {
 		name: 'Projects',
-		data() { return { }},
+		data() { return {  }},
+		components: { Project },
 		mounted() {
 			Bus.$emit("Header_showAccount", true);
 			Bus.$emit("Header_showLinks", true);

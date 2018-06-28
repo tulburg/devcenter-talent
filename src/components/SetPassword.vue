@@ -15,6 +15,7 @@
 
 <script>
 	import Bus from '@/Bus'
+	import store from '@/store'
 	import Input from '@/components/sub/Input'
 
 	export default {
@@ -24,17 +25,25 @@
 		methods: {
 			createPassword() {
 				if(this.password == '' || this.confirmPassword == '') {
-					this.passwordError = 'Please enter a valid password'; 
+					this.passwordError = '* Please enter a valid password'; 
 					this.showPasswordError = true; return;
 				} else if (this.password != this.confirmPassword) {
-					this.confirmError = 'Password does not match';
+					this.confirmError = '* Password does not match';
 					this.showPasswordError = true; return;
 				}
-				
+				this.$http.post(store.state.api.development+"recover-password-change", {
+					email: this.$route.params.email,
+					token: this.$route.params.token,
+					newpass: this.password
+				}, {
+					headers: { 'Content-type': 'application/json' }
+				}).then(res => {
+					this.$router.push("/complete-profile");
+				}).catch(err => { console.log(err); 
+					this.passwordError = '* '+err.body.extras.message;
+					this.showPasswordError = true;
+				});
 			}
-		},
-		destoyed() {
-
 		}
 	}
 </script>

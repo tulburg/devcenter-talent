@@ -10,6 +10,8 @@ import Account, { ChangePassword, Feedback, Settings } from '@/components/Accoun
 import Projects from '@/components/Projects'
 import Inbox from '@/components/Inbox'
 import SetPassword from '@/components/SetPassword'
+import { PMSplash, New, Pending } from '@/components/project-manager'
+import ProjectManager from '@/components/ProjectManager'
 
 Vue.use(Router)
 
@@ -31,7 +33,12 @@ export default new Router({
 		] },
 		{ path: '/projects', name: 'Projects', component: Projects },
 		{ path: '/inbox', name: 'Inbox', component: Inbox },
-		{ path: '/set-password', name: 'SetPassword', component: SetPassword }
+		{ path: '/set-password/:email/:token', name: 'SetPassword', component: SetPassword },
+		{ path: '/project-manager', component: ProjectManager, children: [
+			{ path: '', component: PMSplash, name: 'PMSplash' },
+			{ path: 'new', component: New, name: 'New' },
+			{ path: 'pending', component: Pending, name: 'Pending' }
+		] }
   	],
   	mode: 'history'
 })

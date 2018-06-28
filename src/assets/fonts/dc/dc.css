@@ -68,6 +68,13 @@
 .dc-tick:before { content: '\eb1f'; } /* '' */
 .dc-doze:before { content: '\eb21'; } /* '' */
 .dc-download:before { content: '\eb22'; } /* '' */
+.dc-tick-2:before { content: '\ee7a'; } /* '' */
+.dc-link:before { content: '\ee7c'; } /* '' */
+.dc-plus:before { content: '\ee7e'; } /* '' */
+.dc-lazy:before { content: '\ee80'; } /* '' */
+.dc-tick-3:before { content: '\ee81'; } /* '' */
+.dc-calendar:before { content: '\ee82'; } /* '' */
+.dc-menu-h:before { content: '\f100'; } /* '' */
 
 
 

@@ -44,7 +44,9 @@
 						<li><p>*****************</p></li><li><a class="button clear colored" href="edit">Change Password</button></a></li>
 					</ul>
 					<label class="email">Email notifications</label>
+					<label class="check"><input type="checkbox" checked /> Receive email notifications for projects shared with you</label>
 					<label class="check"><input type="checkbox" checked /> Receive email notifications when you have been assigned to a project</label>
+					<label class="check"><input type="checkbox" checked /> Receive email notifications for all activity on your account</label>
 				</div>
 			</div>
 		`,
