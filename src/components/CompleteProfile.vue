@@ -7,24 +7,24 @@
 			<p>We've pre-filled your profile with the details you provided to us while being screened.</p>
 			<p>The next step is to tell us a bit more about what you do so that we can match you to projects you are best suited for. We don't want you missing out on great gigs.</p>
 			<div class="buttons">
-				<router-link to="/profile" class="button clear">Skip for Now</router-link> <button v-on:click="showWelcomeMessage=!showWelcomeMessage">Get Started</button>
+				<router-link to="/profile" class="button clear skip-btn">Skip for Now</router-link> <button v-on:click="showWelcomeMessage=!showWelcomeMessage">Get Started</button>
 			</div>
 		</div>
 
 		<section class="invert" v-show="!showWelcomeMessage">
 			<div class="box process-stager">
 				<ul class="grid grid-4">
-					<li class="stage active"><div class="counter"><span v-if="state=='role'||state=='otherRoles'">1</span><i class="dc-tick" v-else></i></div><div>Role</div></li>
+					<li class="stage active"><div class="counter"><span v-if="state=='role'||state=='otherRoles'">1</span><i class="dc-tick-2" v-else></i></div><div>Role</div></li>
 					<li :class="{active: state!='role'&&state!='otherRoles'}" class="stage">
-						<div class="counter"><span v-if="state!='employment'&&state!='integration'&&state!='submitting'">2</span><i class="dc-tick" v-else></i></div>
+						<div class="counter"><span v-if="state!='employment'&&state!='integration'&&state!='submitting'">2</span><i class="dc-tick-2" v-else></i></div>
 						<div>Languages and Skills</div>
 					</li>
 					<li :class="{active: state!='role'&&state!='otherRoles'&&state!='langSkills'}" class="stage">
-						<div class="counter"><span v-if="state!='integration'&&state!='submitting'">3</span><i class="dc-tick" v-else></i></div>
+						<div class="counter"><span v-if="state!='integration'&&state!='submitting'">3</span><i class="dc-tick-2" v-else></i></div>
 						<div>Employment Status</div>
 					</li>
 					<li :class="{active: state=='integration'||state=='submitting'}" class="stage">
-						<div class="counter"><span v-if="state!='submitting'">4</span><i class="dc-tick" v-else></i></div>
+						<div class="counter"><span v-if="state!='submitting'">4</span><i class="dc-tick-2" v-else></i></div>
 						<div>Integrations</div>
 					</li>
 				</ul>	
@@ -81,8 +81,8 @@
 				</div>
 				<div class="form-footer" align="right" v-show="state!='submitting'">
 					<button class="bordered" v-show="canGoBack" v-on:click="previousForm" style="float:left;">Back</button>
-					<button class="long" v-on:click="finish" v-if="state=='integration'">Finish</button>
-					<button class="long" v-on:click="nextForm" v-else>Next</button>
+					<button class="" v-on:click="finish" v-if="state=='integration'">Finish</button>
+					<button class="" v-on:click="nextForm" v-else>Next</button>
 				</div>
 			</div>
 		</section>

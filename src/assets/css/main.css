@@ -306,7 +306,7 @@ section {
 
 .title .label {
   background-color: #ffffff;
-  font-weight: bold; }
+  font-weight: 700; }
 
 .select .select-wrap {
   position: relative; }
@@ -500,7 +500,8 @@ section.complete-profile {
       flex-direction: column;
       align-items: center;
       padding: 0px;
-      width: 26.66% !important; }
+      width: 26.66% !important;
+      font-size: 14px; }
       section.complete-profile div.process-stager .stage::before {
         content: "";
         position: absolute;
@@ -536,6 +537,9 @@ section.complete-profile {
         background-color: #ffffff; }
         section.complete-profile div.process-stager .stage .counter span, section.complete-profile div.process-stager .stage .counter i {
           display: block; }
+        section.complete-profile div.process-stager .stage .counter i {
+          font-size: 11px;
+          margin-top: 6px; }
   section.complete-profile div.process-form {
     width: 60%;
     margin-top: 30px; }
@@ -833,6 +837,10 @@ section.projects {
     section.projects .container .box {
       width: 70%;
       padding: 10px; }
+    section.projects .container .empty-state i {
+      font-size: 90px; }
+    section.projects .container .empty-state p {
+      text-align: center; }
   section.projects .project {
     padding: 0px 15px; }
     section.projects .project p {
@@ -861,7 +869,7 @@ section.inbox {
   section.inbox .container {
     display: inline-block;
     margin-top: 40px;
-    width: 70%;
+    width: 80%;
     height: calc(100% - 100px); }
     section.inbox .container .box {
       width: 100%;
@@ -873,6 +881,7 @@ section.inbox {
         width: 35%;
         height: 100%; }
       section.inbox .container .box .right-pane {
+        position: relative;
         width: 65%;
         height: 100%;
         background-color: #ffffff;
@@ -887,6 +896,7 @@ section.inbox {
       display: inline;
       position: relative; }
       section.inbox .action-bar .menu ul {
+        border-radius: 3px;
         position: absolute;
         top: calc(100% + 10px);
         background-color: #ffffff;
@@ -894,6 +904,7 @@ section.inbox {
         right: -10px;
         border: 1px solid #d9d9d9;
         box-shadow: 4px 4px 6px 4px rgba(40, 40, 40, 0.1);
+        z-index: 3;
         list-style: none; }
         section.inbox .action-bar .menu ul li {
           display: block;
@@ -927,7 +938,49 @@ section.inbox {
         cursor: pointer;
         float: right; }
   section.inbox .mail-list {
-    overflow-y: auto; }
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: calc(100% - 70px); }
+    section.inbox .mail-list .mail {
+      position: relative;
+      cursor: pointer;
+      text-align: left;
+      padding: 20px; }
+      section.inbox .mail-list .mail.active {
+        background-color: whitesmoke; }
+      section.inbox .mail-list .mail.active::before {
+        content: "";
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        width: 4px;
+        height: 100%;
+        background-color: #18a2dc; }
+      section.inbox .mail-list .mail:hover {
+        background-color: #ecf8fd; }
+      section.inbox .mail-list .mail:last-child {
+        border-radius: 0px 0px 3px 3px; }
+      section.inbox .mail-list .mail h2 {
+        width: 100%;
+        font-size: 18px;
+        color: #313131;
+        margin-top: 0px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden; }
+        section.inbox .mail-list .mail h2 .unread {
+          height: 8px;
+          width: 8px;
+          background-color: #18a2dc;
+          display: inline-block;
+          vertical-align: middle;
+          border-radius: 4px;
+          margin-left: 5px;
+          margin-bottom: 2px; }
+      section.inbox .mail-list .mail p {
+        margin: 0px;
+        color: #9a9a9a; }
 
 section.account {
   flex-direction: column; }
@@ -1851,6 +1904,10 @@ div.modal .footer {
   section.complete-profile .welcome-message {
     padding: 20px;
     margin-top: 5px; }
+    section.complete-profile .welcome-message .skip-btn {
+      padding-left: 0px;
+      padding-right: 0px;
+      margin-right: 32px; }
     section.complete-profile .welcome-message a.button {
       display: block;
       margin-bottom: 10px;
@@ -1974,6 +2031,10 @@ div.modal .footer {
       padding-top: 20px; }
     section.complete-profile .welcome-message {
       margin-top: 5px; }
+      section.complete-profile .welcome-message .skip-btn {
+        padding-left: 0px;
+        padding-right: 0px;
+        margin-right: 32px; }
       section.complete-profile .welcome-message a.button {
         display: block;
         margin-bottom: 10px;
@@ -2195,6 +2256,10 @@ div.modal .footer {
     padding-top: 100px; }
   section.complete-profile .welcome-message {
     margin-top: 5px; }
+    section.complete-profile .welcome-message .skip-btn {
+      padding-left: 0px;
+      padding-right: 0px;
+      margin-right: 32px; }
     section.complete-profile .welcome-message a.button {
       display: inline;
       margin-bottom: 10px;

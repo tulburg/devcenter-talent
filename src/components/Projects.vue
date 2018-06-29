@@ -9,8 +9,12 @@
 				assigner: 'Seun Smith',
 				due: '24th Aug 2018',
 				milestone: 'http://google.com'
-			}" />
+			}" v-show="false" />
 			<div style="min-height:100px">&nbsp;</div>
+			<div class="box empty-state">
+				<i class="dc-doze"></i>
+				<p>You have no projects at the moment, don't worry we'll send you some soon</p>
+			</div>
 		</div>
 	</section>
 </template>
