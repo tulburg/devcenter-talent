@@ -256,7 +256,7 @@
 				this.saveState();
 			},
 			addMoreRoles: function() {
-				if(this.moreRoles > 10) { this.otherRoleError = "* You can't add more than 3 more roles"; this.showOtherRoleError = true; }
+				if(this.moreRoles > 4) { this.otherRoleError = "* You can't add more than 4 more roles"; this.showOtherRoleError = true; }
 				else { this.moreRoles = this.moreRoles+1; }
 			},
 			addMoreSkill: function() {

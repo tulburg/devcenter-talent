@@ -27,7 +27,7 @@ PROJECT_COMPLETED = 5 (completed) -->
 			store.dispatch('getSession').then(session => {
 				if(session) { 
 					self.user = session.user;
-					self.$http.get(store.state.api.development+"user/collaborating-projects", {
+					self.$http.get(store.state.api.development+"user/get-my-projects", {
 						headers: { 'Authorization': session.token }
 					}).then(res => {
 						store.commit("saveProjects", res.body.extras.projects);
