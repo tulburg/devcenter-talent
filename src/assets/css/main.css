@@ -306,7 +306,8 @@ section {
 
 .title .label {
   background-color: #ffffff;
-  font-weight: 700; }
+  font-weight: 700;
+  font-size: 14px; }
 
 .select .select-wrap {
   position: relative; }
@@ -507,7 +508,7 @@ section.complete-profile {
         position: absolute;
         top: calc(30% - 2px);
         height: 2px;
-        background-color: #d9d9d9;
+        background-color: #bfc7d1;
         left: -46%;
         width: 90%;
         z-index: 0; }
@@ -529,8 +530,8 @@ section.complete-profile {
         font-size: 18px;
         padding-top: 7px;
         margin-bottom: 10px;
-        border: 1px solid #b3b3b3;
-        color: #b3b3b3;
+        border: 2px solid #bfc7d1;
+        color: #bfc7d1;
         border-radius: 20px;
         height: 40px;
         width: 40px;
@@ -595,7 +596,7 @@ section.profile {
   display: flex;
   justify-content: center;
   height: auto;
-  padding-top: 50px; }
+  padding-top: 64px; }
   section.profile .left {
     width: 68%;
     margin-right: 15px;
@@ -837,6 +838,8 @@ section.projects {
     section.projects .container .box {
       width: 70%;
       padding: 10px; }
+      section.projects .container .box:hover {
+        box-shadow: 4px 4px 4px 0 rgba(204, 204, 204, 0.5); }
     section.projects .container .empty-state i {
       font-size: 90px; }
     section.projects .container .empty-state p {
@@ -868,7 +871,7 @@ section.inbox {
   flex-direction: column; }
   section.inbox .container {
     display: inline-block;
-    margin-top: 40px;
+    margin-top: 64px;
     width: 80%;
     height: calc(100% - 100px); }
     section.inbox .container .box {
@@ -1672,6 +1675,11 @@ div.cs-select:focus {
 .cs-select.default:disabled {
   background-color: #d9d9d9; }
 
+/* * Alien Customization */
+.fix-select .cs-select {
+  background-color: #f9f9f9;
+  border: 1px solid #e1e1e1; }
+
 /* Modal customization */
 div.modal .overlay {
   left: 0px;
@@ -2133,7 +2141,7 @@ div.modal .footer {
     display: flex;
     justify-content: center;
     height: auto;
-    padding-top: 50px; }
+    padding-top: 64px; }
     section.profile .container {
       display: flex; }
     section.profile .left {

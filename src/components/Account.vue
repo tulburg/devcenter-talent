@@ -76,9 +76,9 @@
 						<a class="history" href="javascript:history.go(-1)" v-if="!success"><i class="dc-caret left"></i> Account Settings</a>
 						<h1><span v-if="!loading">Change Password</span> <i v-else class="dc-spinner animate-spin loader"></i></h1>
 						<form v-on:submit.prevent="submit" v-if="!success">
-							<Input type="password" label="Current Password" placeholder="Enter the current password" :alert="currentPassError" :showAlert="showCurrentError" v-on:clear="resetInputs" v-on:change="(v) => setPass('current', v)" />
-							<Input type="password" label="New Password" placeholder="Enter the new password" :alert="newPassError" :showAlert="showNewError"  v-on:clear="resetInputs" v-on:change="(v) => setPass('new', v)" />
-							<Input type="password" label="Confirm Password" placeholder="Confirm the new password" :alert="confirmPassError" :showAlert="showConfirmError"  v-on:clear="resetInputs" v-on:change="(v) => setPass('confirm', v)" />
+							<Input type="password" label="Current Password" placeholder="" :alert="currentPassError" :showAlert="showCurrentError" v-on:clear="resetInputs" v-on:change="(v) => setPass('current', v)" />
+							<Input type="password" label="New Password" placeholder="" :alert="newPassError" :showAlert="showNewError"  v-on:clear="resetInputs" v-on:change="(v) => setPass('new', v)" />
+							<Input type="password" label="Confirm Password" placeholder="" :alert="confirmPassError" :showAlert="showConfirmError"  v-on:clear="resetInputs" v-on:change="(v) => setPass('confirm', v)" />
 							<button class="bar" v-on:click="submit">Create New Password</button>
 						</form>
 						<p v-if="success" class="success">Your password has been successfully changed</p>

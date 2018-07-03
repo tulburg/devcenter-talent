@@ -50,7 +50,7 @@
 					<Title label="What language, frameworks or skills do you know?" :showAlert="showLangSkillsError" :alert="langSkillsError" />
 					<ul class="grid grid-2 other-roles" :style="'position:relative;z-index:'+(200-i)+';'" v-for="i in moreSkill">
 						<li><Select :name="'lang-skills-'+i" :options="skills" v-on:change="(v) => setLangSkills(v, i)" label="" :alt="true" :selected="(values.langSkills[i-1]) ? values.langSkills[i-1].value : ''"  /></li>
-						<li class="alt"><Select :name="'lang-skills-year-'+i" :options="years" v-on:change="(v) => setLangSkillsYears(v, i)" v-on:delete="() => deleteSkills(i)" label="" :showDelete="i>1" :style="'position:relative;z-index:0;'" :selected="(values.langSkills[i-1]) ? values.langSkills[i-1].experience : ''"  /></li>
+						<li class="alt"><Select :name="'lang-skills-year-'+i" :options="years" v-on:change="(v) => setLangSkillsYears(v, i)" v-on:delete="() => deleteSkills(i)" label="" :showDelete="i>1" :style="'position:relative;z-index:0;'" :selected="(values.langSkills[i-1]) ? values.langSkills[i-1].experience : ''" class="fix-select" /></li>
 					</ul>
 					<a href="#" v-on:click.prevent="addMoreSkill" class="add-more-roles-btn">+ Add a language, framework or skill</a>
 				</div>
@@ -125,6 +125,7 @@
 					{ value: "HTML", title: "HTML"}
 				],
 				years: [
+					{ value: "", title: "Select Years of Experience" },
 					{ value: "0 - 2 years", title: "0 - 2 years" },
 					{ value: "2 - 5 years", title: "2 - 5 years" },
 					{ value: "5 - 10 years", title: "5 - 10 years" },
@@ -153,7 +154,6 @@
 		components: { Select, Title, Input },
 		methods: {
 			nextForm() {
-				console.log(this.values.integrations);
 				if(this.state == 'role') { 
 					if(this.values.preferredRole.length > 0 && this.showRoleError != true){
 						this.state = 'otherRoles';
@@ -164,6 +164,13 @@
 					this.canGoBack = true; 
 				}else if(this.state == 'langSkills' && this.showLangSkillsError != true) {
 					if(this.values.langSkills.length < 1) { this.showLangSkillsError = true; return; }
+					for(var i=0;i<this.values.langSkills.length;i++) {
+						// if( == null) { delete this.values.langSkills[i]; }
+						if(this.values.langSkills[i] && (!this.values.langSkills[i].experience || !this.values.langSkills[i].value)) {
+							this.langSkillsError = "* A selected field doesn't have a corresponding years of experience or value";
+							this.showLangSkillsError = true; return;
+						}
+					}
 					this.state = 'employment';
 					this.canGoBack = true; 
 				}else if(this.state == 'employment' && this.showEmploymentError != true) {
@@ -221,23 +228,19 @@
 				var field = this.values.langSkills[parseInt(id)-1]; 
 				var all = this.values.langSkills;
 				this.showLangSkillsError=false;
-				for(var i=0;i<all.length;i++) { if(all[i].value == value) { this.langSkillsError="* You've already selected that skill"; this.showLangSkillsError=true; }}
-				(field) ? field.value = value : field = { value: value, experience: "0 - 2 years"}; 
+				for(var i=0;i<all.length;i++) { if(all[i].value == value && i != (id-1)) { console.log(i, id); this.langSkillsError="* You've already selected that skill"; this.showLangSkillsError=true; }}
+				(field) ? field.value = value : field = { value: value }; 
 				this.values.langSkills[parseInt(id)-1] = field;
 			},
 			setLangSkillsYears: function(value, id) { 
 				var field = this.values.langSkills[parseInt(id)-1];
-				if(field) {
-					field.experience = value;
-				}else {
-					this.showLangSkillsError=true;
-					this.langSkillsError="* Please select a skill first";
-					return;
-				} 
+				(field) ? field.experience = value : field = { experience: value };
 				this.values.langSkills[parseInt(id)-1] = field;
+				this.showLangSkillsError=false;
 			},
 			deleteSkills(id) {
-				delete this.values.langSkills[parseInt(id) -1];
+				var item = this.values.langSkills[parseInt(id) -1];
+				this.values.langSkills.splice(this.values.langSkills.indexOf(item), 1);
 				this.moreSkill--;
 				this.saveState();
 			},
