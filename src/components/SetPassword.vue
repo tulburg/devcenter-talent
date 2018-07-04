@@ -28,11 +28,15 @@
 				var self = this;
 				self.loading = true;
 				if(this.password == '' || this.confirmPassword == '') {
-					this.passwordError = '* Please enter a valid password'; 
+					this.passwordError = '* Please enter a valid password & confirm'; 
 					self.loading = false;
 					this.showPasswordError = true; return;
 				} else if (this.password != this.confirmPassword) {
 					this.confirmError = '* Password does not match';
+					self.loading = false;
+					this.showConfirmError = true; return;
+				} else if (!this.password.match(/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$/)) {
+					this.passwordError = '* Password must be at least 8 characters long and contain 1 number and 1 uppercase character';
 					self.loading = false;
 					this.showPasswordError = true; return;
 				}

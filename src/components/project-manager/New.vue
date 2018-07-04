@@ -105,6 +105,9 @@
 				<button class="long">Find Talents</button>
 			</div>
 		</Modal>
+		<div :class="{ active: showShareModal }" class="share-overlay">
+			<button class="long">Share Project</button>
+		</div>
 	</div>
 </template>
 
@@ -122,7 +125,7 @@
 	
 	export default {
 		name: 'New',
-		data() { return { user: undefined, projects: [], selected: undefined, savingProject: false, showModal: false, name: 'Tolu', showDatePickerAlert: false, stacks: [], showFindTalentModal: false, openStacks: true, openRoles: true, openEmployment: true, 
+		data() { return { user: undefined, projects: [], selected: undefined, savingProject: false, showModal: false, name: 'Tolu', showDatePickerAlert: false, stacks: [], showFindTalentModal: false, openStacks: true, openRoles: true, openEmployment: true, showShareModal: false,
 			placeholders: [ 
 				{ name: "John Doe", stack: "Backend, Frontend, Mobile", photo: require("../../assets/img/avatar.svg") }, 
 				{ name: "Jason Adetunbo", stack: "iOS Backend", photo: require("../../assets/img/avatar-2.svg") },
@@ -157,7 +160,7 @@
 				$(".project-talent-pane").collapse();
 			},
 			saveProject(v) {
-				console.log(v);
+				this.showShareModal = v;
 			},
 			fetchStacks() {
 				var self = this;
