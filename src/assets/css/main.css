@@ -947,14 +947,13 @@ section.inbox {
       section.inbox .action-bar .search.active {
         opacity: 0; }
     section.inbox .action-bar .search-box {
-      opacity: 0;
       position: absolute;
-      transition: all 0.2s cubic-bezier(0, 0, 0.48, 1.13);
+      transition: all 0.3s cubic-bezier(0, 0, 0.48, 1.13);
       display: flex;
-      top: -32px;
+      top: 20px;
       height: 30px;
       width: calc(100% - 60px);
-      left: 30px; }
+      left: calc(100% + 10px); }
       section.inbox .action-bar .search-box i.dc-cancel {
         height: 30px;
         width: 30px;
@@ -979,8 +978,7 @@ section.inbox {
           section.inbox .action-bar .search-box .input-wrapper input:focus {
             box-shadow: none; }
       section.inbox .action-bar .search-box.active {
-        top: calc(50% - 15px);
-        opacity: 1; }
+        left: 30px; }
   section.inbox .mail-list {
     width: 100%;
     overflow-x: hidden;
@@ -1299,6 +1297,8 @@ section.project-manager {
       margin-top: 0px;
       display: inline-block;
       vertical-align: top; }
+      section.project-manager .project-talents .left.box h2 {
+        color: #b3b3b3; }
     section.project-manager .project-talents .right {
       width: calc(70% - 45px);
       display: inline-block;
@@ -1306,6 +1306,10 @@ section.project-manager {
       margin-left: 40px; }
       section.project-manager .project-talents .right .box {
         width: 100%; }
+      section.project-manager .project-talents .right .talent-profile-card .profile-photo {
+        height: 120px;
+        width: 120px;
+        border-radius: 60px; }
     section.project-manager .project-talents .collapse-heading {
       color: #b3b3b3;
       font-weight: bold;

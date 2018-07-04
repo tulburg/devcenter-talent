@@ -2,7 +2,7 @@
 	<div class="profile-view" v-if="userProfile.work_preference">
 		<div class="box">
 			<div class="profile-photo">
-				<img :src="placeholder" alt="placeholder" v-if="this.profile_image==undefined" />
+				<img :src="placeholder" alt="photo" v-if="this.profile_image==undefined" />
 				<img :src="this.profile_image" alt="profile photo" v-else />
 				<div class="cover" v-on:click="changePhoto"><span v-if="!uploadingProfilePhoto">Change your profile picture</span><i v-else class="dc-spinner animate-spin"></i></div>
 				<input type="file" id="profile-file" v-on:change="setPhoto" style="display:none;visibility: hidden;" name="file" accept=".png,.jpg,.jpeg">
@@ -74,8 +74,8 @@
 							<Select :name="'lang-skills-'+i" v-else :options="skills" v-on:change="(v) => setLangSkills(v, i)" label="" :alt="true"  />
 						</li>
 						<li class="alt">
-							<Select v-if="userProfile.roles_and_skills.languages[i-1]" :selected="userProfile.roles_and_skills.languages[i-1].experience" :name="'lang-skills-year-'+i" :options="years" v-on:change="(v) => setLangSkillsYears(v, i)" label=""  />
-							<Select v-else :name="'lang-skills-year-'+i" :options="years" v-on:change="(v) => setLangSkillsYears(v, i)" label=""  />
+							<Select v-if="userProfile.roles_and_skills.languages[i-1]" :selected="userProfile.roles_and_skills.languages[i-1].experience" :name="'lang-skills-year-'+i" :options="years" v-on:change="(v) => setLangSkillsYears(v, i)" v-on:delete="() => deleteSkills(i)" label="" :showDelete="i>1"  />
+							<Select v-else :name="'lang-skills-year-'+i" :options="years" v-on:change="(v) => setLangSkillsYears(v, i)" v-on:delete="() => deleteSkills(i)" label="" :showDelete="i>1" />
 						</li>
 					</ul>
 					<a href="#" v-on:click.prevent="addMoreSkill" class="add-more-roles-btn">+ Add a language, framework or skill</a>
@@ -183,7 +183,7 @@
 				{ name: "Python", experience: "15+ years" }
 			],
 			employment_status: "Freelance",
-			placeholder : require("../assets/img/placeholder.svg"),
+			placeholder : require("../assets/img/avatar.svg"),
 			sets: { li_username: false, git_username: false, behance_username: false, dribbble_username: false }
 		}},
 		methods: {
@@ -251,6 +251,12 @@
 				if(field) { field.experience = value }
 				else { this.langSkillsError = '* Please select a skill first'; this.showLangSkillsError = true; return; }
 				this.values.langSkills[parseInt(id)-1] = field;
+			},
+			deleteSkills(id) {
+				var item = this.values.langSkills[parseInt(id) -1];
+				this.values.langSkills.splice(this.values.langSkills.indexOf(item), 1);
+				this.moreSkill--;
+				this.saveState();
 			},
 			setEmployment: function(value) {
 				if(value!=="") { this.showEmploymentError = false; }else { this.showEmploymentError=true; return; }

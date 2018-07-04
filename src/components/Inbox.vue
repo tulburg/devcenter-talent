@@ -55,7 +55,7 @@
 		data() { return { showMenu: false, selectedMenu: 'All Inbox', showSearchBox: false } },
 		methods: {
 			handleClick(e) {
-				if(e.target.className == 'menu') { 
+				if(e.target.className == 'menu' || e.target.className == 'dc-caret') { 
 					(this.showMenu) ? this.showMenu = false : this.showMenu = true;
 				}else { 
 					this.showMenu = false; 

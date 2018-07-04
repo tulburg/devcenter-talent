@@ -42,13 +42,18 @@
 						<ul class="collapse-body __stacks-collapse">
 							<li v-for="item in ['HTML', 'CSS', 'Swift', 'Java', 'JavaScript']"><CheckBox :small="true" /> {{ item }}</li>
 						</ul>
-						<div class="collapse-heading" v-on:click="toggleStacks">Employment Status <i :class="{ upward: openStacks }" class="dc-caret"></i></div>
+						<div class="collapse-heading" v-on:click="toggleEmployment">Employment Status <i :class="{ upward: openEmployment }" class="dc-caret"></i></div>
 						<ul class="collapse-body __employment-collapse">
 							<li v-for="item in ['Contract', 'Employed', 'Freelancer', 'Unemployed']"><CheckBox :small="true" /> {{ item }}</li>
 						</ul>
 					</div>
 					<div class="right">
-						<div class="box">&nbsp;
+						<div class="box talent-profile-card" v-for="placeholder in placeholders">
+							<div class="profile-photo"><img :src="placeholder.photo" alt="placeholder" /></div>
+							<div class="profile-details">
+								<h3>{{ placeholder.name }}</h3>
+								<p>{{ placeholder.stack }}</p>
+							</div>
 							<CheckBox :checked="true" v-on:change="(v) => { saveProject(v) }" />
 						</div>
 						<div class="box">&nbsp;</div>
@@ -118,7 +123,15 @@
 	
 	export default {
 		name: 'New',
-		data() { return { user: undefined, projects: [], selected: undefined, savingProject: false, showModal: false, name: 'Tolu', showDatePickerAlert: false, stacks: [], showFindTalentModal: false, openStacks: true, openRoles: true } },
+		data() { return { user: undefined, projects: [], selected: undefined, savingProject: false, showModal: false, name: 'Tolu', showDatePickerAlert: false, stacks: [], showFindTalentModal: false, openStacks: true, openRoles: true, openEmployment: true, 
+			placeholders: [ 
+				{ name: "John Doe", stack: "Backend, Frontend, Mobile", photo: require("../../assets/img/avatar.svg") }, 
+				{ name: "Jason Adetunbo", stack: "iOS Backend", photo: require("../../assets/img/avatar-2.svg") },
+				{ name: "Chris Njoku", stack: "UX Researcher", photo: require("../../assets/img/avatar-3.svg") }, 
+				{ name: "Lanre Shonibare", stack: "UX/UI Designer", photo: require("../../assets/img/avatar-4.svg") },
+				{ name: "Alexander Pret", stack: "Backend", photo: require("../../assets/img/avatar-5.svg") }
+			]
+		} },
 		components: { Project, ProjectView, Modal, Input, Datepicker, InputDrop, CheckBox },
 		methods: {
 			openProject(project) {
@@ -171,6 +184,15 @@
 				}else {
 					this.openRoles = true;
 					$(".__roles-collapse").expand();
+				}
+			},
+			toggleEmployment() {
+				if(this.openEmployment) {
+					this.openEmployment = false;
+					$(".__employment-collapse").collapse();
+				}else {
+					this.openEmployment = true;
+					$(".__employment-collapse").expand();
 				}
 			}
 		},

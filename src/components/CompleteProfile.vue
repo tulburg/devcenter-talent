@@ -125,7 +125,6 @@
 					{ value: "HTML", title: "HTML"}
 				],
 				years: [
-					{ value: "", title: "Select Years of Experience" },
 					{ value: "0 - 2 years", title: "0 - 2 years" },
 					{ value: "2 - 5 years", title: "2 - 5 years" },
 					{ value: "5 - 10 years", title: "5 - 10 years" },

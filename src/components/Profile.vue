@@ -60,12 +60,12 @@
 	
 	export const ProfileEmptyState = {
 		name: 'EmptyState',
-		data() { return { placeholder : require("../assets/img/placeholder.svg"), firstname: 'John', profile_image: undefined } },
+		data() { return { placeholder : require("../assets/img/avatar.svg"), firstname: 'John', profile_image: undefined } },
 		template: `<div class="profile-empty">
 						<div class="box">
 							<div class="profile-photo">
 								<img :src="this.profile_image" alt="photo" v-if="profile_image!=undefined" />
-								<img :src="placeholder" alt="placeholder" v-else />
+								<img :src="placeholder" alt="profile photo" v-else />
 							</div>
 							<h1>Hi {{ firstname }},</h1>
 							<p>Your profile is looking quite empty. We need to know a bit more about you and what you do so that we know what kind of projects to send you.</p>
@@ -88,12 +88,12 @@
 
 	export const ProfileIncompleteState = {
 		name: 'Incomplete',
-		data() { return { placeholder : require("../assets/img/placeholder.svg"), ratings: {}, firstname: 'John', profile_image: undefined }; },
+		data() { return { placeholder : require("../assets/img/avatar.svg"), ratings: {}, firstname: 'John', profile_image: undefined }; },
 		template: `<div class="profile-empty">
 						<div class="box">
 							<div class="profile-photo">
 								<img :src="this.profile_image" alt="photo" v-if="profile_image!=undefined" />
-								<img :src="placeholder" alt="placeholder" v-else />
+								<img :src="placeholder" alt="photo" v-else />
 							</div>
 							<h1>Hi {{ firstname }},</h1>
 							<p>We noticed that you haven't finished filling your profile. We need to know a bit more about you and what you do so that we know what kind of projects to send you.</p>
@@ -141,20 +141,24 @@
 			store.dispatch('getSession').then(session => {
 				if(session == null) this.$router.push("/")
 					else {
-						// self.$http.get(store.state.api.development+"profile/get",  { 
-						// 	headers: { 'Authorization': session.token }
-						// }).then(res => {
-						// 	store.commit("saveProfile", res.body.extras);
-						// 	setTimeout(()=>{ self.loadComplete = true; }, 1000);
-						// 	self.ratings = res.body.extras.user_rating;
-						// 	Bus.$emit("Header_activeLink", "/profile/"+session.user.username);
-						// }).catch(err => {
-						// 	self.loadComplete = true;
-						// 	self.completeError = err.message;
-						// });
-						self.ratings = session.user_profile.user_rating;
-						self.loadComplete = true;
-						Bus.$emit("Header_activeLink", "/profile/"+session.user.username);
+						self.$http.get(store.state.api.development+"profile/get",  { 
+							headers: { 'Authorization': session.token }
+						}).then(res => {
+							store.commit("saveProfile", res.body.extras);
+							setTimeout(()=>{ self.loadComplete = true; }, 1000);
+							self.ratings = res.body.extras.user_rating;
+							Bus.$emit("Header_activeLink", "/profile/"+session.user.username);
+							if(session.user.completed_level == 0) this.$router.push("/profile/incomplete");
+							if(session.user.completed_level == 1) this.$router.push("/profile");
+							if(session.user.completed_level == 2) this.$router.push("/profile/incomplete");
+							if(session.user.completed_level == 3) this.$router.push("/profile/"+session.user.username);
+						}).catch(err => {
+							self.loadComplete = true;
+							self.completeError = err.message;
+						});
+						// self.ratings = session.user_profile.user_rating;
+						// self.loadComplete = true;
+						// Bus.$emit("Header_activeLink", "/profile/"+session.user.username);
 					}
 			});
 			if(localStorage.getItem("profile_completion_state")) {

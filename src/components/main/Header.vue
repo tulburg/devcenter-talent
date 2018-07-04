@@ -28,7 +28,7 @@
 				</router-link>
 				<div class="account-holder" v-show="showAccount">
 					<div class="account-photo">
-						<img src="../../assets/img/placeholder.svg" alt="placeholder" class="account-pic acc-d" v-if="profile_image==undefined" />
+						<img src="../../assets/img/avatar.svg" alt="profile photo" class="account-pic acc-d" v-if="profile_image==undefined" />
 						<img :src="profile_image" alt="photo" class="account-pic acc-d" v-else />
 					</div>
 					<div class="account-name acc-d">{{ fullname }} <i :class="{ upward: showAccountDropDown }" class="dc-caret acc-d"></i></div>
