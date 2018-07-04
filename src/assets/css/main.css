@@ -1305,11 +1305,30 @@ section.project-manager {
       vertical-align: top;
       margin-left: 40px; }
       section.project-manager .project-talents .right .box {
-        width: 100%; }
-      section.project-manager .project-talents .right .talent-profile-card .profile-photo {
-        height: 120px;
-        width: 120px;
-        border-radius: 60px; }
+        width: 100%;
+        padding: 20px;
+        padding-left: 30px; }
+      section.project-manager .project-talents .right .talent-profile-card {
+        display: flex;
+        align-items: center; }
+        section.project-manager .project-talents .right .talent-profile-card .profile-photo {
+          height: 80px;
+          width: 80px;
+          border-radius: 40px;
+          overflow: hidden; }
+          section.project-manager .project-talents .right .talent-profile-card .profile-photo img {
+            width: 100%; }
+        section.project-manager .project-talents .right .talent-profile-card .profile-details {
+          padding-left: 15px; }
+          section.project-manager .project-talents .right .talent-profile-card .profile-details h3 {
+            margin: 0px;
+            margin-bottom: 5px; }
+          section.project-manager .project-talents .right .talent-profile-card .profile-details p {
+            margin: 0px;
+            color: #677990; }
+        section.project-manager .project-talents .right .talent-profile-card .checkbox {
+          margin-left: auto;
+          margin-right: 20px; }
     section.project-manager .project-talents .collapse-heading {
       color: #b3b3b3;
       font-weight: bold;
@@ -1462,6 +1481,8 @@ section.project-manager {
   width: 100%; }
   .preloader i {
     font-size: 96px; }
+  .preloader.small i {
+    font-size: 32px; }
 
 .badge {
   font-size: 10px;

@@ -8,8 +8,8 @@
 		</div>
 
 		<div class="box" v-show="showLogin">
-			<h1 class="login-title" v-if="loading">Logging In <i class="dc-spinner animate-spin"></i></h1>
-			<h1 class="login-title" v-else>Log in to Devcenter's Talent Pool</h1>
+			<div class="preloader small" v-if="loading"><i class="dc-spinner animate-spin"></i></div>
+			<h1 class="login-title">Log in to Devcenter's Talent Pool</h1>
 			<form v-on:submit.prevent="doLogin">
 				<Input type="text" label="Email address" placeholder="example@domain.com" :alert="emailError" :showAlert="emailAlert" v-on:clear="resetInputs" v-on:change="setEmail" />
 				<Input type="password" label="Password" placeholder="Enter a unique password" :alert="passwordError" :showAlert="passwordAlert"  v-on:clear="resetInputs" v-on:change="setPassword" />

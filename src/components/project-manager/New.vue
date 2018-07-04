@@ -56,7 +56,6 @@
 							</div>
 							<CheckBox :checked="true" v-on:change="(v) => { saveProject(v) }" />
 						</div>
-						<div class="box">&nbsp;</div>
 					</div>
 				</div>
 			</div>
