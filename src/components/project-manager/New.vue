@@ -217,7 +217,7 @@
 					console.log(self.projects)
 				}
 			});
-			setTimeout(() => { this.showFindTalentModal = true }, 5000);
+			// setTimeout(() => { this.showFindTalentModal = true }, 5000);
 		},
 		destroyed() {
 			Bus.$emit("Header_showAccount", false);

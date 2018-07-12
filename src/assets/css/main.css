@@ -1367,10 +1367,15 @@ section.project-manager {
       box-shadow: 4px 4px 4px 0 rgba(40, 40, 40, 0.2); }
     section.project-manager .share-overlay.active {
       bottom: 20px; }
-  section.project-manager .talent-pool .field-pane li .select {
-    margin-bottom: 0px; }
-    section.project-manager .talent-pool .field-pane li .select label {
-      display: none; }
+  section.project-manager .talent-pool .field-pane li {
+    padding-right: 0px; }
+    section.project-manager .talent-pool .field-pane li .select {
+      margin-bottom: 0px; }
+      section.project-manager .talent-pool .field-pane li .select label {
+        display: none; }
+    section.project-manager .talent-pool .field-pane li .inputdrop .wrapper {
+      white-space: nowrap;
+      overflow: hidden; }
   section.project-manager .talent-pool-assigned .box {
     padding: 10px;
     padding-left: 20px; }

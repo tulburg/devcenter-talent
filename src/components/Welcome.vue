@@ -69,24 +69,25 @@
 				var self = this; this.loading = true;
 				this.$http.post(store.state.api.development+"login", { email: self.email, password: self.password }).then(res => {
 					let user = res.body.extras.user;
+					console.log(res);
 					store.commit("startSession", {token: res.body.extras.token, user: res.body.extras.user});
-					self.$http.get(store.state.api.development+"profile/get",  { 
-						headers: { 'Authorization': res.body.extras.token }
-					}).then(res => {
-						console.log(res);
-						store.commit("saveProfile", res.body.extras);
-						this.loading = false;
-						if(user.account_type == 'developer') {
+					this.loading = false;
+					if(user.account_type == 'developer') {
+						self.$http.get(store.state.api.development+"profile/get",  { 
+							headers: { 'Authorization': res.body.extras.token }
+						}).then(res => {
+							console.log(res);
+							store.commit("saveProfile", res.body.extras);
 							if(user.completed_level == 0) this.$router.push("/complete-profile");
 							if(user.completed_level == 1) this.$router.push("/profile");
 							if(user.completed_level == 2) this.$router.push("/profile/incomplete");
 							if(user.completed_level == 3) this.$router.push("/profile/"+user.username);
-						}else if(user.account_type == 'project manager') {
-							console.log("Welcome to Project Manager");
-						}
-					}).catch(err => {
-						console.log(err);
-					});
+						}).catch(err => {
+							console.log(err);
+						});
+					}else if(user.account_type == 'pm') {
+						this.$router.push("/project-manager");
+					}
 				}).catch(err=>{
 					this.loading = false;
 					console.log(err);
@@ -102,10 +103,14 @@
 			Bus.$emit("Header_showSignup", true);
 			store.dispatch('getSession').then(session => {
 				if(session){
-					if(session.user.completed_level == 0) this.$router.push("/complete-profile");
-					if(session.user.completed_level == 1) this.$router.push("/profile");
-					if(session.user.completed_level == 2) this.$router.push("/profile/incomplete");
-					if(session.user.completed_level == 3) this.$router.push("/profile/"+session.user.username);
+					if(session.user.account_type == 'developer') {
+						if(session.user.completed_level == 0) this.$router.push("/complete-profile");
+						if(session.user.completed_level == 1) this.$router.push("/profile");
+						if(session.user.completed_level == 2) this.$router.push("/profile/incomplete");
+						if(session.user.completed_level == 3) this.$router.push("/profile/"+session.user.username);
+					}else if(session.user.account_type == 'pm') {
+						this.$router.push("/project-manager");
+					}
 				}
 			});
 			if(this.$route.hash == '#logout') {
