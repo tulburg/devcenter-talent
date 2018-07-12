@@ -41,6 +41,7 @@ Element.prototype.expand = function (complete) {
 		this.style = "height: "+h+"px; overflow: hidden; transition: all .3s cubic-bezier(.25,.1,.25,1); opacity: 1;"; }, 0.5);
 	if(complete) setTimeout(() => { complete() }, 350);
 }
+Element.prototype.hasClass = function(c) { return (this.className.match(c)) }
 Element.prototype.addClass = function(c) { if(!this.className.match(c)) this.className = this.className+" "+c; }
 Element.prototype.removeClass = function(c) { return this.className = this.className.replace(" "+c, ""); }
 window.Element.prototype.$ = window.$ = function(id) {

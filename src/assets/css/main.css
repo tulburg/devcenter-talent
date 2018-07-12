@@ -1125,14 +1125,18 @@ section.project-manager {
   section.project-manager .container {
     display: inline-block;
     margin-top: 0px; }
+    section.project-manager .container.talent-pool, section.project-manager .container.talent-pool-assigned {
+      margin-top: 80px;
+      padding-top: 64px;
+      padding-bottom: 64px; }
     section.project-manager .container.splash {
       display: flex;
       align-items: center;
       margin-top: -100px; }
     section.project-manager .container.projects {
       margin-top: 80px;
-      padding-top: 50px;
-      padding-bottom: 50px; }
+      padding-top: 64px;
+      padding-bottom: 64px; }
       section.project-manager .container.projects .box {
         width: 70%;
         padding: 10px;
@@ -1304,7 +1308,7 @@ section.project-manager {
       width: calc(70% - 45px);
       display: inline-block;
       vertical-align: top;
-      margin-left: 40px; }
+      margin-left: 24px; }
       section.project-manager .project-talents .right .box {
         width: 100%;
         padding: 20px;
@@ -1320,7 +1324,8 @@ section.project-manager {
           section.project-manager .project-talents .right .talent-profile-card .profile-photo img {
             width: 100%; }
         section.project-manager .project-talents .right .talent-profile-card .profile-details {
-          padding-left: 15px; }
+          padding-left: 15px;
+          flex-grow: 1; }
           section.project-manager .project-talents .right .talent-profile-card .profile-details h3 {
             margin: 0px;
             margin-bottom: 5px; }
@@ -1362,6 +1367,212 @@ section.project-manager {
       box-shadow: 4px 4px 4px 0 rgba(40, 40, 40, 0.2); }
     section.project-manager .share-overlay.active {
       bottom: 20px; }
+  section.project-manager .talent-pool .field-pane li .select {
+    margin-bottom: 0px; }
+    section.project-manager .talent-pool .field-pane li .select label {
+      display: none; }
+  section.project-manager .talent-pool-assigned .box {
+    padding: 10px;
+    padding-left: 20px; }
+  section.project-manager .talent-pool-assigned .right .box {
+    margin-bottom: 24px; }
+    section.project-manager .talent-pool-assigned .right .box i.dropdown-menu {
+      font-size: 28px;
+      cursor: pointer;
+      float: right;
+      color: #b3b3b3; }
+      section.project-manager .talent-pool-assigned .right .box i.dropdown-menu:hover {
+        color: #18a2dc; }
+      section.project-manager .talent-pool-assigned .right .box i.dropdown-menu .dropdown {
+        opacity: 0;
+        transition: all ease-in-out .3s;
+        top: 0px; }
+        section.project-manager .talent-pool-assigned .right .box i.dropdown-menu .dropdown.active {
+          display: block;
+          opacity: 1;
+          top: 50px; }
+  section.project-manager #recent-project-modal .body, section.project-manager #project-history-modal .body {
+    padding-top: 24px; }
+  section.project-manager #recent-project-modal .project-box, section.project-manager #project-history-modal .project-box {
+    padding: 0px 10px;
+    box-shadow: none;
+    border: 1px solid #eee;
+    width: 100%;
+    margin-bottom: 24px; }
+    section.project-manager #recent-project-modal .project-box .project, section.project-manager #project-history-modal .project-box .project {
+      cursor: default; }
+  section.project-manager #profile-modal .dialog-container {
+    padding-top: 200px; }
+  section.project-manager #profile-modal .body {
+    padding: 40px 100px; }
+    section.project-manager #profile-modal .body i.close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      color: #4a4a4a; }
+  section.project-manager #profile-modal .profile-photo {
+    position: relative;
+    background-color: #18a2dc;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    height: 160px;
+    width: 160px;
+    margin-top: -120px;
+    border-radius: 80px;
+    align-self: center;
+    margin-bottom: 20px; }
+    section.project-manager #profile-modal .profile-photo:hover .cover {
+      display: flex; }
+    section.project-manager #profile-modal .profile-photo img {
+      width: 100%;
+      border-radius: 100px; }
+    section.project-manager #profile-modal .profile-photo img[alt="placeholder"] {
+      width: 120px; }
+    section.project-manager #profile-modal .profile-photo .cover {
+      background-color: rgba(0, 0, 0, 0.65);
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      height: 100%;
+      width: 100%;
+      border-radius: 100px;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      color: #ffffff;
+      padding: 40px;
+      cursor: pointer; }
+      section.project-manager #profile-modal .profile-photo .cover i {
+        font-size: 60px;
+        color: #ffffff; }
+  section.project-manager #profile-modal .personal-pane {
+    padding-bottom: 30px;
+    border-bottom: 1px solid #e6e6e6;
+    text-align: left; }
+    section.project-manager #profile-modal .personal-pane h1 a {
+      float: right;
+      font-size: 16px;
+      margin-top: 5px; }
+    section.project-manager #profile-modal .personal-pane .integration {
+      margin-top: 20px;
+      margin-bottom: 10px; }
+      section.project-manager #profile-modal .personal-pane .integration i {
+        font-size: 34px;
+        color: #4a4a4a; }
+  section.project-manager #profile-modal .language-pane {
+    padding-bottom: 30px;
+    padding-top: 20px;
+    border-bottom: 1px solid #e6e6e6; }
+    section.project-manager #profile-modal .language-pane h2 {
+      font-size: 20px;
+      text-align: left;
+      margin-bottom: 25px; }
+      section.project-manager #profile-modal .language-pane h2 a {
+        float: right;
+        font-size: 16px;
+        margin-top: 5px; }
+    section.project-manager #profile-modal .language-pane .taggered {
+      width: 60%;
+      display: flex; }
+      section.project-manager #profile-modal .language-pane .taggered span {
+        display: block;
+        height: 15px;
+        border-bottom: 1px dashed #b3b3b3;
+        width: 100%; }
+      section.project-manager #profile-modal .language-pane .taggered .title {
+        background-color: #ffffff;
+        display: inline;
+        padding-right: 10px;
+        white-space: nowrap; }
+      section.project-manager #profile-modal .language-pane .taggered .counter {
+        white-space: nowrap;
+        padding-left: 10px; }
+  section.project-manager #profile-modal .employment-pane {
+    padding-bottom: 30px;
+    padding-top: 20px;
+    border-bottom: 1px solid #e6e6e6; }
+    section.project-manager #profile-modal .employment-pane h2 {
+      font-size: 20px; }
+  section.project-manager #profile-modal .rank-pane {
+    text-align: left;
+    padding-top: 20px; }
+    section.project-manager #profile-modal .rank-pane h2 {
+      font-size: 20px; }
+    section.project-manager #profile-modal .rank-pane .rank {
+      padding-left: 0px;
+      margin-bottom: 30px;
+      width: 60%; }
+      section.project-manager #profile-modal .rank-pane .rank li div {
+        font-size: 14px;
+        color: #b3b3b3;
+        font-weight: bold; }
+      section.project-manager #profile-modal .rank-pane .rank li h1 {
+        font-size: 24px;
+        color: #4a4a4a;
+        margin: 0px; }
+    section.project-manager #profile-modal .rank-pane .rating {
+      width: 90%;
+      margin-top: 10px;
+      padding-left: 40px; }
+      section.project-manager #profile-modal .rank-pane .rating li {
+        padding-left: 0px; }
+  section.project-manager #earnings-modal .body {
+    padding-top: 24px; }
+  section.project-manager #profile-earnings-modal .dialog {
+    width: 400px; }
+  section.project-manager #profile-earnings-modal .dialog-container {
+    padding-top: 200px; }
+  section.project-manager #profile-earnings-modal .body {
+    padding: 0px; }
+    section.project-manager #profile-earnings-modal .body .details {
+      padding: 40px;
+      padding-bottom: 0px;
+      border-bottom: 1px solid #e6e6e6; }
+    section.project-manager #profile-earnings-modal .body form {
+      padding: 40px;
+      padding-bottom: 10px; }
+      section.project-manager #profile-earnings-modal .body form label {
+        font-weight: bold; }
+  section.project-manager #profile-earnings-modal .footer {
+    border-top: 1px solid #e6e6e6;
+    padding: 24px 40px 24px 40px; }
+  section.project-manager #profile-earnings-modal .profile-photo {
+    position: relative;
+    background-color: #18a2dc;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    height: 160px;
+    width: 160px;
+    margin-top: -120px;
+    border-radius: 80px;
+    align-self: center;
+    margin-bottom: 20px; }
+    section.project-manager #profile-earnings-modal .profile-photo:hover .cover {
+      display: flex; }
+    section.project-manager #profile-earnings-modal .profile-photo img {
+      width: 100%;
+      border-radius: 100px; }
+    section.project-manager #profile-earnings-modal .profile-photo img[alt="placeholder"] {
+      width: 120px; }
+    section.project-manager #profile-earnings-modal .profile-photo .cover {
+      background-color: rgba(0, 0, 0, 0.65);
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      height: 100%;
+      width: 100%;
+      border-radius: 100px;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      color: #ffffff;
+      padding: 40px;
+      cursor: pointer; }
+      section.project-manager #profile-earnings-modal .profile-photo .cover i {
+        font-size: 60px;
+        color: #ffffff; }
 
 .vdp-datepicker__calendar {
   position: relative;
@@ -1577,6 +1788,27 @@ ul.grid.separator > li {
 
 ul.grid.separator > li:first-child {
   border-left: 0px; }
+
+div.table {
+  border: 1px solid #e6e6e6;
+  border-radius: 3px; }
+  div.table .thead {
+    border-bottom: 1px solid #e6e6e6;
+    color: #b3b3b3;
+    font-weight: bold;
+    margin: 0px;
+    padding-left: 0px; }
+    div.table .thead li {
+      padding: 10px 20px; }
+  div.table .tbody {
+    padding-left: 0px;
+    margin: 0px; }
+    div.table .tbody li {
+      padding: 10px 20px; }
+  div.table ul {
+    border-bottom: 1px solid #e6e6e6; }
+    div.table ul:last-child {
+      border-bottom: 0px; }
 
 /* Caret customization */
 .dc-caret {

@@ -12,8 +12,8 @@
 					<li v-if="!showPMLinks"><a href="#" :class="{ active : (activeLink=='/profile/'+username) }" v-on:click.prevent="setActiveLink('/profile/'+username)">Profile</a></li>
 					<li v-if="!showPMLinks"><a href="#" :class="{ active : (activeLink=='/projects') }" v-on:click.prevent="setActiveLink('/projects')">Projects</a></li>
 					<li v-if="!showPMLinks"><a href="#" :class="{ active : (activeLink=='/inbox'), unread: unread }" v-on:click.prevent="setActiveLink('/inbox')">Inbox</a></li>
-					<li v-if="showPMLinks"><a href="#" :class="{ active : (activeLink=='/project-manager') }" v-on:click.prevent="setActiveLink('/project-manager')">My Projects</a></li>
-					<li v-if="showPMLinks"><a href="#" :class="{ active : (activeLink=='/pool') }" v-on:click.prevent="setActiveLink('/pool')">Talent Pool</a></li>
+					<li v-if="showPMLinks"><a href="#" :class="{ active : (activeLink=='/project-manager') }" v-on:click.prevent="setActiveLink('/project-manager/new')">My Projects</a></li>
+					<li v-if="showPMLinks"><a href="#" :class="{ active : (activeLink=='/project-manager/talent-pool') }" v-on:click.prevent="setActiveLink('/project-manager/talent-pool')">Talent Pool</a></li>
 				</ul>
 			</div>
 			<div class="header-actions">
@@ -44,11 +44,15 @@
 			</div>
 		</div>
 		<div class="bottom" v-if="showPMLinks">
-			<ul>
+			<ul v-if="activeLink=='/project-manager'">
 				<li><a href="#" :class="{ active : (activeSubLink=='/project-manager/new') }" v-on:click.prevent="setActiveSubLink('/project-manager/new')">New</a></li>
 				<li><a href="#" :class="{ active : (activeSubLink=='/project-manager/pending') }" v-on:click.prevent="setActiveSubLink('/project-manager/pending')">Pending</a></li>
 				<li><a href="#" :class="{ active : (activeSubLink=='/project-manager/in-progress') }" v-on:click.prevent="setActiveSubLink('/project-manager/in-progress')">In Progress</a></li>
 				<li><a href="#" :class="{ active : (activeSubLink=='/project-manager/closed') }" v-on:click.prevent="setActiveSubLink('/project-manager/closed')">Closed</a></li>
+			</ul>
+			<ul v-else>
+				<li><a href="#" :class="{ active: (activeSubLink=='/project-manager/talent-pool') }" v-on:click.prevent="setActiveSubLink('/project-manager/talent-pool')">All Talents</a></li>
+				<li><a href="#" :class="{ active: (activeSubLink=='/project-manager/talent-pool-assigned') }" v-on:click.prevent="setActiveSubLink('/project-manager/talent-pool-assigned')">Assigned Talents</a></li>
 			</ul>
 		</div>
 	</header>
@@ -121,7 +125,8 @@
 				self.showPMLinks = bool; 
 				self.activeLink = self.$route.path;
 				self.activeSubLink = self.$route.path;
-				if(this.$route.path.match('/project-manager')) this.activeLink = '/project-manager';
+				if(this.$route.path.match('/project-manager/talent-pool')){ this.activeLink = '/project-manager/talent-pool'; }
+				else if(this.$route.path.match('/project-manager')) this.activeLink = '/project-manager';
 			});
 			Bus.$on("Header_showGrayLogo", (bool) => { self.showGrayLogo = bool });
 			Bus.$on("Header_showAccount", (bool) => { self.showAccount = bool });

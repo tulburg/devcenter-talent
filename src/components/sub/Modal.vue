@@ -36,11 +36,12 @@
 		watch: {
 			show: function(show) {
 				this.showing = show;
+				var self = this;
 				if(show) {
 					var $ = function(id, el=document){if(id[0]=="#"){return el.getElementById(id.substring(1,id.length));}else if(id[0]=="."){return el.getElementsByClassName(id.substring(1, id.length))[0];}}
 					let id = this.title.toLowerCase().replace(/( )/g, '-');
 					setTimeout(function() { 
-						if($(".body", $("#"+id)).offsetHeight > 620) {
+						if(!self.plain && $(".body", $("#"+id)).offsetHeight > 620) {
 							$(".footer", $("#"+id)).className = "footer offset";
 							$(".body", $("#"+id)).style = "overflow-y: auto; max-height: 600px;";
 						} 

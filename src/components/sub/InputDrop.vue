@@ -1,6 +1,6 @@
 <template>
 	<div class="inputdrop">
-		<label>{{ label }}</label>
+		<label v-if="label!=''">{{ label }}</label>
 		<div class="wrapper">
 			<span v-for="item in selected">{{ item }} <i class="dc-cancel" v-on:click="remove(item)"></i></span>
 			<input type="text" class="bar __drop-input" :placeholder="placeholder" v-model="value" v-on:click="clear" v-on:input="change">
