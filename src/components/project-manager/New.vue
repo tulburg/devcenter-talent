@@ -23,7 +23,7 @@
 				}" :actions="[
 					{ title: 'Update Project', action: () => { showModal = true; } },
 					{ title: 'View Project Brief', action: '' },
-					{ title: 'Find a Talent', action: () => { openTalentPane() } }
+					{ title: 'Find Talents', action: () => { openTalentPane() } }
 				]" :menus="[
 					{ title: 'Archive Project', action: '' }
 				]" />
@@ -213,8 +213,7 @@
 				if(session) { 
 					self.user = session.user;
 					// fetch only new projects
-					self.projects = session.projects.fetch({ project_stage: 0});
-					console.log(self.projects)
+					self.projects = session.projects.filter((o) => { return (o.project_stage==0&&o.closed==0&&o.archive==0)});
 				}
 			});
 			// setTimeout(() => { this.showFindTalentModal = true }, 5000);

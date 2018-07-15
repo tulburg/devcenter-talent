@@ -32,10 +32,10 @@
 						<transition name="account-drop">
 							<ul class="dropdown talent-dropdown" style="display:none">
 								<li v-for="menu in [
-										{ title: 'Current Projects', action: () => { showCurrentProjectModal=true; selectedTalentName=placeholder.name; } },
-										{ title: 'Project History', action: () => { showProjectHistoryModal=true; selectedTalentName=placeholder.name; } },
+										{ title: 'Current Projects', action: () => { showCurrentProjectModal=true; setModalTitle('recent-project-modal', placeholder.name+'\'s Current Projects'); } },
+										{ title: 'Project History', action: () => { showProjectHistoryModal=true; setModalTitle('project-history-modal', placeholder.name+'\'s Project History'); } },
 										{ title: 'View Profile', action: () => { showProfileModal=true } },
-										{ title: 'Earnings', action: () => { showEarningsModal=true; } }				
+										{ title: 'Earnings', action: () => { showEarningsModal=true; setModalTitle('earnings-modal', placeholder.name+'\'s Earnings'); } }				
 									]"><a href="#" v-on:click.prevent="menu.action">{{ menu.title }}</a></li>
 							</ul>
 						</transition>
@@ -247,6 +247,9 @@
 						setTimeout(() => { a.$(".dropdown").style.display='none'; }, 300);
 					}
 				}
+			},
+			setModalTitle(id, title) {
+				$("#"+id).$(".header").innerHTML = title;
 			}
 		},
 		mounted() {

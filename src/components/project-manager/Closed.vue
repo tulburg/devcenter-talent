@@ -2,7 +2,7 @@
 	<div class="container projects">
 		<div class="box empty-state" v-if="projects.length < 1">
 			<div><i class="dc-lazy"></i></div>
-			<p>You have no pending projects at the moment</p>
+			<p>You have no closed projects at the moment</p>
 		</div>
 		<div class="list" v-else>
 			<div class="project-list-pane">
@@ -10,24 +10,24 @@
 					type: 'pm',
 					title: project.project_name,
 					description: (project.description.length > 300) ? project.description.substring(0, 300)+'...' : project.description,
-					assigner: project.assigned_pm
+					assigner: project.assigned_pm,
+					badgeText: 'CLOSED',
+					badgeStatus: 'primary',
+					cost: '330,000'
 				}" />
 			</div>
 			<div class="project-view-pane">
-				<div class="breadcrumb-wrapper"><div class="breadcrumb" v-on:click="closeProject"><i class="dc-caret left"></i> Pending Projects</div></div>
+				<div class="breadcrumb-wrapper"><div class="breadcrumb" v-on:click="closeProject"><i class="dc-caret left"></i> In Progress Projects</div></div>
 				<ProjectView v-if="selected!=undefined" :data="{
 					title: selected.project_name,
 					description: selected.description,
 					assigner: selected.assigned_pm,
-					cost: '330, 000'
+					cost: '330,000'
 				}" :actions="[
-					{ title: 'Update Project', action: () => { showModal = true; } },
-					{ title: 'View Project Brief', action: '' },
-					{ title: 'Find Talents', action: () => { openTalentPane() } },
-					{ title: 'Assign Talents', action: () => { openTalentPane() } }
+					{ title: 'View Project Brief', action: '' }
 				]" :menus="[
-					{ title: 'Move to in Progress', action: '' },
-					{ title: 'Archive Project', action: '' }
+					{ title: 'Move to In Progress', action: '' },
+					{ title: 'Move to Pending', action: '' }
 				]" />
 			</div>
 		</div>
@@ -43,7 +43,7 @@
 	import store from '@/store'
 
 	export default {
-		name: 'Pending',
+		name: 'Closed',
 		data() { return { user: undefined, projects: [], selected: undefined } },
 		components: { Project, ProjectView },
 		methods: {
@@ -73,7 +73,7 @@
 				if(session) { 
 					self.user = session.user;
 					// fetch only new projects
-					self.projects = session.projects.filter((o) => { return (o.project_stage==1&&o.closed==0&&o.archive==0)});
+					self.projects = session.projects.filter((a) => { return (a.closed>0||a.archive>0) });
 				}
 			});
 		},

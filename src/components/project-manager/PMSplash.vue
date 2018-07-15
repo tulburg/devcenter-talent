@@ -14,6 +14,8 @@
 </template>
 
 <script>
+	import Bus from '@/Bus'
+	import store from '@/store'
 	export default {
 		name: 'PMSplash',
 		data() { return { user: undefined } },
@@ -23,6 +25,7 @@
 			store.dispatch('getSession').then(session => {
 				if(session) { 
 					self.user = session.user;
+					console.log("Found user");
 				}
 			});
 		},

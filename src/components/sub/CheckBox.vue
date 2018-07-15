@@ -12,7 +12,8 @@
 		watch: {
 			finalCheck(value) {
 				this.$emit("change", value);
-			}
+			},
+			checked(value) { this.finalCheck = value; }
 		}
 	}
 </script>

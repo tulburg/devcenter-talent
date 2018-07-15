@@ -1,5 +1,5 @@
 <template>
-	<div class="inputdrop">
+	<div class="inputdrop" :id="name">
 		<label v-if="label!=''">{{ label }}</label>
 		<div class="wrapper">
 			<span v-for="item in selected">{{ item }} <i class="dc-cancel" v-on:click="remove(item)"></i></span>
@@ -23,12 +23,13 @@
 			placeholder: { type: String, default: 'Default placeholder' },
 			showAlert: { type: Boolean, default: false },
 			selected: { type: Array, default() { return [] }},
-			options: { type: Array, default() { return [] }}
+			options: { type: Array, default() { return [] }},
+			name: { type: String, default: 'default' }
 		},
 		watch: {
 			showDrop(value) { 
 				if(value) { 
-					$(".__drop-dropdown").style.left = $(".__drop-input").offsetLeft+"px"; 
+					$("#"+this.name).$(".__drop-dropdown").style.left = $("#"+this.name).$(".__drop-input").offsetLeft+"px"; 
 				} 
 			}
 		},

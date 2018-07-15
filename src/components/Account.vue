@@ -8,6 +8,7 @@
 	import Bus from '@/Bus'
 	import Input from '@/components/sub/Input'
 	import store from '@/store'
+	import CheckBox from '@/components/sub/CheckBox'
 
 	export default {
 		name: 'Account',
@@ -30,7 +31,8 @@
 
 	export const Settings = {
 		name: 'Settings',
-		data() { return { email: 'example@domain.com' } },
+		data() { return { email: 'example@domain.com', user: undefined, notification_project_shared: false, notification_assigned_project: false, notification_activities: false } },
+		components: { CheckBox },
 		template: `
 			<div class="settings">
 				<div class="box">
@@ -44,17 +46,45 @@
 						<li><p>*****************</p></li><li><a class="button clear colored" href="edit">Change Password</button></a></li>
 					</ul>
 					<label class="email">Email notifications</label>
-					<label class="check"><input type="checkbox" checked /> Receive email notifications for projects shared with you</label>
-					<label class="check"><input type="checkbox" checked /> Receive email notifications when you have been assigned to a project</label>
-					<label class="check"><input type="checkbox" checked /> Receive email notifications for all activity on your account</label>
+					<label class="check"><CheckBox :small="true" :checked="notification_project_shared" v-on:change="(v) => { saveEmailPref('projects', v) }" />Receive email notifications for projects shared with you</label>
+					<label class="check"><CheckBox :small="true" :checked="notification_assigned_project" v-on:change="(v) => { saveEmailPref('assigned', v) }" />Receive email notifications when you have been assigned to a project</label>
+					<label class="check"><CheckBox :small="true" :checked="notification_activities" v-on:change="(v) => { saveEmailPref('all', v) }" />Receive email notifications for all activity on your account</label>
 				</div>
 			</div>
 		`,
+		watch: {
+			user(value) { console.log(value); }
+		},
+		methods: {
+			saveEmailPref(type, value) {
+				var self = this;
+				store.dispatch('getSession').then(session => {
+					if(session == null) self.$router.push("/")
+					else {
+						var param = {};
+						if(type == 'projects') param = { notification_project_shared: value };
+						if(type == 'assigned') param = { notification_assigned_project: value };
+						if(type == 'all') param = { notification_activities: value };
+						self.$http.post(store.state.api.development+"profile/update", param, {
+							headers: { 'Authorization': session.token }
+						}).then(res => {
+							console.log(res, param);
+							store.commit("saveUser", res.body.extras.user);
+						}).catch(err => { console.log(err); });
+					}
+				});
+			}
+		},
 		mounted() {
+			var self = this;
 			store.dispatch('getSession').then(session => {
 				if(session) { 
-					if(session.user.email != undefined) { this.email = session.user.email }
-						console.log(session.user);
+					if(session.user.email != undefined) { self.email = session.user.email };
+					if(session.user.notification_project_shared) { self.notification_project_shared = true };
+					if(session.user.notification_assigned_project) { self.notification_assigned_project = true };
+					if(session.user.notification_activities) { self.notification_activities = true };
+					self.user = session.user;
+					console.log("mounted", self.user, session);
 				}
 			});
 		}

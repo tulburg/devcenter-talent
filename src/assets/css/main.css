@@ -129,6 +129,9 @@ header > div, .container {
   display: flex;
   margin: auto; }
 
+header > div {
+  transition: ease-in-out all .3s; }
+
 header .logo {
   width: 25%;
   text-align: left;
@@ -1060,9 +1063,10 @@ section.account {
       section.account .settings .box label.check {
         color: #4a4a4a;
         font-weight: 100;
-        margin-left: 18px; }
-        section.account .settings .box label.check input {
-          margin-left: -18px; }
+        padding-left: 30px; }
+        section.account .settings .box label.check .checkbox {
+          margin-left: -30px;
+          margin-right: 10px; }
       section.account .settings .box .input label {
         color: #4a4a4a;
         font-weight: 100; }
@@ -1167,7 +1171,8 @@ section.project-manager {
     cursor: pointer;
     user-select: none; }
     section.project-manager .project p {
-      margin-top: 5px; }
+      margin-top: 5px;
+      word-wrap: break-word; }
     section.project-manager .project h1 {
       margin-bottom: 0px;
       text-align: left; }
@@ -1201,6 +1206,8 @@ section.project-manager {
   section.project-manager .project-view .project {
     user-select: auto;
     cursor: default; }
+    section.project-manager .project-view .project p {
+      word-wrap: break-word; }
   section.project-manager .project-view .label {
     color: #9a9a9a;
     font-size: 14px;
@@ -1215,7 +1222,10 @@ section.project-manager {
       section.project-manager .project-view .details .value.alt {
         color: #7f8fa4; }
   section.project-manager .project-view .project-dropdown {
-    right: 6px; }
+    right: 6px;
+    width: auto; }
+    section.project-manager .project-view .project-dropdown li a {
+      white-space: nowrap; }
   section.project-manager .project-view-pane, section.project-manager .project-talent-pane {
     height: 0px;
     overflow: hidden; }
@@ -1367,15 +1377,91 @@ section.project-manager {
       box-shadow: 4px 4px 4px 0 rgba(40, 40, 40, 0.2); }
     section.project-manager .share-overlay.active {
       bottom: 20px; }
-  section.project-manager .talent-pool .field-pane li {
-    padding-right: 0px; }
-    section.project-manager .talent-pool .field-pane li .select {
-      margin-bottom: 0px; }
-      section.project-manager .talent-pool .field-pane li .select label {
-        display: none; }
-    section.project-manager .talent-pool .field-pane li .inputdrop .wrapper {
-      white-space: nowrap;
-      overflow: hidden; }
+  section.project-manager .talent-pool hr {
+    margin: 24px auto;
+    width: 60%;
+    height: 1px;
+    border: 0px;
+    border-top: 1px solid #cdcdcd; }
+  section.project-manager .talent-pool .field-pane {
+    width: 90%;
+    margin: auto;
+    padding-left: 0px; }
+    section.project-manager .talent-pool .field-pane li.field {
+      padding-left: 0px;
+      width: 28.33%; }
+      section.project-manager .talent-pool .field-pane li.field:last-child {
+        padding-right: 0px;
+        width: 15%; }
+      section.project-manager .talent-pool .field-pane li.field .select {
+        margin-bottom: 0px; }
+        section.project-manager .talent-pool .field-pane li.field .select label {
+          display: none; }
+      section.project-manager .talent-pool .field-pane li.field .select {
+        box-shadow: 2px 2px 4px 0px rgba(204, 204, 204, 0.5); }
+      section.project-manager .talent-pool .field-pane li.field button {
+        box-shadow: 2px 2px 4px 0px rgba(204, 204, 204, 0.5);
+        height: 40px;
+        padding-top: 9px; }
+      section.project-manager .talent-pool .field-pane li.field .inputdrop .wrapper {
+        white-space: nowrap;
+        overflow: hidden;
+        box-shadow: 2px 2px 4px 0px rgba(204, 204, 204, 0.5);
+        font-size: 16px; }
+      section.project-manager .talent-pool .field-pane li.field input {
+        width: 100%;
+        font-size: 16px; }
+      section.project-manager .talent-pool .field-pane li.field .dropdown {
+        min-width: 180px;
+        text-align: left; }
+        section.project-manager .talent-pool .field-pane li.field .dropdown li {
+          white-space: nowrap; }
+  section.project-manager .talent-pool .card-pane {
+    width: 60%;
+    margin: auto; }
+    section.project-manager .talent-pool .card-pane .box {
+      width: 100%;
+      padding: 20px;
+      padding-left: 30px;
+      margin-bottom: 24px; }
+      section.project-manager .talent-pool .card-pane .box i.dropdown-menu {
+        font-size: 28px;
+        cursor: pointer;
+        float: right;
+        color: #b3b3b3; }
+        section.project-manager .talent-pool .card-pane .box i.dropdown-menu:hover {
+          color: #18a2dc; }
+        section.project-manager .talent-pool .card-pane .box i.dropdown-menu .dropdown {
+          opacity: 0;
+          transition: all ease-in-out .3s;
+          top: 0px; }
+          section.project-manager .talent-pool .card-pane .box i.dropdown-menu .dropdown.active {
+            display: block;
+            opacity: 1;
+            top: 50px; }
+    section.project-manager .talent-pool .card-pane .talent-profile-card {
+      display: flex;
+      align-items: center; }
+      section.project-manager .talent-pool .card-pane .talent-profile-card .profile-photo {
+        height: 80px;
+        width: 80px;
+        border-radius: 40px;
+        overflow: hidden; }
+        section.project-manager .talent-pool .card-pane .talent-profile-card .profile-photo img {
+          width: 100%; }
+      section.project-manager .talent-pool .card-pane .talent-profile-card .profile-details {
+        padding-left: 15px;
+        flex-grow: 1; }
+        section.project-manager .talent-pool .card-pane .talent-profile-card .profile-details h3 {
+          margin: 0px;
+          margin-bottom: 5px;
+          text-align: left; }
+        section.project-manager .talent-pool .card-pane .talent-profile-card .profile-details p {
+          margin: 0px;
+          color: #677990; }
+      section.project-manager .talent-pool .card-pane .talent-profile-card .checkbox {
+        margin-left: auto;
+        margin-right: 20px; }
   section.project-manager .talent-pool-assigned .box {
     padding: 10px;
     padding-left: 20px; }
@@ -1642,13 +1728,14 @@ section.project-manager {
       display: block;
       text-align: left; }
       .dropdown-menu .dropdown li a {
-        padding: 15px 20px;
+        padding: 12px 20px;
         font-weight: 100;
         font-size: 16px;
         font-style: normal;
         width: 100%;
         display: block;
-        color: #b3b3b3; }
+        color: #b3b3b3;
+        font-weight: bold; }
         .dropdown-menu .dropdown li a:hover {
           color: #18a2dc; }
     .dropdown-menu .dropdown::before {
@@ -2160,13 +2247,8 @@ div.modal .footer {
     opacity: 0.1; }
   100% {
     opacity: 1; } }
-.bootup {
-  animation-name: boot-up;
-  animation-duration: .5s;
-  animation-timing-function: ease-in-out; }
-
 .boot {
-  opacity: 0.1; }
+  opacity: 0.0; }
 
 /* Responsiveness definitions */
 @media (max-width: 37.5em) {

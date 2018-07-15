@@ -77,6 +77,8 @@
 							headers: { 'Authorization': res.body.extras.token }
 						}).then(res => {
 							console.log(res);
+							Bus.$emit("Header_setBoot", false);
+							setTimeout(() => { Bus.$emit("Header_startBoot", true); }, 1000);
 							store.commit("saveProfile", res.body.extras);
 							if(user.completed_level == 0) this.$router.push("/complete-profile");
 							if(user.completed_level == 1) this.$router.push("/profile");
@@ -86,6 +88,8 @@
 							console.log(err);
 						});
 					}else if(user.account_type == 'pm') {
+						Bus.$emit("Header_setBoot", false);
+						setTimeout(() => { Bus.$emit("Header_startBoot", true); }, 1000);
 						this.$router.push("/project-manager");
 					}
 				}).catch(err=>{
@@ -104,10 +108,10 @@
 			store.dispatch('getSession').then(session => {
 				if(session){
 					if(session.user.account_type == 'developer') {
-						if(session.user.completed_level == 0) this.$router.push("/complete-profile");
-						if(session.user.completed_level == 1) this.$router.push("/profile");
-						if(session.user.completed_level == 2) this.$router.push("/profile/incomplete");
-						if(session.user.completed_level == 3) this.$router.push("/profile/"+session.user.username);
+						// if(session.user.completed_level == 0) this.$router.push("/complete-profile");
+						// if(session.user.completed_level == 1) this.$router.push("/profile");
+						// if(session.user.completed_level == 2) this.$router.push("/profile/incomplete");
+						// if(session.user.completed_level == 3) this.$router.push("/profile/"+session.user.username);
 					}else if(session.user.account_type == 'pm') {
 						this.$router.push("/project-manager");
 					}

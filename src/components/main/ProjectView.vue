@@ -33,6 +33,8 @@
 			<div class="value">10 May 2018</div>
 			<div class="label">Assigned to</div>
 			<div class="value">Tolu Oluwagbemi</div>
+			<div class="label">Shared with</div>
+			<div class="value">Tolu Oluwagbemi, Kola Oyewo, Biola Ojo</div>
 		</div>
 		<div class="fab-holder">
 			<div :class="{ active: fabOpen }" class="actions">
