@@ -1279,7 +1279,7 @@ section.project-manager {
       width: 100%;
       font-size: 14px;
       font-weight: bold; }
-    section.project-manager #project-modal .body .input label {
+    section.project-manager #project-modal .body .input label, section.project-manager #project-modal .body .inputdrop label {
       font-weight: bold; }
     section.project-manager #project-modal .body .project-title-wrapper li:first-child {
       width: 70%;

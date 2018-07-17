@@ -161,7 +161,7 @@
 				{ name: "Chris Njoku", stack: "UX Researcher", photo: require("../../assets/img/avatar-3.svg") }, 
 				{ name: "Lanre Shonibare", stack: "UX/UI Designer", photo: require("../../assets/img/avatar-4.svg") },
 				{ name: "Alexander Pret", stack: "Backend", photo: require("../../assets/img/avatar-5.svg") }
-			], activeDropDown: null, selectedTalentName: 'Jossy', showProjectHistoryModal: false, showProfileModal: false, showEarningsModal: false, showProfileEarningsModal: false 
+			], activeDropDown: null, selectedTalentName: 'Jossy', showProjectHistoryModal: false, showProfileModal: false, showEarningsModal: false, showProfileEarningsModal: false, fetchedTools: [] 
 		} },
 		methods: {
 			filterRoles: function(v) {
@@ -169,8 +169,7 @@
 				this.roles = all.filter((t) => { return t.toLowerCase().match(v.toLowerCase()); });
 			},
 			filterLanguages: function(v) {
-				var all = ["Adobe XD", "Angular JS", "Bootstrap", "C++", "CSS", "Django", "Electron JS", "GO", "HTML"];
-				this.languages = all.filter((t) => { return t.toLowerCase().match(v.toLowerCase()); });
+				this.languages = this.fetchedTools.filter((t) => { return t.toLowerCase().match(v.toLowerCase()); });
 			},
 			showDropMenu(e, t) {
 				var a=e.target||e.srcElement;
@@ -200,7 +199,14 @@
 				if(session) { 
 					self.user = session.user;
 					// fetch only new projects
-					
+					this.$http.get(store.state.api.development+"get-tools", {
+						headers: { 'Authorization' : session.token }
+					}).then(res => { 
+						let all = res.body.extras.tools;
+						for(var i = 0; i < all.length; i++) {
+							self.fetchedTools.push(all[i].title);
+						}
+					}).catch(err => { console.log(err); });
 				}
 			});
 			document.addEventListener("click", function(e) { 

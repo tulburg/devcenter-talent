@@ -54,7 +54,7 @@
 								<h3>{{ placeholder.name }}</h3>
 								<p>{{ placeholder.stack }}</p>
 							</div>
-							<CheckBox :checked="true" v-on:change="(v) => { saveProject(v) }" />
+							<CheckBox :checked="false" v-on:change="(v) => { saveProject(v) }" />
 						</div>
 					</div>
 				</div>
@@ -67,16 +67,9 @@
 					<li><Input label="Cost (NGN)" placeholder="Project Cost" value="400,000" /></li>
 				</ul>
 				<textarea class="project-description input" placeholder="Project Description">{{ selected.description }}</textarea>
-				<Input label="Category" placeholder="Project Categories">
-					<div class="category-dropdown dropdown"></div>
-				</Input>
-				<Input label="Platforms" placeholder="Project Platforms">
-					<div class="platform-dropdown dropdown"></div>
-				</Input>
-				<Input label="Stacks/Skills" placeholder="Project Stacks and Skills">
-					<div class="stacks-dropdown dropdown"></div>
-				</Input>
-				<InputDrop label="Stacks/Skills" placeholder="Project Stacks and Skills" :options="stacks" v-on:change="fetchStacks" />
+				<InputDrop name="category" label="Category" placeholder="Project Categories" :options="categories" v-on:change="fetchCategories" />
+				<InputDrop name="platform" label="Platforms" placeholder="Project Platforms" :options="platforms" v-on:change="fetchPlatforms" />
+				<InputDrop name="stacks" label="Stacks/Skills" placeholder="Project Stacks and Skills" :options="stacks" v-on:change="fetchStacks" />
 				<ul class="grid grid-2 date-grid">
 					<li>
 						<Datepicker wrapper-class="select datepicker-select" placeholder="Select Deadline">
@@ -125,7 +118,7 @@
 	
 	export default {
 		name: 'New',
-		data() { return { user: undefined, projects: [], selected: undefined, savingProject: false, showModal: false, name: 'Tolu', showDatePickerAlert: false, stacks: [], showFindTalentModal: false, openStacks: true, openRoles: true, openEmployment: true, showShareModal: false,
+		data() { return { user: undefined, projects: [], selected: undefined, savingProject: false, showModal: false, name: 'Tolu', showDatePickerAlert: false, stacks: [], platforms: [], categories: [], fetchedCategories: [], showFindTalentModal: false, openStacks: true, openRoles: true, openEmployment: true, showShareModal: false,
 			placeholders: [ 
 				{ name: "John Doe", stack: "Backend, Frontend, Mobile", photo: require("../../assets/img/avatar.svg") }, 
 				{ name: "Jason Adetunbo", stack: "iOS Backend", photo: require("../../assets/img/avatar-2.svg") },
@@ -140,6 +133,7 @@
 				var self = this;
 				this.selected = project;
 				this.$router.push("#project="+project.id);
+				console.log(project);
 				setTimeout(() => {
 					$(".project-view-pane").expand();
 					$(".project-list-pane").collapse();
@@ -162,13 +156,16 @@
 			saveProject(v) {
 				this.showShareModal = v;
 			},
-			fetchStacks() {
-				var self = this;
-				this.$http.get("https://restcountries.eu/rest/v2/all?fields=name").then(res=> {
-					for(var i = 0; i<res.body.length;i++){
-						self.stacks.push(res.body[i].name);
-					}
-				}).catch(err => console.log(err));
+			fetchStacks(v) {
+				var all = [ 'Android Developer', 'Backend Developer', 'Frontend Developer', 'iOS Developer', 'Mobile Developer', 'UI Designer', 'UX Researcher', 'UX Designer', 'UX/UI Designer' ];
+				this.stacks = all.filter((t) => { return t.toLowerCase().match(v.toLowerCase()); });
+			},
+			fetchPlatforms(v) {
+				var all = [ 'Android', 'iOS', 'Website' ];
+				this.platforms = all.filter((t) => { return t.toLowerCase().match(v.toLowerCase()); });
+			},
+			fetchCategories(v) {
+				this.categories = this.fetchedCategories.filter((t) => { return t.toLowerCase().match(v.toLowerCase()); });
 			},
 			toggleStacks() {
 				if(this.openStacks) {
@@ -196,6 +193,9 @@
 					this.openEmployment = true;
 					$(".__employment-collapse").expand();
 				}
+			},
+			updateProject() {
+
 			}
 		},
 		watch: {
@@ -214,6 +214,14 @@
 					self.user = session.user;
 					// fetch only new projects
 					self.projects = session.projects.filter((o) => { return (o.project_stage==0&&o.closed==0&&o.archive==0)});
+					this.$http.get(store.state.api.development+"category", {
+						headers: { 'Authorization' : session.token }
+					}).then(res => { 
+						let all = res.body.extras.category;
+						for(var i = 0; i < all.length; i++) {
+							self.fetchedCategories.push(all[i].title);
+						}
+					}).catch(err => { console.log(err); });
 				}
 			});
 			// setTimeout(() => { this.showFindTalentModal = true }, 5000);

@@ -62,9 +62,9 @@
 					if(session == null) self.$router.push("/")
 					else {
 						var param = {};
-						if(type == 'projects') param = { notification_project_shared: value };
-						if(type == 'assigned') param = { notification_assigned_project: value };
-						if(type == 'all') param = { notification_activities: value };
+						if(type == 'projects') param = { notification_project_shared: (value) ? 1 : 0 };
+						if(type == 'assigned') param = { notification_assigned_project: (value) ? 1 : 0 };
+						if(type == 'all') param = { notification_activities: (value) ? 1 : 0 };
 						self.$http.post(store.state.api.development+"profile/update", param, {
 							headers: { 'Authorization': session.token }
 						}).then(res => {

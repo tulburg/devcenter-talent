@@ -31,6 +31,45 @@
 				]" />
 			</div>
 		</div>
+		<Modal title="Project Modal" :sticky="true" :show="showModal" :onclose="() => { showModal=false }" v-if="selected!=undefined">
+			<div slot="body">
+				<ul class="grid grid-2 project-title-wrapper">
+					<li><Input label="Project name" placeholder="Project Name" :value="selected.project_name" /></li>
+					<li><Input label="Cost (NGN)" placeholder="Project Cost" value="400,000" /></li>
+				</ul>
+				<textarea class="project-description input" placeholder="Project Description">{{ selected.description }}</textarea>
+				<Input label="Category" placeholder="Project Categories">
+					<div class="category-dropdown dropdown"></div>
+				</Input>
+				<Input label="Platforms" placeholder="Project Platforms">
+					<div class="platform-dropdown dropdown"></div>
+				</Input>
+				<Input label="Stacks/Skills" placeholder="Project Stacks and Skills">
+					<div class="stacks-dropdown dropdown"></div>
+				</Input>
+				<InputDrop label="Stacks/Skills" placeholder="Project Stacks and Skills" :options="stacks" v-on:change="fetchStacks" />
+				<ul class="grid grid-2 date-grid">
+					<li>
+						<Datepicker wrapper-class="select datepicker-select" placeholder="Select Deadline">
+							<div slot="afterDateInput">
+								<label>Deadline for Brief</label>
+								<i class="dc-calendar"></i>
+							</div>
+						</Datepicker>
+					</li>
+					<li>&nbsp;</li>
+				</ul>
+				<Input label="undefined" placeholder="Product Requirement Link">
+					<div class="title-label"><label><i class='dc-link'></i> Link to Product Requirement Document</label></div>
+				</Input>
+				<Input label="undefined" placeholder="Project Link on Jira">
+					<div class="title-label"><label><i class='dc-link'></i> Link to Project on Jira <p>(This link will be displayed to Talents only)</p></label></div>
+				</Input>
+			</div>
+			<div slot="footer" v-if="!savingProject">
+				<button class="long" v-on:click="saveProject">Save</button>
+			</div>
+		</Modal>
 	</div>
 </template>
 
@@ -39,17 +78,22 @@
 	
 	import Project from '@/components/main/Project'
 	import ProjectView from '@/components/main/ProjectView'
+	import Modal from '@/components/sub/Modal'
+	import InputDrop from '@/components/sub/InputDrop'
+	import Input from '@/components/sub/Input'
+	import Datepicker from 'vuejs-datepicker'
 	import Bus from '@/Bus'
 	import store from '@/store'
 
 	export default {
 		name: 'Pending',
-		data() { return { user: undefined, projects: [], selected: undefined } },
-		components: { Project, ProjectView },
+		data() { return { user: undefined, projects: [], selected: undefined, showModal: false, name: 'Tolu', showDatePickerAlert: false, stacks: [], savingProject: false } },
+		components: { Project, ProjectView, Modal, InputDrop, Input, Datepicker },
 		methods: {
 			openProject(project) {
 				var self = this;
 				this.selected = project;
+				console.log(project);
 				this.$router.push("#project="+project.id);
 				setTimeout(() => {
 					$(".project-view-pane").expand();
@@ -61,7 +105,18 @@
 				$(".project-list-pane").expand()
 				$(".project-view-pane").collapse(function(){ self.selected = undefined; });
 				this.$router.go(-1);
-			}
+			},
+			fetchStacks() {
+				var self = this;
+				this.$http.get("https://restcountries.eu/rest/v2/all?fields=name").then(res=> {
+					for(var i = 0; i<res.body.length;i++){
+						self.stacks.push(res.body[i].name);
+					}
+				}).catch(err => console.log(err));
+			},
+			saveProject(v) {
+				this.showShareModal = v;
+			},
 		},
 		mounted() {
 			var self = this;
