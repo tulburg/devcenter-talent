@@ -1,15 +1,15 @@
 <template>
 	<div class="container talent-pool">
 		<ul class="grid grid-4 field-pane">
-			<li class="field"><InputDrop label="" name="role-input-drop" placeholder="Enter a Role" :options="roles" v-on:change="filterRoles" /></li>
-			<li class="field"><InputDrop label="" name="languages-input-drop" placeholder="Enter a Language" :options="languages" v-on:change="filterLanguages" /></li>
+			<li class="field"><InputDrop label="" name="role-input-drop" placeholder="Enter a Role" :options="roles" v-on:change="filterRoles" @selected="(v) => { selectedRoles = v }" /></li>
+			<li class="field"><InputDrop label="" name="languages-input-drop" placeholder="Enter a Language" :options="languages" v-on:change="filterLanguages" @selected="(v) => { selectedLangauges = v }" /></li>
 			<li class="field"><Select name="employment" :options="[
 				{ title: 'Contract', value: 'contract' },
 				{ title: 'Employed (Full-time)', value: 'employed' },
 				{ title: 'Freelancer', value: 'freelancer' },
 				{ title: 'Unemployed', value: 'unemployed' },
-			]" label="" /></li>
-			<li class="field"><button class="bar">Search</button></li>
+			]" label="" @change="(v) => { this.selectedEmploymentStatus = v }" /></li>
+			<li class="field"><button class="bar" v-on:click="searchTalent">Search</button></li>
 		</ul>
 		<hr />
 		<div class="card-pane">
@@ -23,9 +23,9 @@
 					<transition name="account-drop">
 						<ul class="dropdown talent-dropdown" style="display:none">
 							<li v-for="menu in [
-									{ title: 'Project History', action: () => { showProjectHistoryModal=true; setModalTitle('project-history-modal', placeholder.name+'\'s Project History'); } },
-									{ title: 'View Profile', action: () => { showProfileModal=true; } },
-									{ title: 'Earnings', action: () => { showEarningsModal=true; setModalTitle('earnings-modal', placeholder.name+'\'s Earnings'); } }				
+									{ title: 'Project History', action: () => { showProjectHistoryModal=true; setModal('project-history-modal', placeholder.name+'\'s Project History'); } },
+									{ title: 'View Profile', action: () => { showProfileModal=true; setModal('profile-modal', placeholder); } },
+									{ title: 'Earnings', action: () => { showEarningsModal=true; setModal('earnings-modal', placeholder.name+'\'s Earnings'); } }				
 								]"><a href="#" v-on:click.prevent="menu.action">{{ menu.title }}</a></li>
 						</ul>
 					</transition>
@@ -34,7 +34,8 @@
 		</div>
 		<Modal title="Project History Modal" :sticky="true" :show="showProjectHistoryModal" :onclose="() => { showProjectHistoryModal=false }">
 			<div slot="body">
-				<div class="box project-box" v-for="i in 4">
+				<div class="preloader" v-if="projectHistoryLoading"><i class="dc-spinner animate-spin"></i></div>
+				<div class="box project-box" v-for="i in 4" v-else>
 					<ul class="grid grid-2 separator project">
 						<li>
 							<h1>Travel Mall <span class="badge" :class="{ success: i<2, default: i==3, danger: i==4}">COMPLETED</span></h1>
@@ -54,27 +55,26 @@
 			</div>
 		</Modal>
 		<Modal title="Profile Modal" :plain="true" :sticky="false" :show="showProfileModal" :onclose="() => { showProfileModal=false }">
-			<div slot="body">
+			<div slot="body" class="preloader" v-if="userProfileLoading"><i class="dc-spinner animate-spin"></i></div>
+			<div slot="body" v-else>
 				<i class="dc-cancel close" v-on:click="showProfileModal=false"></i>
 				<div class="profile-photo">
-					<img src="../../assets/img/avatar.svg" alt="photo" />
+					<img :src="(selectedProfile) ? selectedProfile.profile_image : '../../assets/img/avatar.svg'" alt="photo" />
 				</div>
 				<div class="personal-pane">
-					<h1>John Doe</h1>
-					<p>I'm a Backend developer with experience in Frontend and Mobile development</p> 
+					<h1>{{ (selectedProfile) ? selectedProfile.first_name+' '+selectedProfile.last_name : 'John Doe' }}</h1>
+					<p>I'm a {{ (selectedProfile) ? selectedProfile.preferred_roles[0].value : 'Unknown' }} with experience in 
+						{{ (selectedProfile) ? selectedProfile.roles.slice(0, selectedProfile.roles.length - 1).map((a) => { return a.value }).join(", ")+" and "+((selectedProfile.roles.length > 0) ? selectedProfile.roles.slice(-1)[0].value : '') : 'unknown and unknown' }}</p> 
 					<div class="integration">
-						<a href="https://linkedin.com/in/user.li_username" target="_new"><i class="dc-linkedin"></i></a>
-						<a href="https://github.com/user.git_username" target="_new"><i class="dc-github"></i></a>
-						<a href="https://dribbble.com/user.dribbble_username" target="_new"><i class="dc-dribbble"></i></a>
-						<a href="https://behance.net/user.behance_username" target="_new"><i class="dc-behance"></i></a>
+						<a v-if="selectedProfile&&selectedProfile.li_username" :href="'https://linkedin.com/in/'+selectedProfile.li_username" target="_new"><i class="dc-linkedin"></i></a>
+						<a v-if="selectedProfile&&selectedProfile.git_username" :href="'https://github.com/'+selectedProfile.git_username" target="_new"><i class="dc-github"></i></a>
+						<a v-if="selectedProfile&&selectedProfile.dribbble_username" :href="'https://dribbble.com/'+selectedProfile.dribbble_username" target="_new"><i class="dc-dribbble"></i></a>
+						<a v-if="selectedProfile&&selectedProfile.behance_username" :href="'https://behance.net/'+selectedProfile.behance_username" target="_new"><i class="dc-behance"></i></a>
 					</div>
 				</div>
-				<div class="language-pane">
+				<div class="language-pane" v-if="selectedProfile&&selectedProfile.languages">
 					<h2>Language and Skills</h2>
-					<div class="taggered" v-for="role in [
-						{ value: 'Python', experience: '15+ years' },
-						{ value: 'Ruby', experience: '10 - 15 years' }
-					]"><div class="title">{{ role.value }}</div><span></span><div class="counter">{{ role.experience }}</div></div>
+					<div class="taggered" v-for="role in selectedProfile.languages"><div class="title">{{ role.value }}</div><span></span><div class="counter">{{ role.experience }}</div></div>
 				</div>
 				<div class="employment-pane">
 					<h2>Employment</h2>
@@ -161,7 +161,8 @@
 				{ name: "Chris Njoku", stack: "UX Researcher", photo: require("../../assets/img/avatar-3.svg") }, 
 				{ name: "Lanre Shonibare", stack: "UX/UI Designer", photo: require("../../assets/img/avatar-4.svg") },
 				{ name: "Alexander Pret", stack: "Backend", photo: require("../../assets/img/avatar-5.svg") }
-			], activeDropDown: null, selectedTalentName: 'Jossy', showProjectHistoryModal: false, showProfileModal: false, showEarningsModal: false, showProfileEarningsModal: false, fetchedTools: [] 
+			], activeDropDown: null, selectedTalentName: 'Jossy', showProjectHistoryModal: false, showProfileModal: false, showEarningsModal: false, showProfileEarningsModal: false, fetchedTools: [],
+			selectedLangauges: [], selectedRoles: [], selectedEmploymentStatus: '', projectHistoryLoading: false, userProfileLoading: false, selectedProfile: undefined 
 		} },
 		methods: {
 			filterRoles: function(v) {
@@ -185,8 +186,40 @@
 					}
 				}
 			},
-			setModalTitle(id, title) {
+			setModal(id, title) {
 				$("#"+id).$(".header").innerHTML = title;
+				var self = this;
+				if(id == 'project-history-modal') {
+					this.projectHistoryLoading = true;
+				}
+				if(id == 'profile-modal') {
+					this.userProfileLoading = true;
+					store.dispatch('getSession').then(session => {
+						if(session == null) self.$router.push("/")
+						else {
+							this.$http.get(store.state.api.development+"get-user-by-id/"+2, {
+								headers: { 'Authorization' : session.token }
+							}).then(res => { 
+								console.log(res);
+								self.userProfileLoading = false;
+								self.selectedProfile = res.body.extras.user;
+							}).catch(err => { console.log(err); });
+						}
+					});
+				}
+			},
+			searchTalent() {
+				var param = { roles: this.selectedRoles, skills: this.selectedLangauges, employment_status: this.selectedEmploymentStatus } 
+				store.dispatch('getSession').then(session => {
+					if(session == null) self.$router.push("/")
+					else {
+						this.$http.post(store.state.api.development+"project/find-talent", param, {
+							headers: { 'Authorization' : session.token }
+						}).then(res => { 
+							console.log(res);
+						}).catch(err => { console.log(err); });
+					}
+				});
 			}
 		},
 		mounted() {
@@ -196,7 +229,8 @@
 			Bus.$emit("Header_showPMLinks", true);
 			Bus.$emit("Header_showGrayLogo", true);
 			store.dispatch('getSession').then(session => {
-				if(session) { 
+				if(session == null) self.$router.push("/")
+				else {
 					self.user = session.user;
 					// fetch only new projects
 					this.$http.get(store.state.api.development+"get-tools", {
