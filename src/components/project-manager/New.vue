@@ -54,7 +54,7 @@
 								<h3>{{ placeholder.name }}</h3>
 								<p>{{ placeholder.stack }}</p>
 							</div>
-							<CheckBox :checked="false" v-on:change="(v) => { saveProject(v) }" />
+							<CheckBox :checked="false" v-on:change="(v) => { shareProject(v, placeholder) }" />
 						</div>
 					</div>
 				</div>
@@ -63,16 +63,16 @@
 		<Modal title="Project Modal" :sticky="true" :show="showModal" :onclose="() => { showModal=false }" v-if="selected!=undefined">
 			<div slot="body">
 				<ul class="grid grid-2 project-title-wrapper">
-					<li><Input label="Project name" placeholder="Project Name" :value="selected.project_name" /></li>
-					<li><Input label="Cost (NGN)" placeholder="Project Cost" value="400,000" /></li>
+					<li><Input label="Project name" placeholder="Project Name" :value="selected.project_name" v-on:change="(v) => { this.selected.project_name = v }" /></li>
+					<li><Input label="Cost (NGN)" placeholder="Project Cost" value="400,000" v-on:change="(v) => { this.selected.cost = parseInt(v.replace(/,/, '')) }" /></li>
 				</ul>
-				<textarea class="project-description input" placeholder="Project Description">{{ selected.description }}</textarea>
-				<InputDrop name="category" label="Category" placeholder="Project Categories" :options="categories" v-on:change="fetchCategories" />
-				<InputDrop name="platform" label="Platforms" placeholder="Project Platforms" :options="platforms" v-on:change="fetchPlatforms" />
-				<InputDrop name="stacks" label="Stacks/Skills" placeholder="Project Stacks and Skills" :options="stacks" v-on:change="fetchStacks" />
+				<textarea class="project-description input" placeholder="Project Description" v-model="selected.description">{{ selected.description }}</textarea>
+				<InputDrop name="category" label="Category" placeholder="Project Categories" :options="categories" v-on:change="fetchCategories" v-on:selected="setCategories" />
+				<InputDrop name="platform" label="Platforms" placeholder="Project Platforms" :options="platforms" v-on:change="fetchPlatforms" v-on:selected="(v) => { this.selected.platforms = v }" />
+				<InputDrop name="stacks" label="Stacks/Skills" placeholder="Project Stacks and Skills" :options="stacks" v-on:change="fetchStacks" v-on:selected="(v) => { this.selected.skills = v }" />
 				<ul class="grid grid-2 date-grid">
 					<li>
-						<Datepicker wrapper-class="select datepicker-select" placeholder="Select Deadline">
+						<Datepicker wrapper-class="select datepicker-select" placeholder="Select Deadline" v-on:selected="(v) => { this.selected.deadline = v.getFullYear()+'-'+v.getMonth()+'-'+v.getDate(); }">
 							<div slot="afterDateInput">
 								<label>Deadline for Brief</label>
 								<i class="dc-calendar"></i>
@@ -81,10 +81,10 @@
 					</li>
 					<li>&nbsp;</li>
 				</ul>
-				<Input label="undefined" placeholder="Product Requirement Link">
+				<Input label="undefined" placeholder="Product Requirement Link" v-on:change="(v) => { this.selected.requirement_doc_link = v }">
 					<div class="title-label"><label><i class='dc-link'></i> Link to Product Requirement Document</label></div>
 				</Input>
-				<Input label="undefined" placeholder="Project Link on Jira">
+				<Input label="undefined" placeholder="Project Link on Jira" v-on:change="(v) => { this.selected.jira_link = v }">
 					<div class="title-label"><label><i class='dc-link'></i> Link to Project on Jira <p>(This link will be displayed to Talents only)</p></label></div>
 				</Input>
 			</div>
@@ -154,7 +154,29 @@
 				$(".project-talent-pane").collapse();
 			},
 			saveProject(v) {
-				this.showShareModal = v;
+				var self = this;
+				let param = { 
+					project_ref: this.selected.project_ref, 
+					project_name: this.selected.project_name,
+					cost: this.selected.cost,
+					description: this.selected.description,
+					category: this.selected.category,
+					platforms: this.selected.platforms,
+					skills: this.selected.skills,
+					deadline: this.selected.deadline,
+					requirement_doc_link: this.selected.requirement_doc_link,
+					jira_link: this.selected.jira_link
+				}
+				store.dispatch('getSession').then(session => {
+					if(session == null) self.$router.push("/")
+					else {
+						this.$http.put(store.state.api.development+"project/update", param, {
+							headers: { 'Authorization' : session.token, 'Access-Control-Allow-Methods': "*" }
+						}).then(res => { 
+							console.log(res);
+						}).catch(err => { console.log(err); });
+					}
+				});
 			},
 			fetchStacks(v) {
 				var all = [ 'Android Developer', 'Backend Developer', 'Frontend Developer', 'iOS Developer', 'Mobile Developer', 'UI Designer', 'UX Researcher', 'UX Designer', 'UX/UI Designer' ];
@@ -165,7 +187,16 @@
 				this.platforms = all.filter((t) => { return t.toLowerCase().match(v.toLowerCase()); });
 			},
 			fetchCategories(v) {
-				this.categories = this.fetchedCategories.filter((t) => { return t.toLowerCase().match(v.toLowerCase()); });
+				let fetched = this.fetchedCategories.filter((t) => { return t.title.toLowerCase().match(v.toLowerCase()); });
+				this.categories = [];
+				for(var i = 0; i < fetched.length; i++) {
+					this.categories.push(fetched[i].title);
+				}
+			},
+			setCategories(v) {
+				var s = this.fetchedCategories.filter((t) => { return t.title == v[0] })[0];
+				this.selected.category = s.id;
+				console.log(this.selected);
 			},
 			toggleStacks() {
 				if(this.openStacks) {
@@ -194,8 +225,19 @@
 					$(".__employment-collapse").expand();
 				}
 			},
-			updateProject() {
-
+			shareProject(v, talent) {
+				this.showShareModal = v;
+				var self = this;
+				store.dispatch('getSession').then(session => {
+					if(session == null) self.$router.push("/")
+					else {
+						self.$http.post(store.state.api.development+"project/share", { project_ref: self.project_ref }, {
+							headers: { 'Authorization' : session.token }
+						}).then(res => { 
+							console.log(res);
+						}).catch(err => { console.log(err); });
+					}
+				});
 			}
 		},
 		watch: {
@@ -217,10 +259,7 @@
 					this.$http.get(store.state.api.development+"category", {
 						headers: { 'Authorization' : session.token }
 					}).then(res => { 
-						let all = res.body.extras.category;
-						for(var i = 0; i < all.length; i++) {
-							self.fetchedCategories.push(all[i].title);
-						}
+						self.fetchedCategories = res.body.extras.category;
 					}).catch(err => { console.log(err); });
 				}
 			});

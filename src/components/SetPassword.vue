@@ -35,11 +35,12 @@
 					this.confirmError = '* Password does not match';
 					self.loading = false;
 					this.showConfirmError = true; return;
-				} else if (!this.password.match(/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$/)) {
-					this.passwordError = '* Password must be at least 8 characters long and contain 1 number and 1 uppercase character';
-					self.loading = false;
-					this.showPasswordError = true; return;
-				}
+				} 
+				// else if (!this.password.match(/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$/)) {
+				// 	this.passwordError = '* Password must be at least 8 characters long and contain 1 number and 1 uppercase character';
+				// 	self.loading = false;
+				// 	this.showPasswordError = true; return;
+				// }
 				this.$http.post(store.state.api.development+"recover-password-change", {
 					email: this.$route.params.email,
 					token: this.$route.params.token,
