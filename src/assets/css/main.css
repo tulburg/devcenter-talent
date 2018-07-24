@@ -1190,7 +1190,8 @@ section.project-manager {
       font-size: 14px;
       margin-bottom: 5px; }
     section.project-manager .project .value {
-      font-weight: bold; }
+      font-weight: bold;
+      margin-bottom: 24px; }
   section.project-manager .project-view h1 {
     text-align: left;
     padding: 0px 15px; }
@@ -1335,7 +1336,8 @@ section.project-manager {
             width: 100%; }
         section.project-manager .project-talents .right .talent-profile-card .profile-details {
           padding-left: 15px;
-          flex-grow: 1; }
+          flex-grow: 1;
+          width: calc(100% - 90px); }
           section.project-manager .project-talents .right .talent-profile-card .profile-details h3 {
             margin: 0px;
             margin-bottom: 5px; }
@@ -1367,7 +1369,7 @@ section.project-manager {
     transition: all 0.3s cubic-bezier(0, 0, 0.48, 1.13);
     position: fixed;
     left: 25%;
-    bottom: -80px;
+    bottom: -120px;
     width: 50%;
     border-radius: 8px;
     background-color: rgba(0, 0, 0, 0.6);
@@ -1451,7 +1453,8 @@ section.project-manager {
           width: 100%; }
       section.project-manager .talent-pool .card-pane .talent-profile-card .profile-details {
         padding-left: 15px;
-        flex-grow: 1; }
+        flex-grow: 1;
+        width: calc(100% - 90px); }
         section.project-manager .talent-pool .card-pane .talent-profile-card .profile-details h3 {
           margin: 0px;
           margin-bottom: 5px;
@@ -1664,6 +1667,40 @@ section.project-manager {
       section.project-manager #profile-earnings-modal .profile-photo .cover i {
         font-size: 60px;
         color: #ffffff; }
+  section.project-manager #archive-modal .body {
+    text-align: center;
+    padding-bottom: 24px; }
+    section.project-manager #archive-modal .body h4 {
+      margin-bottom: 0px; }
+    section.project-manager #archive-modal .body p {
+      color: #b3b3b3;
+      text-align: center; }
+  section.project-manager #archive-modal .dialog {
+    width: 600px; }
+  section.project-manager #archive-modal i.close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: #4a4a4a; }
+  section.project-manager #archive-modal textarea {
+    width: 100%;
+    height: 180px;
+    margin-bottom: 0px; }
+  section.project-manager #fields-required-modal .dialog, section.project-manager #brief-required-modal .dialog {
+    width: 600px;
+    top: calc(50% - 50px); }
+    section.project-manager #fields-required-modal .dialog .body, section.project-manager #brief-required-modal .dialog .body {
+      padding: 24px; }
+      section.project-manager #fields-required-modal .dialog .body p, section.project-manager #brief-required-modal .dialog .body p {
+        margin: 0px 80px;
+        text-align: center; }
+    section.project-manager #fields-required-modal .dialog .footer, section.project-manager #brief-required-modal .dialog .footer {
+      padding: 3px; }
+  section.project-manager #fields-required-modal i.close, section.project-manager #brief-required-modal i.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #4a4a4a; }
 
 .vdp-datepicker__calendar {
   position: relative;

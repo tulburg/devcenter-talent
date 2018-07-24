@@ -12,26 +12,27 @@
 			<li class="field"><button class="bar" v-on:click="searchTalent">Search</button></li>
 		</ul>
 		<hr />
-		<div class="card-pane">
-			<div class="box talent-profile-card" v-for="placeholder in placeholders">
-				<div class="profile-photo"><img :src="placeholder.photo" alt="placeholder" /></div>
+		<div class="card-pane" v-if="talentLoading==false">
+			<div class="box talent-profile-card" v-for="talent in talents">
+				<div class="profile-photo"><img :src="talent.profile_image" alt="placeholder" /></div>
 				<div class="profile-details">
-					<h3>{{ placeholder.name }}</h3>
-					<p>{{ placeholder.stack }}</p>
+					<h3>{{ talent.first_name+" "+talent.last_name }}</h3>
+					<p>{{ (talent.preferred_roles.length > 0) ? talent.preferred_roles[0].value: '' }}, {{ talent.roles.slice(0, talent.roles.length - 1).map((a) => { return a.value }).join(", ")+" and "+((talent.roles.length > 0) ? talent.roles.slice(-1)[0].value : '')}}</p>
 				</div>
 				<i class="dc-menu-h dropdown-menu talent-dropdown-anchor" v-on:click="(e) => { showDropMenu(e) }">
 					<transition name="account-drop">
 						<ul class="dropdown talent-dropdown" style="display:none">
 							<li v-for="menu in [
-									{ title: 'Project History', action: () => { showProjectHistoryModal=true; setModal('project-history-modal', placeholder.name+'\'s Project History'); } },
-									{ title: 'View Profile', action: () => { showProfileModal=true; setModal('profile-modal', placeholder); } },
-									{ title: 'Earnings', action: () => { showEarningsModal=true; setModal('earnings-modal', placeholder.name+'\'s Earnings'); } }				
+									{ title: 'Project History', action: () => { showProjectHistoryModal=true; setModal('project-history-modal', talent); } },
+									{ title: 'View Profile', action: () => { showProfileModal=true; setModal('profile-modal', talent); } },
+									{ title: 'Earnings', action: () => { showEarningsModal=true; setModal('earnings-modal', talent); } }				
 								]"><a href="#" v-on:click.prevent="menu.action">{{ menu.title }}</a></li>
 						</ul>
 					</transition>
 				</i>
 			</div>
 		</div>
+		<div class="preloader" v-else><i class="dc-spinner animate-spin"></i></div>
 		<Modal title="Project History Modal" :sticky="true" :show="showProjectHistoryModal" :onclose="() => { showProjectHistoryModal=false }">
 			<div slot="body">
 				<div class="preloader" v-if="projectHistoryLoading"><i class="dc-spinner animate-spin"></i></div>
@@ -63,7 +64,7 @@
 				</div>
 				<div class="personal-pane">
 					<h1>{{ (selectedProfile) ? selectedProfile.first_name+' '+selectedProfile.last_name : 'John Doe' }}</h1>
-					<p>I'm a {{ (selectedProfile) ? selectedProfile.preferred_roles[0].value : 'Unknown' }} with experience in 
+					<p>I'm a {{ (selectedProfile&&selectedProfile.preferred_roles.length>0) ? selectedProfile.preferred_roles[0].value : 'Unknown' }} with experience in 
 						{{ (selectedProfile) ? selectedProfile.roles.slice(0, selectedProfile.roles.length - 1).map((a) => { return a.value }).join(", ")+" and "+((selectedProfile.roles.length > 0) ? selectedProfile.roles.slice(-1)[0].value : '') : 'unknown and unknown' }}</p> 
 					<div class="integration">
 						<a v-if="selectedProfile&&selectedProfile.li_username" :href="'https://linkedin.com/in/'+selectedProfile.li_username" target="_new"><i class="dc-linkedin"></i></a>
@@ -162,7 +163,8 @@
 				{ name: "Lanre Shonibare", stack: "UX/UI Designer", photo: require("../../assets/img/avatar-4.svg") },
 				{ name: "Alexander Pret", stack: "Backend", photo: require("../../assets/img/avatar-5.svg") }
 			], activeDropDown: null, selectedTalentName: 'Jossy', showProjectHistoryModal: false, showProfileModal: false, showEarningsModal: false, showProfileEarningsModal: false, fetchedTools: [],
-			selectedLangauges: [], selectedRoles: [], selectedEmploymentStatus: '', projectHistoryLoading: false, userProfileLoading: false, selectedProfile: undefined 
+			selectedLangauges: [], selectedRoles: [], selectedEmploymentStatus: '', projectHistoryLoading: false, userProfileLoading: false, selectedProfile: undefined,
+			talentLoading: false, talents: [] 
 		} },
 		methods: {
 			filterRoles: function(v) {
@@ -186,37 +188,67 @@
 					}
 				}
 			},
-			setModal(id, title) {
-				$("#"+id).$(".header").innerHTML = title;
+			setModal(id, talent) {
 				var self = this;
 				if(id == 'project-history-modal') {
 					this.projectHistoryLoading = true;
+					$("#"+id).$(".header").innerHTML = talent.first_name+" "+talent.last_name+"'s Project History";
 				}
 				if(id == 'profile-modal') {
 					this.userProfileLoading = true;
 					store.dispatch('getSession').then(session => {
 						if(session == null) self.$router.push("/")
 						else {
-							this.$http.get(store.state.api.development+"get-user-by-id/"+2, {
+							this.$http.get(store.state.api.development+"get-user-by-username/"+talent.username, {
 								headers: { 'Authorization' : session.token }
 							}).then(res => { 
 								console.log(res);
-								self.userProfileLoading = false;
+								self.$http.get(store.state.api.development+"profile/get/"+talent.username, {
+									headers: { 'Authorization': session.token }
+								}).then(res => {
+									console.log(res);
+									self.userProfileLoading = false;
+									self.selectedProfileRatings = res.body.extras.ratings;
+								})
 								self.selectedProfile = res.body.extras.user;
 							}).catch(err => { console.log(err); });
 						}
 					});
 				}
+				if(id == 'earnings-modal') {
+					$("#"+id).$(".header").innerHTML = talent.first_name+" "+talent.last_name+"'s Earnings";
+				}
 			},
 			searchTalent() {
+				var self = this;
+				self.talentLoading = true;
 				var param = { roles: this.selectedRoles, skills: this.selectedLangauges, employment_status: this.selectedEmploymentStatus } 
 				store.dispatch('getSession').then(session => {
 					if(session == null) self.$router.push("/")
 					else {
 						this.$http.post(store.state.api.development+"project/find-talent", param, {
 							headers: { 'Authorization' : session.token }
-						}).then(res => { 
+						}).then(res => {
 							console.log(res);
+							self.talentLoading = false;
+							self.talents = res.body.extras.talents;
+						}).catch(err => { console.log(err); });
+					}
+				});
+			},
+			fetchTools() {
+				var self = this;
+				store.dispatch('getSession').then(session => {
+					if(session == null) self.$router.push("/")
+					else {
+						this.$http.get(store.state.api.development+"get-tools", {
+							headers: { 'Authorization' : session.token }
+						}).then(res => { 
+							let all = res.body.extras.tools;
+							store.commit("saveTools", all);
+							for(var i = 0; i < all.length; i++) {
+								self.fetchedTools.push(all[i].title);
+							}
 						}).catch(err => { console.log(err); });
 					}
 				});
@@ -232,15 +264,8 @@
 				if(session == null) self.$router.push("/")
 				else {
 					self.user = session.user;
-					// fetch only new projects
-					this.$http.get(store.state.api.development+"get-tools", {
-						headers: { 'Authorization' : session.token }
-					}).then(res => { 
-						let all = res.body.extras.tools;
-						for(var i = 0; i < all.length; i++) {
-							self.fetchedTools.push(all[i].title);
-						}
-					}).catch(err => { console.log(err); });
+					if(!session.tools) { self.fetchTools() }
+					else { self.fetchedTools = session.tools.map((a) => { return a.title }); }
 				}
 			});
 			document.addEventListener("click", function(e) { 

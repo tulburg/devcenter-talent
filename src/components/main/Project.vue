@@ -7,11 +7,11 @@
 			</li>
 			<li>
 				<div class="label">Cost</div>
-				<div class="value">NGN {{ data.cost }}</div><br/>
+				<div class="value">NGN {{ data.cost }}</div>
 				<div class="label" v-if="data.type == 'talent'">Due Date</div>
-				<div class="value" v-if="data.type == 'talent'">{{ data.due }}</div><br/>
+				<div class="value" v-if="data.type == 'talent'">{{ data.due }}</div>
 				<div class="label" v-if="data.type == 'pm'">Assigned by</div>
-				<div class="value" v-if="data.type == 'pm'">{{ data.assigner }}</div><br/>
+				<div class="value" v-if="data.type == 'pm'">{{ data.assigner }}</div>
 				<a :href="data.milestone" target="_new" v-if="data.type == 'talent'">View Milestone <i class="dc-caret right"></i></a>
 			</li>
 		</ul>

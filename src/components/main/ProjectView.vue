@@ -13,28 +13,28 @@
 			</li>
 			<li>
 				<div class="label">Cost</div>
-				<div class="value">NGN {{ data.cost }}</div><br/>
+				<div class="value">NGN {{ data.cost }}</div>
 				<div class="label">Assigned by</div>
-				<div class="value">{{ data.assigner }}</div><br/>
+				<div class="value">{{ data.assigner }}</div>
 				<div class="label">Due Date</div>
-				<div class="value">{{ data.due }}</div><br/>
+				<div class="value">{{ data.due }}</div>
 				<div class="label">Closed on</div>
-				<div class="value">{{ data.closed }}</div><br/>
+				<div class="value">{{ data.closed }}</div>
 			</li>
 		</ul>
 		<div class="details">
-			<div class="label">Category</div>
-			<div class="value alt">Fintech, Insurance</div>
-			<div class="label">Platforms</div>
-			<div class="value alt">Android, iOS, Website</div>
-			<div class="label">Stack/Skills</div>
-			<div class="value alt">HTML, CSS, Swift, Java, JavaScript</div>
-			<div class="label">Deadline</div>
-			<div class="value">10 May 2018</div>
-			<div class="label">Assigned to</div>
-			<div class="value">Tolu Oluwagbemi</div>
-			<div class="label">Shared with</div>
-			<div class="value">Tolu Oluwagbemi, Kola Oyewo, Biola Ojo</div>
+			<div class="label" v-if="data.category">Category</div>
+			<div class="value alt" v-if="data.category">{{ data.category.join(", ") }}</div>
+			<div class="label" v-if="data.platform">Platforms</div>
+			<div class="value alt" v-if="data.platform">{{ data.platform.join(", ") }}</div>
+			<div class="label" v-if="data.stacks">Stack/Skills</div>
+			<div class="value alt" v-if="data.stacks">{{ data.stacks.join(", ") }}</div>
+			<div class="label" v-if="data.deadline">Deadline</div>
+			<div class="value" v-if="data.deadline">{{ data.deadline }}</div>
+			<div class="label" v-if="data.assigned_to">Assigned to</div>
+			<div class="value" v-if="data.assigned_to">{{ data.assigned_to }}</div>
+			<div class="label" v-if="data.shared_with">Shared with</div>
+			<div class="value" v-if="data.shared_with">{{ data.shared_with.join(", ") }}</div>
 		</div>
 		<div class="fab-holder">
 			<div :class="{ active: fabOpen }" class="actions">

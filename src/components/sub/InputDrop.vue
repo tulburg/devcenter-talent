@@ -24,7 +24,8 @@
 			showAlert: { type: Boolean, default: false },
 			selected: { type: Array, default() { return [] }},
 			options: { type: Array, default() { return [] }},
-			name: { type: String, default: 'default' }
+			name: { type: String, default: 'default' },
+			remove: { type: Function, default: this.removeDefault }
 		},
 		watch: {
 			showDrop(value) { 
@@ -49,7 +50,7 @@
 				this.showDrop = false;
 				this.$emit("selected", this.selected);
 			},
-			remove(option) {
+			removeDefault(option) {
 				this.selected.splice(this.selected.indexOf(option), 1);
 			}
 		}

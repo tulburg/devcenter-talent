@@ -39,6 +39,11 @@ export default new Vuex.Store({
 			let data = JSON.parse(localStorage.getItem("DevTalent"));
 			data.projects = payload;
 			localStorage.setItem("DevTalent", JSON.stringify(data));
+		},
+		saveTools: function(state, payload) {
+			let data = JSON.parse(localStorage.getItem("DevTalent"));
+			data.tools = payload;
+			localStorage.setItem("DevTalent", JSON.stringify(data));
 		}
 	},
 	actions: {
