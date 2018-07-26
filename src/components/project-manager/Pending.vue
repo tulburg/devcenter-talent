@@ -10,7 +10,7 @@
 					type: 'pm',
 					title: project.project_name,
 					description: (project.description.length > 300) ? project.description.substring(0, 300)+'...' : project.description,
-					assigner: project.assigned_pm,
+					assigner: project.assigner.first_name+' '+project.assigner.last_name,
 					cost: (project.agreed_cost) ? project.agreed_cost.toLocaleString(): 0,
 				}" />
 			</div>
@@ -33,7 +33,7 @@
 					{ title: 'Find Talents', action: () => { (checkProjectCompletion(selected)) ? openTalentPane('find') : showCompletionErrorDialog = true; } },
 					{ title: 'Assign Talents', action: () => { (checkProjectCompletion(selected)) ? openTalentPane('assign') : showCompletionErrorDialog = true; } }
 				]" :menus="[
-					{ title: 'Move to in Progress', action: '' },
+					{ title: 'Move to in Progress', action: () => { moveProjectTo('inprogress') } },
 					{ title: 'Archive Project', action: () => { showArchiveModal=true; } }
 				]" />
 			</div>
@@ -126,6 +126,13 @@
 				<p>No project brief has been added to this project</p>
 			</div>
 		</Modal>
+		<Modal title="Status Modal" :sticky="true" :plain="true" :show="showStatusModal" :onclose="() => { showStatusModal=false }">
+			<div slot="body" v-if="processLoading" class="preloader"><i class="dc-spinner animate-spin"></i></div>
+			<div slot="body" v-else>
+				<i class="dc-cancel close" v-on:click="showStatusModal=false"></i>
+				<p>{{ processStatus }}</p>
+			</div>
+		</Modal>
 		<div :class="{ active: showShareModal }" class="share-overlay">
 			<button class="long" v-on:click="shareProject">Share Project</button>
 		</div>
@@ -159,7 +166,8 @@
 				openRoles: true, openEmployment: true, showShareModal: false, saveProjectLoading: false,
 				showCompletionErrorDialog: false, selectedTalents: [], showBriefErrorDialog: false,
 				talentsLoading: false, talents: [], selectedRoles: [], selectedLangauges: [], 
-				selectedEmploymentStatus: [], talentPaneMode: '', showAssignModal: false
+				selectedEmploymentStatus: [], talentPaneMode: '', showAssignModal: false,
+				showStatusModal: false, processStatus: '', processLoading: false
 			} 
 		},
 		components: { Project, ProjectView, Modal, InputDrop, CheckBox, Input, Datepicker },
@@ -328,12 +336,16 @@
 			},
 			shareProject() {
 				var self = this;
+				this.processLoading = true;
+				this.showStatusModal = true;
 				store.dispatch('getSession').then(session => {
 					if(session == null) self.$router.push("/")
 					else {
 						self.$http.post(store.state.api.development+"project/share", { project_ref: self.project_ref }, {
 							headers: { 'Authorization' : session.token }
 						}).then(res => { 
+							this.processStatus = "Project has been shared with names";
+							this.processLoading = false;
 							console.log(res);
 						}).catch(err => { console.log(err); });
 					}
@@ -341,12 +353,16 @@
 			},
 			assignProject() {
 				var self = this;
+				this.processLoading = true;
+				this.showStatusModal = true;
 				store.dispatch('getSession').then(session => {
 					if(session == null) self.$router.push("/")
 					else {
-						self.$http.post(store.state.api.development+"project/share", { project_ref: self.project_ref }, {
+						self.$http.post(store.state.api.development+"project/assign", { project_ref: self.project_ref }, {
 							headers: { 'Authorization' : session.token }
 						}).then(res => { 
+							this.processStatus = "Project has been assigned to names";
+							this.processLoading = false;
 							console.log(res);
 						}).catch(err => { console.log(err); });
 					}
@@ -367,6 +383,36 @@
 							self.archiveLoading = false;
 							self.showArchiveModal = false;
 						}).catch(err => { console.log(err); this.archiveLoading = false; });
+					}
+				});
+			},
+			moveProjectTo(stage) {
+				var self = this;
+				var req_stage;
+				(stage == 'pending') ? req_stage = 'fund' : '';
+				(stage == 'inprogress') ? req_stage = 'funded' : '';
+				(stage == 'close') ? req_stage = 'completed' : '';
+				this.processLoading = true;
+				this.showStatusModal = true;
+				store.dispatch('getSession').then(session => {
+					if(session == null) self.$router.push("/")
+					else {
+						self.$http.post(store.state.api.development+"push-project/"+req_stage, { project_ref: self.selected.project_ref.toString() }, {
+							headers: { 'Authorization' : session.token, 'Content-Type': 'application/json' }
+						}).then(res => { 
+							(stage == 'pending') ? this.processStatus = "Project has been moved to Pending": '';
+							(stage == 'inprogress') ? this.processStatus = "Project has been moved to In Progress": '';
+							(stage == 'close') ? this.processStatus = "Project has been moved to Close": '';
+							store.dispatch('getSession').then(session => {
+								if(session) {
+									session.projects.where({project_ref: self.selected.project_ref}).project_stage = res.body.extras.project.project_stage;
+									store.commit("saveProjects", session.projects);
+								}
+							});
+							self.projects.splice(self.projects.indexOf(self.selected), 1);
+							this.processLoading = false;
+							console.log(res);
+						}).catch(err => { console.log(err); });
 					}
 				});
 			},

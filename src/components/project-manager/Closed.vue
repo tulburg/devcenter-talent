@@ -10,10 +10,8 @@
 					type: 'pm',
 					title: project.project_name,
 					description: (project.description.length > 300) ? project.description.substring(0, 300)+'...' : project.description,
-					assigner: project.assigned_pm,
-					badgeText: 'CLOSED',
-					badgeStatus: 'primary',
-					cost: '330,000'
+					assigner: project.assigner.first_name+' '+project.assigner.last_name,
+					cost: (project.agreed_cost) ? project.agreed_cost.toLocaleString(): 0,
 				}" />
 			</div>
 			<div class="project-view-pane">
@@ -35,8 +33,8 @@
 				}" :actions="[
 					{ title: 'View Project Brief', action: () => { (selected.requirement_doc_link&&selected.requirement_doc_link!='') ? this.gotoReqDoc() : showBriefErrorDialog = true; } },
 				]" :menus="[
-					{ title: 'Move to In Progress', action: '' },
-					{ title: 'Move to Pending', action: '' }
+					{ title: 'Move to In Progress', action: () => { moveProjectTo('inprogress') } },
+					{ title: 'Move to Pending', action: () => { moveProjectTo('pending') } }
 				]" />
 			</div>
 		</div>
@@ -44,6 +42,13 @@
 			<div slot="body">
 				<i class="dc-cancel close" v-on:click="showBriefErrorDialog=false"></i>
 				<p>No project brief has been added to this project</p>
+			</div>
+		</Modal>
+		<Modal title="Status Modal" :sticky="true" :plain="true" :show="showStatusModal" :onclose="() => { showStatusModal=false }">
+			<div slot="body" v-if="processLoading" class="preloader"><i class="dc-spinner animate-spin"></i></div>
+			<div slot="body" v-else>
+				<i class="dc-cancel close" v-on:click="showStatusModal=false"></i>
+				<p>{{ processStatus }}</p>
 			</div>
 		</Modal>
 	</div>
@@ -60,7 +65,9 @@
 
 	export default {
 		name: 'Closed',
-		data() { return { user: undefined, projects: [], selected: undefined, showBriefErrorDialog: false } },
+		data() { return { user: undefined, projects: [], selected: undefined, showBriefErrorDialog: false,
+			showStatusModal: false, processStatus: '', processLoading: false } 
+		},
 		components: { Project, ProjectView, Modal },
 		methods: {
 			simpleDateFormat(d) {
@@ -83,6 +90,36 @@
 				$(".project-view-pane").collapse(function(){ self.selected = undefined; });
 				this.$router.go(-1);
 			},
+			moveProjectTo(stage) {
+				var self = this;
+				var req_stage;
+				(stage == 'pending') ? req_stage = 'fund' : '';
+				(stage == 'inprogress') ? req_stage = 'funded' : '';
+				(stage == 'close') ? req_stage = 'completed' : '';
+				this.processLoading = true;
+				this.showStatusModal = true;
+				store.dispatch('getSession').then(session => {
+					if(session == null) self.$router.push("/")
+					else {
+						self.$http.post(store.state.api.development+"push-project/"+req_stage, { project_ref: self.selected.project_ref.toString() }, {
+							headers: { 'Authorization' : session.token, 'Content-Type': 'application/json' }
+						}).then(res => { 
+							(stage == 'pending') ? this.processStatus = "Project has been moved to Pending": '';
+							(stage == 'inprogress') ? this.processStatus = "Project has been moved to In Progress": '';
+							(stage == 'close') ? this.processStatus = "Project has been moved to Close": '';
+							store.dispatch('getSession').then(session => {
+								if(session) {
+									session.projects.where({project_ref: self.selected.project_ref}).project_stage = res.body.extras.project.project_stage;
+									store.commit("saveProjects", session.projects);
+								}
+							});
+							self.projects.splice(self.projects.indexOf(self.selected), 1);
+							this.processLoading = false;
+							console.log(res);
+						}).catch(err => { console.log(err); });
+					}
+				});
+			},
 			gotoReqDoc() {
 				window.open(this.selected.requirement_doc_link, '_blank');
 			}
@@ -97,7 +134,7 @@
 				if(session) { 
 					self.user = session.user;
 					// fetch only new projects
-					self.projects = session.projects.filter((a) => { return (a.closed>0||a.archive>0) });
+					self.projects = session.projects.filter((a) => { return (a.closed == 1 || a.archive == 1) });
 				}
 			});
 		},

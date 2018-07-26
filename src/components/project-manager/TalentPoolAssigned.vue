@@ -5,7 +5,7 @@
 				<h2>Refine by</h2>
 				<div class="collapse-heading" v-on:click="toggleProjects">Projects <i :class="{ upward: openProjects }" class="dc-caret"></i></div>
 				<ul class="collapse-body __projects-collapse">
-					<li v-for="item in ['Travel Mall', 'Singh', 'Exced', 'Trist', 'Dimpley']"><CheckBox :small="true" /> {{ item }}</li>
+					<li v-for="item in projects.map((p) => { return p.project_name })"><CheckBox :small="true" /> {{ item }}</li>
 				</ul>
 				<div class="collapse-heading" v-on:click="toggleRoles">Roles <i :class="{ upward: openRoles }" class="dc-caret"></i></div>
 				<ul class="collapse-body __roles-collapse">
@@ -22,11 +22,11 @@
 				</ul>
 			</div>
 			<div class="right">
-				<div class="box talent-profile-card" v-for="placeholder in placeholders">
-					<div class="profile-photo"><img :src="placeholder.photo" alt="placeholder" /></div>
+				<div class="box talent-profile-card" v-for="talent in talents">
+					<div class="profile-photo"><img :src="talent.profile_image" alt="placeholder" /></div>
 					<div class="profile-details">
-						<h3>{{ placeholder.name }}</h3>
-						<p>{{ placeholder.stack }}</p>
+						<h3>{{ talent.first_name+" "+talent.last_name }}</h3>
+						<p>{{ (talent.preferred_roles.length > 0) ? talent.preferred_roles[0].value: '' }}, {{ talent.roles.slice(0, talent.roles.length - 1).map((a) => { return a.value }).join(", ")+" and "+((talent.roles.length > 0) ? talent.roles.slice(-1)[0].value : '')}}</p>
 					</div>
 					<i class="dc-menu-h dropdown-menu talent-dropdown-anchor" v-on:click="(e) => { showDropMenu(e) }">
 						<transition name="account-drop">
@@ -188,14 +188,8 @@
 		name: 'TalentPoolAssigned',
 		components: { CheckBox, Modal, Input, Select },
 		data() { return { openStacks: true, openRoles: true, openEmployment: true, openProjects: true, activeDropDown: null, showCurrentProjectModal: false,
-			selectedTalentName: 'Joe', showProjectHistoryModal: false, showProfileModal: false, showEarningsModal: false, showProfileEarningsModal: false,
-			placeholders: [ 
-				{ name: "John Doe", stack: "Backend, Frontend, Mobile", photo: require("../../assets/img/avatar.svg") }, 
-				{ name: "Jason Adetunbo", stack: "iOS Backend", photo: require("../../assets/img/avatar-2.svg") },
-				{ name: "Chris Njoku", stack: "UX Researcher", photo: require("../../assets/img/avatar-3.svg") }, 
-				{ name: "Lanre Shonibare", stack: "UX/UI Designer", photo: require("../../assets/img/avatar-4.svg") },
-				{ name: "Alexander Pret", stack: "Backend", photo: require("../../assets/img/avatar-5.svg") }
-			] } 
+			selectedTalentName: 'Joe', showProjectHistoryModal: false, showProfileModal: false, showEarningsModal: false, showProfileEarningsModal: false, talents: [],
+			projects: [] } 
 		},
 		methods: {
 			toggleProjects() {
@@ -262,7 +256,9 @@
 				if(session) { 
 					self.user = session.user;
 					// fetch only new projects
-					
+					var talents = [].push(session.projects.map((t) => { console.log(t.team_members); return t.team_members }));
+					if(talents.length && talents.length > 0) self.talents = talents;
+					self.projects = session.projects;
 				}
 			});
 			var self = this;

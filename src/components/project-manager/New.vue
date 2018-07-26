@@ -129,6 +129,13 @@
 				<p>No project brief has been added to this project</p>
 			</div>
 		</Modal>
+		<Modal title="Status Modal" :sticky="true" :plain="true" :show="showStatusModal" :onclose="() => { showStatusModal=false }">
+			<div slot="body" v-if="processLoading" class="preloader"><i class="dc-spinner animate-spin"></i></div>
+			<div slot="body" v-else>
+				<i class="dc-cancel close" v-on:click="showStatusModal=false"></i>
+				<p>{{ processStatus }}</p>
+			</div>
+		</Modal>
 		<div :class="{ active: showShareModal }" class="share-overlay">
 			<button class="long" v-on:click="shareProject">Share Project</button>
 		</div>
@@ -156,7 +163,7 @@
 			archiveReason: '', archiveLoading: false, talentsLoading: false, selectedRoles: [],
 			selectedLangauges: [], selectedEmploymentStatus: [], fetchedTools: [], talents: [],
 			showCompletionErrorDialog: false, selectedTalents: [], showBriefErrorDialog: false,
-			saveProjectLoading: false }
+			saveProjectLoading: false, showStatusModal: false, processStatus: '', processLoading: false }
 		},
 		components: { Project, ProjectView, Modal, Input, Datepicker, InputDrop, CheckBox },
 		methods: {
@@ -302,12 +309,16 @@
 			},
 			shareProject() {
 				var self = this;
+				this.processLoading = true;
+				this.showStatusModal = true;
 				store.dispatch('getSession').then(session => {
 					if(session == null) self.$router.push("/")
 					else {
 						self.$http.post(store.state.api.development+"project/share", { project_ref: self.project_ref }, {
 							headers: { 'Authorization' : session.token }
 						}).then(res => { 
+							this.processStatus = "Project has been shared with names";
+							this.processLoading = false;
 							console.log(res);
 						}).catch(err => { console.log(err); });
 					}
@@ -380,7 +391,7 @@
 					// fetch only new projects
 					if(!session.tools) { self.fetchTools() }
 					else { self.fetchedTools = session.tools.map((a) => { return a.title }); }
-					self.projects = session.projects.filter((o) => { return (o.project_stage==0&&o.closed==0)});
+					self.projects = session.projects.filter((o) => { return (o.project_stage==0&&o.closed==0&&o.archive==0)});
 					this.$http.get(store.state.api.development+"category", {
 						headers: { 'Authorization' : session.token }
 					}).then(res => { 

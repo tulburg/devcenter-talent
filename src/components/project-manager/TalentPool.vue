@@ -57,7 +57,7 @@
 		</Modal>
 		<Modal title="Profile Modal" :plain="true" :sticky="false" :show="showProfileModal" :onclose="() => { showProfileModal=false }">
 			<div slot="body" class="preloader" v-if="userProfileLoading"><i class="dc-spinner animate-spin"></i></div>
-			<div slot="body" v-else>
+			<div slot="body" v-if="selectedProfile!=undefined&&selectedProfileRatings!=undefined&&userProfileLoading==false">
 				<i class="dc-cancel close" v-on:click="showProfileModal=false"></i>
 				<div class="profile-photo">
 					<img :src="(selectedProfile) ? selectedProfile.profile_image : '../../assets/img/avatar.svg'" alt="photo" />
@@ -79,30 +79,49 @@
 				</div>
 				<div class="employment-pane">
 					<h2>Employment</h2>
-					<p>Unemployed</p>
+					<p v-if="selectedProfileRatings.work_preference.employment_type_contract">Contract</p>
+					<p v-if="selectedProfileRatings.work_preference.employment_type_full_time">Employed</p>
+					<p v-if="selectedProfileRatings.work_preference.employment_type_internship">Unemployed</p>
+					<p v-if="selectedProfileRatings.work_preference.employment_type_remote">Freelancer</p>
 				</div>
 				<div class="rank-pane">
 					<h2>Rank and Rating</h2>
 					<ul class="rank grid grid-2">
-						<li><div>Current rating</div><h1>60</h1></li>
-						<li><div>Current rank</div><h1>Level 1</h1></li>
+						<li><div>Current rating</div><h1>{{ selectedProfileRatings.user_rating.total }}</h1></li>
+						<li><div>Current rank</div><h1>Level {{ selectedProfileRatings.user_rating.level }}</h1></li>
 					</ul>
 					<ul class="rating grid grid-2">
-						<li v-for="i in 2">
+						<li>
 							<div class="ratings">
-								<div class="title">Attitude <span>15/75</span></div>
+								<div class="title">Attitude <span>{{ selectedProfileRatings.user_rating.attitude }}/75</span></div>
 								<div class="bar">
-									<span v-for="i in 15" :class="{ active: (i <= (15/75)*15) }"></span>
+									<span v-for="i in 15" :class="{ active: (i <= (selectedProfileRatings.user_rating.attitude/75)*15) }"></span>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="ratings">
+								<div class="title">Communication <span>{{ selectedProfileRatings.user_rating.communication }}/75</span></div>
+								<div class="bar">
+									<span v-for="i in 15" :class="{ active: (i <= (selectedProfileRatings.user_rating.communication/75)*15) }"></span>
 								</div>
 							</div>
 						</li>
 					</ul>
 					<ul class="rating grid grid-2">
-						<li v-for="i in 2">
+						<li>
 							<div class="ratings">
-								<div class="title">Attitude <span>15/75</span></div>
+								<div class="title">Quality <span> {{ selectedProfileRatings.user_rating.quality }}/75</span></div>
 								<div class="bar">
-									<span v-for="i in 15" :class="{ active: (i <= (15/75)*15) }"></span>
+									<span v-for="i in 15" :class="{ active: (i <= (selectedProfileRatings.user_rating.quality/75)*15) }"></span>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="ratings">
+								<div class="title">Timeliness <span> {{ selectedProfileRatings.user_rating.timeliness }}/75</span></div>
+								<div class="bar">
+									<span v-for="i in 15" :class="{ active: (i <= (selectedProfileRatings.user_rating.timeliness/75)*15) }"></span>
 								</div>
 							</div>
 						</li>
@@ -163,7 +182,7 @@
 				{ name: "Lanre Shonibare", stack: "UX/UI Designer", photo: require("../../assets/img/avatar-4.svg") },
 				{ name: "Alexander Pret", stack: "Backend", photo: require("../../assets/img/avatar-5.svg") }
 			], activeDropDown: null, selectedTalentName: 'Jossy', showProjectHistoryModal: false, showProfileModal: false, showEarningsModal: false, showProfileEarningsModal: false, fetchedTools: [],
-			selectedLangauges: [], selectedRoles: [], selectedEmploymentStatus: '', projectHistoryLoading: false, userProfileLoading: false, selectedProfile: undefined,
+			selectedLangauges: [], selectedRoles: [], selectedEmploymentStatus: '', projectHistoryLoading: false, userProfileLoading: false, selectedProfile: undefined, selectedProfileRatings: undefined,
 			talentLoading: false, talents: [] 
 		} },
 		methods: {
@@ -203,14 +222,14 @@
 								headers: { 'Authorization' : session.token }
 							}).then(res => { 
 								console.log(res);
+								self.selectedProfile = res.body.extras;
 								self.$http.get(store.state.api.development+"profile/get/"+talent.username, {
 									headers: { 'Authorization': session.token }
 								}).then(res => {
-									console.log(res);
+									self.selectedProfileRatings = res.body.extras;
+									console.log(res, self.selectedProfile, self.selectedProfileRatings);
 									self.userProfileLoading = false;
-									self.selectedProfileRatings = res.body.extras.ratings;
 								})
-								self.selectedProfile = res.body.extras.user;
 							}).catch(err => { console.log(err); });
 						}
 					});
