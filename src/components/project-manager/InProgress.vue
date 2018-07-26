@@ -10,7 +10,8 @@
 					type: 'pm',
 					title: project.project_name,
 					description: (project.description.length > 300) ? project.description.substring(0, 300)+'...' : project.description,
-					assigner: project.assigned_pm
+					assigner: project.assigner.first_name+' '+project.assigner.last_name,
+					cost: (project.agreed_cost) ? project.agreed_cost.toLocaleString() : 0
 				}" />
 			</div>
 			<div class="project-view-pane">
@@ -18,19 +19,88 @@
 				<ProjectView v-if="selected!=undefined" :data="{
 					title: selected.project_name,
 					description: selected.description,
-					assigner: selected.assigned_pm,
-					cost: '330,000'
+					assigner: selected.assigner.first_name+' '+selected.assigner.last_name,
+					cost: (selected.agreed_cost) ? selected.agreed_cost.toLocaleString(): 0,
+					category: (selected.categories) ? selected.categories.map((c) => { return c.title }) : [],
+					platform: selected.platforms,
+					stacks: selected.modules,
+					deadline: (selected.deadline) ? simpleDateFormat(selected.deadline): '',
+					due: (selected.deadline) ? simpleDateFormat(selected.deadline): ''
 				}" :actions="[
-					{ title: 'View Project Brief', action: '' },
-					{ title: 'Find Talents', action: () => { openTalentPane() } },
-					{ title: 'Assign Talents', action: () => { openTalentPane() } },
-					{ title: 'Remove Talents', action: () => { showModal = true; } },
+					{ title: 'View Project Brief', action: () => { (selected.requirement_doc_link&&selected.requirement_doc_link!='') ? this.gotoReqDoc() : showBriefErrorDialog = true; } },
+					{ title: 'Find Talents', action: () => { (checkProjectCompletion(selected)) ? openTalentPane('find') : showCompletionErrorDialog = true; } },
+					{ title: 'Assign Talents', action: () => { (checkProjectCompletion(selected)) ? openTalentPane('assign') : showCompletionErrorDialog = true; } },
+					{ title: 'Remove Talents', action: () => { (checkProjectCompletion(selected)) ? openTalentPane('remove') : showCompletionErrorDialog = true; } },
 				]" :menus="[
 					{ title: 'Move to Pending', action: '' },
-					{ title: 'Archive Project', action: '' },
+					{ title: 'Archive Project', action: () => { showArchiveModal=true; } },
 					{ title: 'Close Project', action: '' }
 				]" />
 			</div>
+			<div class="project-talent-pane" v-if="selected!=undefined">
+				<div class="breadcrumb-wrapper alt"><div class="breadcrumb" v-on:click="closeTalentPane"><i class="dc-caret left"></i> {{ selected.project_name }}</div></div>
+				<div class="project-talents">
+					<div class="preloader" v-if="talentsLoading"><i class="dc-spinner animate-spin"></i></div>
+					<div class="left box" v-else>
+						<h2>Refine by</h2>
+						<div class="collapse-heading" v-on:click="toggleRoles">Roles <i :class="{ upward: openRoles }" class="dc-caret"></i></div>
+						<ul class="collapse-body __roles-collapse">
+							<li v-for="item in [ 'Android Developer', 'Backend Developer', 'Frontend Developer', 'iOS Developer', 'Mobile Developer', 'UI Designer', 'UX Researcher', 'UX Designer', 'UX/UI Designer' ]"><CheckBox :small="true" v-on:change="(v) => { setValue('roles', v, item) }" /> {{ item }}</li>
+						</ul>
+						<div class="collapse-heading" v-on:click="toggleStacks">Stacks/Skills <i :class="{ upward: openStacks }" class="dc-caret"></i></div>
+						<ul class="collapse-body __stacks-collapse">
+							<li v-for="item in selected.modules"><CheckBox :small="true" :checked="true" v-on:change="(v) => { setValue('stacks', v, item) }" /> {{ item }}</li>
+						</ul>
+						<div class="collapse-heading" v-on:click="toggleEmployment">Employment Status <i :class="{ upward: openEmployment }" class="dc-caret"></i></div>
+						<ul class="collapse-body __employment-collapse">
+							<li v-for="item in ['Contract', 'Employed', 'Freelancer', 'Unemployed']"><CheckBox :small="true" v-on:change="(v) => { setValue('emp-status', v, item) }" /> {{ item }}</li>
+						</ul>
+					</div>
+					<div class="right" v-if="!talentsLoading">
+						<div class="box talent-profile-card" v-for="talent in talents">
+							<div class="profile-photo"><img :src="talent.profile_image" alt="placeholder" /></div>
+							<div class="profile-details">
+								<h3>{{ talent.first_name+" "+talent.last_name }}</h3>
+								<p>{{ (talent.preferred_roles.length > 0) ? talent.preferred_roles[0].value: '' }}, {{ talent.roles.slice(0, talent.roles.length - 1).map((a) => { return a.value }).join(", ")+" and "+((talent.roles.length > 0) ? talent.roles.slice(-1)[0].value : '')}}</p>
+							</div>
+							<CheckBox :checked="false" v-on:change="(v) => { shareWith(v, talent) }" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<Modal title="Archive Modal" :stickey="true" :plain="true" :show="showArchiveModal" :onclose="() => { showArchiveModal = false }">
+			<div slot="body" class="preloader" v-if="archiveLoading"><i class="dc-spinner animate-spin"></i></div>
+			<div slot="body" v-else>
+				<i class="dc-cancel close" v-on:click="showArchiveModal=false"></i>
+				<h4>Please enter a short description of why you are archiving this project</h4>
+				<p>(Max 600 Characters)</p>
+				<textarea class="input" placeholder="Enter a description here" v-model="archiveReason"></textarea>
+			</div>
+			<div slot="footer" align="center" v-if="!archiveLoading">
+				<button class="long" v-on:click="archiveProject">Submit</button>
+			</div>
+		</Modal>
+		<Modal title="Brief Required Modal" :sticky="true" :plain="true" :show="showBriefErrorDialog" :onclose="() => { showBriefErrorDialog=false }">
+			<div slot="body">
+				<i class="dc-cancel close" v-on:click="showBriefErrorDialog=false"></i>
+				<p>No project brief has been added to this project</p>
+			</div>
+		</Modal>
+		<Modal title="Fields Required Modal" :sticky="true" :plain="true" :show="showCompletionErrorDialog" :onclose="() => { showCompletionErrorDialog=false }">
+			<div slot="body">
+				<i class="dc-cancel close" v-on:click="showCompletionErrorDialog=false"></i>
+				<p>Please update all fields for the project to be able to find talents</p>
+			</div>
+		</Modal>
+		<div :class="{ active: showShareModal }" class="share-overlay">
+			<button class="long" v-on:click="shareProject">Share Project</button>
+		</div>
+		<div :class="{ active: showAssignModal }" class="share-overlay">
+			<button class="long" v-on:click="assignProject">Assign Project</button>
+		</div>
+		<div :class="{ active: showRemoveModal }" class="share-overlay">
+			<button class="long" v-on:click="removeFromProject">Remove from Project</button>
 		</div>
 	</div>
 </template>
@@ -40,14 +110,36 @@
 	
 	import Project from '@/components/main/Project'
 	import ProjectView from '@/components/main/ProjectView'
+	import Modal from '@/components/sub/Modal'
+	import Input from '@/components/sub/Input'
+	import CheckBox from '@/components/sub/CheckBox'
 	import Bus from '@/Bus'
 	import store from '@/store'
 
 	export default {
 		name: 'InProgress',
-		data() { return { user: undefined, projects: [], selected: undefined } },
-		components: { Project, ProjectView },
+		data() { 
+			return { 
+				user: undefined, projects: [], selected: undefined, showArchiveModal: false, 
+				archiveReason: '', archiveLoading: false, showBriefErrorDialog: false, talentsLoading: false,
+				openStacks: true, openRoles: true, openEmployment: true, talents: [], stacks: [],
+				showCompletionErrorDialog: false, selectedRoles: [], selectedLangauges: [], 
+				selectedEmploymentStatus: [], selectedTalents: [], showShareModal: false, showAssignModal: false,
+				talentPaneMode: '', showRemoveModal: false
+			} 
+		},
+		components: { Project, ProjectView, Modal, Input, CheckBox },
 		methods: {
+			simpleDateFormat(d) {
+				var date = new Date(d.split("-").map((v) => { return (v.length < 2) ? "0"+v : v }).join("-"));
+				var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
+				return date.getDate()+" "+months[date.getMonth()]+" "+date.getFullYear();
+			},
+			setValue(type, value, item) {
+				if(type == 'roles') { (value) ? this.selectedRoles.push(item) : this.selectedRoles.splice(this.selectedRoles.indexOf(item), 1); }
+				if(type == 'stacks') { (value) ? this.selectedLangauges.push(item) : this.selectedLangauges.splice(this.selectedLangauges.indexOf(item), 1); }
+				if(type == 'emp-status') { (value) ? this.selectedEmploymentStatus.push(item) : this.selectedEmploymentStatus.splice(this.selectedEmploymentStatus.indexOf(item), 1); }
+			},
 			openProject(project) {
 				var self = this;
 				this.selected = project;
@@ -62,6 +154,137 @@
 				$(".project-list-pane").expand()
 				$(".project-view-pane").collapse(function(){ self.selected = undefined; });
 				this.$router.go(-1);
+			},
+			openTalentPane(type) {
+				this.fetchTalents();
+				$(".project-view-pane").collapse();
+				$(".project-talent-pane").expand();
+				this.talentPaneMode = type;
+			},
+			closeTalentPane() {
+				this.selectedTalents = [];
+				this.showShareModal = false;
+				this.showAssignModal = false;
+				this.showRemoveModal = true;
+				$(".project-view-pane").expand();
+				$(".project-talent-pane").collapse();
+			},
+			toggleStacks() {
+				if(this.openStacks) {
+					this.openStacks = false;
+					$(".__stacks-collapse").collapse();
+				}else {
+					this.openStacks = true;
+					$(".__stacks-collapse").expand();
+				}
+			},
+			toggleRoles() {
+				if(this.openRoles) {
+					this.openRoles = false;
+					$(".__roles-collapse").collapse();
+				}else {
+					this.openRoles = true;
+					$(".__roles-collapse").expand();
+				}
+			},
+			toggleEmployment() {
+				if(this.openEmployment) {
+					this.openEmployment = false;
+					$(".__employment-collapse").collapse();
+				}else {
+					this.openEmployment = true;
+					$(".__employment-collapse").expand();
+				}
+			},
+			shareWith(v, talent) {
+				(v) ? this.selectedTalents.push(talent.id) : this.selectedTalents.splice(this.selectedTalents.indexOf(talent.id), 1);
+				if(this.selectedTalents.length < 1) {
+					this.showShareModal = false; 
+					this.showAssignModal = false; 
+					this.showRemoveModal = false;
+					return;
+				}
+				(this.talentPaneMode == 'find') ? this.showShareModal = true : '';
+				(this.talentPaneMode == 'assign') ? this.showAssignModal = true : '';
+				(this.talentPaneMode == 'remove') ? this.showRemoveModal = true : '';
+				console.log(this.selectedTalents, talent);
+			},
+			shareProject() {
+				var self = this;
+				store.dispatch('getSession').then(session => {
+					if(session == null) self.$router.push("/")
+					else {
+						self.$http.post(store.state.api.development+"project/share", { project_ref: self.project_ref }, {
+							headers: { 'Authorization' : session.token }
+						}).then(res => { 
+							console.log(res);
+						}).catch(err => { console.log(err); });
+					}
+				});
+			},
+			assignProject() {
+				var self = this;
+				store.dispatch('getSession').then(session => {
+					if(session == null) self.$router.push("/")
+					else {
+						self.$http.post(store.state.api.development+"project/share", { project_ref: self.project_ref }, {
+							headers: { 'Authorization' : session.token }
+						}).then(res => { 
+							console.log(res);
+						}).catch(err => { console.log(err); });
+					}
+				});
+			},
+			removeFromProject() {
+				
+			},
+			fetchTalents() {
+				var self = this;
+				self.talentsLoading = true;
+				const param = { roles: this.selectedRoles, skills: this.selectedLangauges, employment_status: this.selectedEmploymentStatus } 
+				store.dispatch('getSession').then(session => {
+					if(session == null) self.$router.push("/")
+					else {
+						this.$http.post(store.state.api.development+"project/find-talent", param, {
+							headers: { 'Authorization' : session.token }
+						}).then(res => {
+							self.talentsLoading = false;
+							self.talents = res.body.extras.talents;
+						}).catch(err => { console.log(err); });
+					}
+				});
+			},
+			archiveProject() {
+				this.archiveLoading = true;
+				this.showArchiveModal = true;
+				var self = this;
+				store.dispatch('getSession').then(session => {
+					if(session == null) self.$router.push("/")
+					else {
+						self.$http.put(store.state.api.development+"project/archive", 
+							{ project_ref: self.selected.project_ref, archiveReason: self.archiveReason }, {
+								headers: { 'Authorization' : session.token }
+							}
+						).then(res => {
+							self.archiveLoading = false;
+							self.showArchiveModal = false;
+						}).catch(err => { console.log(err); this.archiveLoading = false; });
+					}
+				});
+			},
+			checkProjectCompletion(project) {
+				var all = [project.project_name, project.description, project.agreed_cost, project.categories, project.platforms, project.modules, project.deadline, project.requirement_doc_link, project.jira_link]
+				for(var i = 0; i < all.length; i++) {
+					console.log(all[i]);
+					if(!all[i]) { return false; }
+					if(all[i] instanceof Array) {  if(all[i].length < 0) return false; }
+					if(typeof(all[i]) == "string") { if(all[i] == '') return false; }
+					if(typeof(all[i]) == "object") { if(JSON.stringify(all[i]).length < 3) return false; }
+				}
+				return true;
+			},
+			gotoReqDoc() {
+				window.open(this.selected.requirement_doc_link, '_blank');
 			}
 		},
 		mounted() {

@@ -2,7 +2,7 @@
 	<div class="inputdrop" :id="name">
 		<label v-if="label!=''">{{ label }}</label>
 		<div class="wrapper">
-			<span v-for="item in selected">{{ item }} <i class="dc-cancel" v-on:click="remove(item)"></i></span>
+			<span v-for="item in selected">{{ item }} <i class="dc-cancel" v-on:click="removeDefault(item)"></i></span>
 			<input type="text" class="bar __drop-input" :placeholder="placeholder" v-model="value" v-on:click="clear" v-on:input="change" autocomplete="off">
 		</div>
 		<div :class="{ active: showAlert }" class="alert">{{ alert }}</div>
@@ -16,7 +16,7 @@
 <script>
 	export default {
 		name: 'InputDrop',
-		data() { return { value: '', showDrop: false  }},
+		data() { return { value: '', showDrop: false }},
 		props: { 
 			label: { type: String, default: 'Label default' },
 			alert: { type: String, default: '* hello world' }, 
@@ -25,7 +25,7 @@
 			selected: { type: Array, default() { return [] }},
 			options: { type: Array, default() { return [] }},
 			name: { type: String, default: 'default' },
-			remove: { type: Function, default: this.removeDefault }
+			remove: { type: Function }
 		},
 		watch: {
 			showDrop(value) { 
@@ -51,6 +51,7 @@
 				this.$emit("selected", this.selected);
 			},
 			removeDefault(option) {
+				if(this.remove) return this.remove(option);
 				this.selected.splice(this.selected.indexOf(option), 1);
 			}
 		}

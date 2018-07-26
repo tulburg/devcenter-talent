@@ -16,10 +16,10 @@
 				<div class="value">NGN {{ data.cost }}</div>
 				<div class="label">Assigned by</div>
 				<div class="value">{{ data.assigner }}</div>
-				<div class="label">Due Date</div>
-				<div class="value">{{ data.due }}</div>
-				<div class="label">Closed on</div>
-				<div class="value">{{ data.closed }}</div>
+				<div class="label" v-if="data.due">Due Date</div>
+				<div class="value" v-if="data.due">{{ data.due }}</div>
+				<div class="label" v-if="data.closed">Closed on</div>
+				<div class="value" v-if="data.closed">{{ data.closed }}</div>
 			</li>
 		</ul>
 		<div class="details">
@@ -29,7 +29,7 @@
 			<div class="value alt" v-if="data.platform">{{ data.platform.join(", ") }}</div>
 			<div class="label" v-if="data.stacks">Stack/Skills</div>
 			<div class="value alt" v-if="data.stacks">{{ data.stacks.join(", ") }}</div>
-			<div class="label" v-if="data.deadline">Deadline</div>
+			<div class="label" v-if="data.deadline">Deadline for Brief</div>
 			<div class="value" v-if="data.deadline">{{ data.deadline }}</div>
 			<div class="label" v-if="data.assigned_to">Assigned to</div>
 			<div class="value" v-if="data.assigned_to">{{ data.assigned_to }}</div>

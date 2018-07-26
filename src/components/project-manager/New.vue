@@ -24,8 +24,8 @@
 					category: (selected.categories) ? selected.categories.map((c) => { return c.title }) : [],
 					platform: selected.platforms,
 					stacks: selected.modules,
-					deadline: simpleDateFormat(selected.deadline),
-					due: simpleDateFormat(selected.deadline)
+					deadline: (selected.deadline) ? simpleDateFormat(selected.deadline): '',
+					due: (selected.deadline) ? simpleDateFormat(selected.deadline): ''
 				}" :actions="[
 					{ title: 'Update Project', action: () => { showModal = true; } },
 					{ title: 'View Project Brief', action: () => { (selected.requirement_doc_link&&selected.requirement_doc_link!='') ? this.gotoReqDoc() : showBriefErrorDialog = true; } },
@@ -71,7 +71,7 @@
 			<div slot="body" v-else>
 				<ul class="grid grid-2 project-title-wrapper">
 					<li><Input label="Project name" placeholder="Project Name" :value="selected.project_name" v-on:change="(v) => { this.selected.project_name = v }" /></li>
-					<li><Input label="Cost (NGN)" placeholder="Project Cost" :value="(selected.agreed_cost) ? selected.agreed_cost.toLocaleString() : '0'" v-on:change="(v) => { this.selected.cost = parseInt(v.replace(/,/, '')) }" /></li>
+					<li><Input label="Cost (NGN)" placeholder="Project Cost" :value="(selected.agreed_cost) ? selected.agreed_cost.toLocaleString() : '0'" v-on:change="(v) => { this.selected.agreed_cost = parseInt(v.replace(/,/, '')) }" /></li>
 				</ul>
 				<textarea class="project-description input" placeholder="Project Description" v-model="selected.description">{{ selected.description }}</textarea>
 				<InputDrop name="category" label="Category" placeholder="Project Categories" :options="categories" :selected="(selected.categories) ? selected.categories.map((c) => { return c.title }) : []" :remove="(i) => { unsetCategory(i) }" v-on:change="fetchCategories" v-on:selected="setCategories" />
@@ -79,7 +79,7 @@
 				<InputDrop name="stacks" label="Stacks/Skills" placeholder="Project Stacks and Skills" :options="stacks" v-on:change="fetchStacks" :selected="selected.modules" v-on:selected="(v) => { this.selected.skills = v }" />
 				<ul class="grid grid-2 date-grid">
 					<li>
-						<Datepicker wrapper-class="select datepicker-select" placeholder="Select Deadline" :value="new Date(selected.deadline.split('-').map((v) => { return (v.length < 2) ? '0'+v : v }).join('-'))" v-on:selected="(v) => { this.selected.deadline = v.getFullYear()+'-'+v.getMonth()+'-'+v.getDate(); }">
+						<Datepicker wrapper-class="select datepicker-select" placeholder="Select Deadline" :value="(selected.deadline) ? new Date(selected.deadline.split('-').map((v) => { return (v.length < 2) ? '0'+v : v }).join('-')) : ''" v-on:selected="(v) => { this.selected.deadline = v.getFullYear()+'-'+v.getMonth()+'-'+v.getDate(); }">
 							<div slot="afterDateInput">
 								<label>Deadline for Brief</label>
 								<i class="dc-calendar"></i>
@@ -192,6 +192,8 @@
 				this.fetchTalents();
 			},
 			closeTalentPane() {
+				this.selectedTalents = [];
+				this.showShareModal = false;
 				$(".project-view-pane").expand();
 				$(".project-talent-pane").collapse();
 			},
@@ -229,10 +231,12 @@
 			fetchStacks(v) {
 				var all = this.fetchedTools;
 				this.stacks = all.filter((t) => { return t.toLowerCase().match(v.toLowerCase()); });
+				if(this.stacks.length < 1) this.stacks = all;
 			},
 			fetchPlatforms(v) {
 				var all = [ 'Android', 'iOS', 'Website' ];
 				this.platforms = all.filter((t) => { return t.toLowerCase().match(v.toLowerCase()); });
+				if(this.platforms.length < 1) this.platforms = all;
 			},
 			fetchCategories(v) {
 				let fetched = this.fetchedCategories.filter((t) => { return t.title.toLowerCase().match(v.toLowerCase()); });
@@ -240,6 +244,7 @@
 				for(var i = 0; i < fetched.length; i++) {
 					this.categories.push(fetched[i].title);
 				}
+				if(this.categories.length < 1) this.categories = this.fetchedCategories.map((c) => { return c.title; });
 			},
 			setCategories(v) {
 				var r = []
@@ -279,7 +284,7 @@
 				}
 			},
 			checkProjectCompletion(project) {
-				var all = [project.project_name, project.description, project.agreed_cost, project.categories, project.platforms, project.modules, project.deadline]
+				var all = [project.project_name, project.description, project.agreed_cost, project.categories, project.platforms, project.modules, project.deadline, project.requirement_doc_link, project.jira_link]
 				for(var i = 0; i < all.length; i++) {
 					console.log(all[i]);
 					if(!all[i]) { return false; }

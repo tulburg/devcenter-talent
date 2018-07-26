@@ -366,6 +366,8 @@ section {
   margin: 0px;
   position: absolute;
   min-width: 100px;
+  max-height: 300px;
+  overflow-y: scroll;
   background-color: #ffffff;
   top: 100%;
   box-shadow: 4px 4px 6px 4px rgba(40, 40, 40, 0.1);
@@ -1195,6 +1197,9 @@ section.project-manager {
   section.project-manager .project-view h1 {
     text-align: left;
     padding: 0px 15px; }
+    section.project-manager .project-view h1 .badge {
+      margin-bottom: 4px;
+      margin-left: 15px; }
     section.project-manager .project-view h1 i {
       float: right;
       font-size: 34px;
