@@ -36,20 +36,22 @@
 		<Modal title="Project History Modal" :sticky="true" :show="showProjectHistoryModal" :onclose="() => { showProjectHistoryModal=false }">
 			<div slot="body">
 				<div class="preloader" v-if="projectHistoryLoading"><i class="dc-spinner animate-spin"></i></div>
-				<div class="box project-box" v-for="i in 4" v-else>
+				<div class="box project-box" v-for="project in selectedProfileProjects" v-else>
 					<ul class="grid grid-2 separator project">
 						<li>
-							<h1>Travel Mall <span class="badge" :class="{ success: i<2, default: i==3, danger: i==4}">COMPLETED</span></h1>
-							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-							tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-							quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-							consequat. </p>
+							<h1>{{ project.project_name }} <span class="badge" :class="{ success: project.project_stage==2, primary: project.project_stage==1, danger: project.project_stage==0}">
+							{{ (project.project_stage==0) ? 'NEW': '' }}
+							{{ (project.project_stage==1) ? 'PENDING': '' }}
+							{{ (project.project_stage==2) ? 'IN PROGRESS': '' }}
+							{{ (project.project_stage==3||project.project_stage==4) ? 'CLOSED': '' }}
+						</span></h1>
+							<p>{{ (project.description.length > 300) ? project.description.substring(0, 300)+'...' : project.description }} </p>
 						</li>
 						<li>
 							<div class="label">Cost</div>
-							<div class="value">NGN 330,000</div><br/>
+							<div class="value">NGN {{ (project.agreed_cost) ? project.agreed_cost.toLocaleString() : 0 }}</div><br/>
 							<div class="label">Due Date</div>
-							<div class="value">24th Aug 2018</div><br/>
+							<div class="value">{{ (project.deadline) ? simpleDateFormat(project.deadline) : '' }}</div><br/>
 						</li>
 					</ul>
 				</div>
@@ -183,9 +185,14 @@
 				{ name: "Alexander Pret", stack: "Backend", photo: require("../../assets/img/avatar-5.svg") }
 			], activeDropDown: null, selectedTalentName: 'Jossy', showProjectHistoryModal: false, showProfileModal: false, showEarningsModal: false, showProfileEarningsModal: false, fetchedTools: [],
 			selectedLangauges: [], selectedRoles: [], selectedEmploymentStatus: '', projectHistoryLoading: false, userProfileLoading: false, selectedProfile: undefined, selectedProfileRatings: undefined,
-			talentLoading: false, talents: [] 
+			talentLoading: false, talents: [], selectedProfileProjects: [] 
 		} },
 		methods: {
+			simpleDateFormat(d) {
+				var date = new Date(d.split("-").map((v) => { return (v.length < 2) ? "0"+v : v }).join("-"));
+				var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
+				return date.getDate()+" "+months[date.getMonth()]+" "+date.getFullYear();
+			},
 			filterRoles: function(v) {
 				var all = [ 'Android Developer', 'Backend Developer', 'Frontend Developer', 'iOS Developer', 'Mobile Developer', 'UI Designer', 'UX Researcher', 'UX Designer', 'UX/UI Designer' ];
 				this.roles = all.filter((t) => { return t.toLowerCase().match(v.toLowerCase()); });
@@ -212,6 +219,17 @@
 				if(id == 'project-history-modal') {
 					this.projectHistoryLoading = true;
 					$("#"+id).$(".header").innerHTML = talent.first_name+" "+talent.last_name+"'s Project History";
+					store.dispatch('getSession').then(session => {
+						if(session == null) self.$router.push("/")
+						else {
+							this.$http.get(store.state.api.development+"project/get-user-projects/"+talent.id, {
+								headers: { 'Authorization' : session.token }
+							}).then(res => { 
+								self.projectHistoryLoading = false;
+								self.selectedProfileProjects = res.body.extras.projects;
+							}).catch(err => { console.log(err); self.selectedProfileProjects = []; });
+						}
+					});
 				}
 				if(id == 'profile-modal') {
 					this.userProfileLoading = true;

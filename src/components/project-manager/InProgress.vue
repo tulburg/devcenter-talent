@@ -173,7 +173,7 @@
 				this.selectedTalents = [];
 				this.showShareModal = false;
 				this.showAssignModal = false;
-				this.showRemoveModal = true;
+				this.showRemoveModal = false;
 				$(".project-view-pane").expand();
 				$(".project-talent-pane").collapse();
 			},

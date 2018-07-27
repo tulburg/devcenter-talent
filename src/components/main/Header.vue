@@ -34,7 +34,11 @@
 					<div class="account-name acc-d">{{ (user) ? user.first_name+" "+user.last_name : "John Doe" }} <i :class="{ upward: showAccountDropDown }" class="dc-caret acc-d"></i></div>
 					<transition name="account-drop">
 						<ul class="account-drop acc-d" v-show="showAccountDropDown">
-							<li v-for="i in accountLinks">
+							<li v-if="showPMLinks" v-for="i in accountLinks.filter((a) => { return !a.devOnly; })">
+								<router-link :to="i.url" v-if="i.action == undefined">{{ i.title }}</router-link>
+								<a href="" v-on:click.prevent="i.action" v-else>{{ i.title }}</a>
+							</li>
+							<li v-else v-for="i in accountLinks">
 								<router-link :to="i.url" v-if="i.action == undefined">{{ i.title }}</router-link>
 								<a href="" v-on:click.prevent="i.action" v-else>{{ i.title }}</a>
 							</li>
@@ -67,9 +71,9 @@
 			var self = this;
 			return { showGrayLogo: false, showLinks: false, showLogin: false, showHome: false, showAccount: false, showSignup: false, showAccountDropDown: false, showPMLinks: false, boot: true, user: undefined,
 				accountLinks: [
-					{ url: "/account/earnings", title: "Earnings" },
+					{ url: "/account/earnings", title: "Earnings", devOnly: true },
 					{ url: "/account/settings", title: "Account Settings" },
-					{ url: "/account/feedback", title: "Feedback" },
+					{ url: "/account/feedback", title: "Feedback", devOnly: true },
 					{ action: function() { self.logOut() }, title: "Log Out" }
 				],
 				activeLink: '', activeSubLink: '', unread : true, 
@@ -130,6 +134,7 @@
 					console.log(self.user);
 				}
 			});
+			console.log(self.showPMLinks);
 		}
 	}
 </script>
