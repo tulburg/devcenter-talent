@@ -79,7 +79,7 @@
 				<InputDrop name="stacks" label="Stacks/Skills" placeholder="Project Stacks and Skills" :options="stacks" v-on:change="fetchStacks" :selected="selected.modules" v-on:selected="(v) => { this.selected.skills = v }" />
 				<ul class="grid grid-2 date-grid">
 					<li>
-						<Datepicker wrapper-class="select datepicker-select" placeholder="Select Deadline" :value="(selected.deadline) ? new Date(selected.deadline.split('-').map((v) => { return (v.length < 2) ? '0'+v : v }).join('-')) : ''" v-on:selected="(v) => { this.selected.deadline = v.getFullYear()+'-'+v.getMonth()+'-'+v.getDate(); }">
+						<Datepicker wrapper-class="select datepicker-select" placeholder="Select Deadline" :value="(selected.deadline) ? new Date(selected.deadline.split('-').map((v) => { return (v.length < 2) ? '0'+v : v }).join('-')) : ''" v-on:selected="(v) => { this.selected.deadline = v.getFullYear()+'-'+(v.getMonth()+1)+'-'+v.getDate(); }">
 							<div slot="afterDateInput">
 								<label>Deadline for Brief</label>
 								<i class="dc-calendar"></i>
@@ -230,6 +230,13 @@
 							if(self.checkProjectCompletion(res.body.extras.project)) {
 								self.showFindTalentModal = true;
 							}
+							store.dispatch('getSession').then(session => {
+								if(session) {
+									session.projects = session.projects.filter((p) => { return p.project_ref != self.selected.project_ref });
+									session.projects.push(self.selected);
+									store.commit("saveProjects", session.projects);
+								}
+							});
 							console.log(res);
 						}).catch(err => { console.log(err); });
 					}
@@ -338,6 +345,8 @@
 						).then(res => {
 							self.archiveLoading = false;
 							self.showArchiveModal = false;
+							self.showStatusModal = true;
+							self.processStatus = self.selected.project_name+" has been archived and moved to Closed projects";
 						}).catch(err => { console.log(err); this.archiveLoading = false; });
 					}
 				});
@@ -384,6 +393,7 @@
 			Bus.$emit("Header_showAccount", true);
 			Bus.$emit("Header_showLinks", true);
 			Bus.$emit("Header_showPMLinks", true);
+			Bus.$emit("Header_showPMAccount", true);
 			Bus.$emit("Header_showGrayLogo", true);
 			store.dispatch('getSession').then(session => {
 				if(session) { 
@@ -405,6 +415,7 @@
 			Bus.$emit("Header_showAccount", false);
 			Bus.$emit("Header_showLinks", false);
 			Bus.$emit("Header_showPMLinks", false);
+			Bus.$emit("Header_showPMAccount", false);
 			Bus.$emit("Header_showGrayLogo", false);
 		}
 	}

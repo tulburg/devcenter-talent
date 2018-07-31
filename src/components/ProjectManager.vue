@@ -24,6 +24,7 @@ PROJECT_COMPLETED = 5 (completed) -->
 		data() { return { loadComplete: false } },
 		mounted() {
 			var self = this;
+			Bus.$emit("Header_showPMAccount", true);
 			store.dispatch('getSession').then(session => {
 				if(session) { 
 					self.user = session.user;
@@ -35,6 +36,9 @@ PROJECT_COMPLETED = 5 (completed) -->
 					}).catch(err => { console.log(err); });
 				}
 			});
+		},
+		destroyed() {
+			Bus.$emit("Header_showPMAccount", false);
 		}
 	}
 </script>

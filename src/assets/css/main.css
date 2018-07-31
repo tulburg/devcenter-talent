@@ -1329,6 +1329,8 @@ section.project-manager {
         width: 100%;
         padding: 20px;
         padding-left: 30px; }
+      section.project-manager .project-talents .right .talent-profile-card.disabled {
+        opacity: 0.6; }
       section.project-manager .project-talents .right .talent-profile-card .profile-photo {
         display: inline-block;
         vertical-align: top;

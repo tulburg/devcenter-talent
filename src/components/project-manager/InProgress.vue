@@ -98,6 +98,7 @@
 			<div slot="body" v-else>
 				<i class="dc-cancel close" v-on:click="showStatusModal=false"></i>
 				<p>{{ processStatus }}</p>
+				<button class="long">Assign More Talents</button>
 			</div>
 		</Modal>
 		<div :class="{ active: showShareModal }" class="share-overlay">
