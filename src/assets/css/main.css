@@ -1329,33 +1329,35 @@ section.project-manager {
         width: 100%;
         padding: 20px;
         padding-left: 30px; }
-      section.project-manager .project-talents .right .talent-profile-card.disabled {
-        opacity: 0.6; }
-      section.project-manager .project-talents .right .talent-profile-card .profile-photo {
-        display: inline-block;
-        vertical-align: top;
-        height: 80px;
-        width: 80px;
-        border-radius: 40px;
-        overflow: hidden; }
-        section.project-manager .project-talents .right .talent-profile-card .profile-photo img {
-          width: 100%; }
-      section.project-manager .project-talents .right .talent-profile-card .profile-details {
-        display: inline-block;
-        vertical-align: middle;
-        padding-top: 12px;
-        padding-left: 15px;
-        flex-grow: 1;
-        width: calc(100% - 140px); }
-        section.project-manager .project-talents .right .talent-profile-card .profile-details h3 {
-          margin: 0px;
-          margin-bottom: 5px; }
-        section.project-manager .project-talents .right .talent-profile-card .profile-details p {
-          margin: 0px;
-          color: #677990; }
-      section.project-manager .project-talents .right .talent-profile-card .checkbox {
-        margin-left: auto;
-        margin-right: 20px; }
+      section.project-manager .project-talents .right .talent-profile-card {
+        cursor: pointer; }
+        section.project-manager .project-talents .right .talent-profile-card.disabled {
+          opacity: 0.6; }
+        section.project-manager .project-talents .right .talent-profile-card .profile-photo {
+          display: inline-block;
+          vertical-align: top;
+          height: 80px;
+          width: 80px;
+          border-radius: 40px;
+          overflow: hidden; }
+          section.project-manager .project-talents .right .talent-profile-card .profile-photo img {
+            width: 100%; }
+        section.project-manager .project-talents .right .talent-profile-card .profile-details {
+          display: inline-block;
+          vertical-align: middle;
+          padding-top: 12px;
+          padding-left: 15px;
+          flex-grow: 1;
+          width: calc(100% - 140px); }
+          section.project-manager .project-talents .right .talent-profile-card .profile-details h3 {
+            margin: 0px;
+            margin-bottom: 5px; }
+          section.project-manager .project-talents .right .talent-profile-card .profile-details p {
+            margin: 0px;
+            color: #677990; }
+        section.project-manager .project-talents .right .talent-profile-card .checkbox {
+          margin-left: auto;
+          margin-right: 20px; }
       section.project-manager .project-talents .right i.dropdown-menu {
         margin-top: -10px; }
     section.project-manager .project-talents .collapse-heading {
@@ -1452,34 +1454,36 @@ section.project-manager {
             display: block;
             opacity: 1;
             top: 50px; }
-    section.project-manager .talent-pool .card-pane .talent-profile-card.disabled {
-      opacity: 0.6; }
-    section.project-manager .talent-pool .card-pane .talent-profile-card .profile-photo {
-      display: inline-block;
-      vertical-align: top;
-      height: 80px;
-      width: 80px;
-      border-radius: 40px;
-      overflow: hidden; }
-      section.project-manager .talent-pool .card-pane .talent-profile-card .profile-photo img {
-        width: 100%; }
-    section.project-manager .talent-pool .card-pane .talent-profile-card .profile-details {
-      display: inline-block;
-      vertical-align: center;
-      padding-top: 12px;
-      padding-left: 15px;
-      flex-grow: 1;
-      width: calc(100% - 140px); }
-      section.project-manager .talent-pool .card-pane .talent-profile-card .profile-details h3 {
-        margin: 0px;
-        margin-bottom: 5px;
-        text-align: left; }
-      section.project-manager .talent-pool .card-pane .talent-profile-card .profile-details p {
-        margin: 0px;
-        color: #677990; }
-    section.project-manager .talent-pool .card-pane .talent-profile-card .checkbox {
-      margin-left: auto;
-      margin-right: 20px; }
+    section.project-manager .talent-pool .card-pane .talent-profile-card {
+      cursor: pointer; }
+      section.project-manager .talent-pool .card-pane .talent-profile-card.disabled {
+        opacity: 0.6; }
+      section.project-manager .talent-pool .card-pane .talent-profile-card .profile-photo {
+        display: inline-block;
+        vertical-align: top;
+        height: 80px;
+        width: 80px;
+        border-radius: 40px;
+        overflow: hidden; }
+        section.project-manager .talent-pool .card-pane .talent-profile-card .profile-photo img {
+          width: 100%; }
+      section.project-manager .talent-pool .card-pane .talent-profile-card .profile-details {
+        display: inline-block;
+        vertical-align: center;
+        padding-top: 12px;
+        padding-left: 15px;
+        flex-grow: 1;
+        width: calc(100% - 140px); }
+        section.project-manager .talent-pool .card-pane .talent-profile-card .profile-details h3 {
+          margin: 0px;
+          margin-bottom: 5px;
+          text-align: left; }
+        section.project-manager .talent-pool .card-pane .talent-profile-card .profile-details p {
+          margin: 0px;
+          color: #677990; }
+      section.project-manager .talent-pool .card-pane .talent-profile-card .checkbox {
+        margin-left: auto;
+        margin-right: 20px; }
     section.project-manager .talent-pool .card-pane i.dropdown-menu {
       margin-top: -10px; }
   section.project-manager .talent-pool-assigned .box {
