@@ -1452,6 +1452,8 @@ section.project-manager {
             display: block;
             opacity: 1;
             top: 50px; }
+    section.project-manager .talent-pool .card-pane .talent-profile-card.disabled {
+      opacity: 0.6; }
     section.project-manager .talent-pool .card-pane .talent-profile-card .profile-photo {
       display: inline-block;
       vertical-align: top;

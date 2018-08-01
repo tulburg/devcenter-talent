@@ -49,7 +49,7 @@
 						</ul>
 						<div class="collapse-heading" v-on:click="toggleStacks">Stacks/Skills <i :class="{ upward: openStacks }" class="dc-caret"></i></div>
 						<ul class="collapse-body __stacks-collapse">
-							<li v-for="item in selected.modules"><CheckBox :small="true" :checked="true" v-on:change="(v) => { setValue('stacks', v, item) }" /> {{ item }}</li>
+							<li v-for="item in selected.modules"><CheckBox :small="true" v-on:change="(v) => { setValue('stacks', v, item) }" /> {{ item }}</li>
 						</ul>
 						<div class="collapse-heading" v-on:click="toggleEmployment">Employment Status <i :class="{ upward: openEmployment }" class="dc-caret"></i></div>
 						<ul class="collapse-body __employment-collapse">
@@ -57,7 +57,12 @@
 						</ul>
 					</div>
 					<div class="right" v-if="!talentsLoading">
-						<div :class="{ disabled: (selected.team_members) ? selected.team_members.find((t)=>{ return t.id==talent.id })!=undefined : false}" class="box talent-profile-card" v-for="talent in talents">
+						<!-- sorry for this -->
+						<div :class="{ disabled: (selected.team_members) ? selected.team_members.find((t)=>{ return t.id==talent.id })!=undefined : false}" class="box talent-profile-card" v-for="talent in talents" v-if="(
+							(selectedRoles.length>0) ? selectedRoles.find((r) => { return ((talent.roles) ? talent.roles.find((a)=>{ return a.value==r })!=undefined : false )}) : true && 
+							(selectedLangauges.length > 0) ? selectedLangauges.find((r) => { return ((talent.languages) ? talent.languages.find((l) => { return l.value==r })!=undefined : false)}) : true &&
+							(selectedEmploymentStatus.length > 0) ? selectedEmploymentStatus.find((r) => { return (r=='Unemployed') ? talent.employment_type_internship>0 : (r=='Contract') ? talent.employment_type_contract>0 : (r=='Freelancer') ? talent.employment_type_remote>0 : (r=='Employed') ? talent.employment_type_full_time>0 : false })!=undefined : true 
+						)">
 							<div class="profile-photo"><img :src="talent.profile_image" alt="placeholder" /></div>
 							<div class="profile-details">
 								<h3>{{ talent.first_name+" "+talent.last_name }}</h3>
@@ -186,6 +191,7 @@
 				if(type == 'roles') { (value) ? this.selectedRoles.push(item) : this.selectedRoles.splice(this.selectedRoles.indexOf(item), 1); }
 				if(type == 'stacks') { (value) ? this.selectedLangauges.push(item) : this.selectedLangauges.splice(this.selectedLangauges.indexOf(item), 1); }
 				if(type == 'emp-status') { (value) ? this.selectedEmploymentStatus.push(item) : this.selectedEmploymentStatus.splice(this.selectedEmploymentStatus.indexOf(item), 1); }
+				console.log(this.selectedRoles, this.selectedLangauges, this.selectedEmploymentStatus);
 			},
 			openTalentPane(type) {
 				this.fetchTalents();
@@ -430,10 +436,14 @@
 							});
 							self.projects.splice(self.projects.indexOf(self.selected), 1);
 							this.processLoading = false;
+							self.showProcessSuccessButton = false;
 							console.log(res);
 						}).catch(err => { console.log(err); });
 					}
 				});
+			},
+			filter() {
+
 			},
 			gotoReqDoc() {
 				window.open(this.selected.requirement_doc_link, '_blank');
