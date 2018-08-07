@@ -13,7 +13,7 @@
 		</ul>
 		<hr />
 		<div class="card-pane" v-if="talentLoading==false">
-			<div class="box talent-profile-card" v-for="talent in talents">
+			<div class="box talent-profile-card" v-for="talent in talents" v-on:click="() => { showProfileModal=true; setModal('profile-modal', talent); }">
 				<div class="profile-photo"><img :src="talent.profile_image" alt="placeholder" /></div>
 				<div class="profile-details">
 					<h3>{{ talent.first_name+" "+talent.last_name }}</h3>

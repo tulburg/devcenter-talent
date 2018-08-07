@@ -54,7 +54,7 @@
 						</ul>
 					</div>
 					<div class="right" v-if="!talentsLoading">
-						<div class="box talent-profile-card" v-for="talent in talents">
+						<div class="box talent-profile-card" v-for="talent in talents" v-on:click="() => { showProfileModal=true; fetchTalentProfile(talent); }">
 							<div class="profile-photo"><img :src="talent.profile_image" alt="placeholder" /></div>
 							<div class="profile-details">
 								<h3>{{ talent.first_name+" "+talent.last_name }}</h3>
@@ -79,7 +79,7 @@
 				<InputDrop name="stacks" label="Stacks/Skills" placeholder="Project Stacks and Skills" :options="stacks" v-on:change="fetchStacks" :selected="selected.modules" v-on:selected="(v) => { this.selected.skills = v }" />
 				<ul class="grid grid-2 date-grid">
 					<li>
-						<Datepicker wrapper-class="select datepicker-select" placeholder="Select Deadline" :value="(selected.deadline) ? new Date(selected.deadline.split('-').map((v) => { return (v.length < 2) ? '0'+v : v }).join('-')) : ''" v-on:selected="(v) => { this.selected.deadline = v.getFullYear()+'-'+v.getMonth()+'-'+v.getDate(); }">
+						<Datepicker wrapper-class="select datepicker-select" placeholder="Select Deadline" :value="(selected.deadline) ? new Date(selected.deadline.split('-').map((v) => { return (v.length < 2) ? '0'+v : v }).join('-')) : ''" v-on:selected="(v) => { this.selected.deadline = v.getFullYear()+'-'+(v.getMonth()+1)+'-'+v.getDate(); }">
 							<div slot="afterDateInput">
 								<label>Deadline for Brief</label>
 								<i class="dc-calendar"></i>
@@ -136,6 +136,80 @@
 				<p>{{ processStatus }}</p>
 			</div>
 		</Modal>
+		<Modal title="Profile Modal" :plain="true" :sticky="false" :show="showProfileModal" :onclose="() => { showProfileModal=false }">
+			<div slot="body" class="preloader" v-if="userProfileLoading"><i class="dc-spinner animate-spin"></i></div>
+			<div slot="body" v-if="selectedProfile!=undefined&&selectedProfileRatings!=undefined&&userProfileLoading==false">
+				<i class="dc-cancel close" v-on:click="showProfileModal=false"></i>
+				<div class="profile-photo">
+					<img :src="(selectedProfile) ? selectedProfile.profile_image : '../../assets/img/avatar.svg'" alt="photo" />
+				</div>
+				<div class="personal-pane">
+					<h1>{{ (selectedProfile) ? selectedProfile.first_name+' '+selectedProfile.last_name : 'John Doe' }}</h1>
+					<p>I'm a {{ (selectedProfile&&selectedProfile.preferred_roles.length>0) ? selectedProfile.preferred_roles[0].value : 'Unknown' }} with experience in 
+						{{ (selectedProfile) ? selectedProfile.roles.slice(0, selectedProfile.roles.length - 1).map((a) => { return a.value }).join(", ")+" and "+((selectedProfile.roles.length > 0) ? selectedProfile.roles.slice(-1)[0].value : '') : 'unknown and unknown' }}</p> 
+					<div class="integration">
+						<a v-if="selectedProfile&&selectedProfile.li_username" :href="'https://linkedin.com/in/'+selectedProfile.li_username" target="_new"><i class="dc-linkedin"></i></a>
+						<a v-if="selectedProfile&&selectedProfile.git_username" :href="'https://github.com/'+selectedProfile.git_username" target="_new"><i class="dc-github"></i></a>
+						<a v-if="selectedProfile&&selectedProfile.dribbble_username" :href="'https://dribbble.com/'+selectedProfile.dribbble_username" target="_new"><i class="dc-dribbble"></i></a>
+						<a v-if="selectedProfile&&selectedProfile.behance_username" :href="'https://behance.net/'+selectedProfile.behance_username" target="_new"><i class="dc-behance"></i></a>
+					</div>
+				</div>
+				<div class="language-pane" v-if="selectedProfile&&selectedProfile.languages">
+					<h2>Language and Skills</h2>
+					<div class="taggered" v-for="role in selectedProfile.languages"><div class="title">{{ role.value }}</div><span></span><div class="counter">{{ role.experience }}</div></div>
+				</div>
+				<div class="employment-pane">
+					<h2>Employment</h2>
+					<p v-if="selectedProfileRatings.work_preference.employment_type_contract">Contract</p>
+					<p v-if="selectedProfileRatings.work_preference.employment_type_full_time">Employed</p>
+					<p v-if="selectedProfileRatings.work_preference.employment_type_internship">Unemployed</p>
+					<p v-if="selectedProfileRatings.work_preference.employment_type_remote">Freelancer</p>
+				</div>
+				<div class="rank-pane">
+					<h2>Rank and Rating</h2>
+					<ul class="rank grid grid-2">
+						<li><div>Current rating</div><h1>{{ selectedProfileRatings.user_rating.total }}</h1></li>
+						<li><div>Current rank</div><h1>Level {{ selectedProfileRatings.user_rating.level }}</h1></li>
+					</ul>
+					<ul class="rating grid grid-2">
+						<li>
+							<div class="ratings">
+								<div class="title">Attitude <span>{{ selectedProfileRatings.user_rating.attitude }}/75</span></div>
+								<div class="bar">
+									<span v-for="i in 15" :class="{ active: (i <= (selectedProfileRatings.user_rating.attitude/75)*15) }"></span>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="ratings">
+								<div class="title">Communication <span>{{ selectedProfileRatings.user_rating.communication }}/75</span></div>
+								<div class="bar">
+									<span v-for="i in 15" :class="{ active: (i <= (selectedProfileRatings.user_rating.communication/75)*15) }"></span>
+								</div>
+							</div>
+						</li>
+					</ul>
+					<ul class="rating grid grid-2">
+						<li>
+							<div class="ratings">
+								<div class="title">Quality <span> {{ selectedProfileRatings.user_rating.quality }}/75</span></div>
+								<div class="bar">
+									<span v-for="i in 15" :class="{ active: (i <= (selectedProfileRatings.user_rating.quality/75)*15) }"></span>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="ratings">
+								<div class="title">Timeliness <span> {{ selectedProfileRatings.user_rating.timeliness }}/75</span></div>
+								<div class="bar">
+									<span v-for="i in 15" :class="{ active: (i <= (selectedProfileRatings.user_rating.timeliness/75)*15) }"></span>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</Modal>
 		<div :class="{ active: showShareModal }" class="share-overlay">
 			<button class="long" v-on:click="shareProject">Share Project</button>
 		</div>
@@ -163,7 +237,9 @@
 			archiveReason: '', archiveLoading: false, talentsLoading: false, selectedRoles: [],
 			selectedLangauges: [], selectedEmploymentStatus: [], fetchedTools: [], talents: [],
 			showCompletionErrorDialog: false, selectedTalents: [], showBriefErrorDialog: false,
-			saveProjectLoading: false, showStatusModal: false, processStatus: '', processLoading: false }
+			saveProjectLoading: false, showStatusModal: false, processStatus: '', processLoading: false,
+			userProfileLoading: false, selectedProfile: undefined, selectedProfileRatings: undefined,
+			showProfileModal: false }
 		},
 		components: { Project, ProjectView, Modal, Input, Datepicker, InputDrop, CheckBox },
 		methods: {
@@ -230,6 +306,13 @@
 							if(self.checkProjectCompletion(res.body.extras.project)) {
 								self.showFindTalentModal = true;
 							}
+							store.dispatch('getSession').then(session => {
+								if(session) {
+									session.projects = session.projects.filter((p) => { return p.project_ref != self.selected.project_ref });
+									session.projects.push(self.selected);
+									store.commit("saveProjects", session.projects);
+								}
+							});
 							console.log(res);
 						}).catch(err => { console.log(err); });
 					}
@@ -338,6 +421,8 @@
 						).then(res => {
 							self.archiveLoading = false;
 							self.showArchiveModal = false;
+							self.showStatusModal = true;
+							self.processStatus = self.selected.project_name+" has been archived and moved to Closed projects";
 						}).catch(err => { console.log(err); this.archiveLoading = false; });
 					}
 				});
@@ -371,6 +456,28 @@
 							for(var i = 0; i < all.length; i++) {
 								self.fetchedTools.push(all[i].title);
 							}
+						}).catch(err => { console.log(err); });
+					}
+				});
+			},
+			fetchTalentProfile(talent) {
+				var self = this;
+				this.userProfileLoading = true;
+				store.dispatch('getSession').then(session => {
+					if(session == null) self.$router.push("/")
+					else {
+						this.$http.get(store.state.api.development+"get-user-by-username/"+talent.username, {
+							headers: { 'Authorization' : session.token }
+						}).then(res => { 
+							console.log(res);
+							self.selectedProfile = res.body.extras;
+							self.$http.get(store.state.api.development+"profile/get/"+talent.username, {
+								headers: { 'Authorization': session.token }
+							}).then(res => {
+								self.selectedProfileRatings = res.body.extras;
+								console.log(res, self.selectedProfile, self.selectedProfileRatings);
+								self.userProfileLoading = false;
+							})
 						}).catch(err => { console.log(err); });
 					}
 				});

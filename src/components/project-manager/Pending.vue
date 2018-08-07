@@ -49,7 +49,7 @@
 						</ul>
 						<div class="collapse-heading" v-on:click="toggleStacks">Stacks/Skills <i :class="{ upward: openStacks }" class="dc-caret"></i></div>
 						<ul class="collapse-body __stacks-collapse">
-							<li v-for="item in selected.modules"><CheckBox :small="true" :checked="true" v-on:change="(v) => { setValue('stacks', v, item) }" /> {{ item }}</li>
+							<li v-for="item in selected.modules"><CheckBox :small="true" v-on:change="(v) => { setValue('stacks', v, item) }" /> {{ item }}</li>
 						</ul>
 						<div class="collapse-heading" v-on:click="toggleEmployment">Employment Status <i :class="{ upward: openEmployment }" class="dc-caret"></i></div>
 						<ul class="collapse-body __employment-collapse">
@@ -57,13 +57,18 @@
 						</ul>
 					</div>
 					<div class="right" v-if="!talentsLoading">
-						<div class="box talent-profile-card" v-for="talent in talents">
+						<!-- sorry for this -->
+						<div :class="{ disabled: (selected.team_members) ? selected.team_members.find((t)=>{ return t.id==talent.id })!=undefined : false}" class="box talent-profile-card" v-for="talent in talents" v-if="(
+							(selectedRoles.length>0) ? selectedRoles.find((r) => { return ((talent.roles) ? talent.roles.find((a)=>{ return a.value==r })!=undefined : false )}) : true && 
+							(selectedLangauges.length > 0) ? selectedLangauges.find((r) => { return ((talent.languages) ? talent.languages.find((l) => { return l.value==r })!=undefined : false)}) : true &&
+							(selectedEmploymentStatus.length > 0) ? selectedEmploymentStatus.find((r) => { return (r=='Unemployed') ? talent.employment_type_internship>0 : (r=='Contract') ? talent.employment_type_contract>0 : (r=='Freelancer') ? talent.employment_type_remote>0 : (r=='Employed') ? talent.employment_type_full_time>0 : false })!=undefined : true 
+						)" v-on:click="() => { showProfileModal=true; fetchTalentProfile(talent); }">
 							<div class="profile-photo"><img :src="talent.profile_image" alt="placeholder" /></div>
 							<div class="profile-details">
 								<h3>{{ talent.first_name+" "+talent.last_name }}</h3>
 								<p>{{ (talent.preferred_roles.length > 0) ? talent.preferred_roles[0].value: '' }}, {{ talent.roles.slice(0, talent.roles.length - 1).map((a) => { return a.value }).join(", ")+" and "+((talent.roles.length > 0) ? talent.roles.slice(-1)[0].value : '')}}</p>
 							</div>
-							<CheckBox :checked="false" v-on:change="(v) => { shareWith(v, talent) }" />
+							<CheckBox :checked="selectedTalents.find((t)=>{ return t.id==talent.id })!=undefined||((selected.team_members) ? selected.team_members.find((t)=>{ return t.id==talent.id })!=undefined : false)" v-on:change="(v) => { shareWith(v, talent) }" />
 						</div>
 					</div>
 				</div>
@@ -82,7 +87,7 @@
 				<InputDrop name="stacks" label="Stacks/Skills" placeholder="Project Stacks and Skills" :options="stacks" v-on:change="fetchStacks" :selected="selected.modules" v-on:selected="(v) => { this.selected.skills = v }" />
 				<ul class="grid grid-2 date-grid">
 					<li>
-						<Datepicker wrapper-class="select datepicker-select" placeholder="Select Deadline" :value="(selected.deadline) ? new Date(selected.deadline.split('-').map((v) => { return (v.length < 2) ? '0'+v : v }).join('-')) : ''" v-on:selected="(v) => { this.selected.deadline = v.getFullYear()+'-'+v.getMonth()+'-'+v.getDate(); }">
+						<Datepicker wrapper-class="select datepicker-select" placeholder="Select Deadline" :value="(selected.deadline) ? new Date(selected.deadline.split('-').map((v) => { return (v.length < 2) ? '0'+v : v }).join('-')) : ''" v-on:selected="(v) => { selected.deadline = v.getFullYear()+'-'+(v.getMonth()+1)+'-'+v.getDate(); }">
 							<div slot="afterDateInput">
 								<label>Deadline for Brief</label>
 								<i class="dc-calendar"></i>
@@ -131,6 +136,84 @@
 			<div slot="body" v-else>
 				<i class="dc-cancel close" v-on:click="showStatusModal=false"></i>
 				<p>{{ processStatus }}</p>
+				<div align="center" v-if="showProcessSuccessButton">
+					<br/>
+					<button class="long" v-on:click="processSuccessButtonAction">{{ processSuccessButtonText }}</button>
+				</div>
+			</div>
+		</Modal>
+		<Modal title="Profile Modal" :plain="true" :sticky="false" :show="showProfileModal" :onclose="() => { showProfileModal=false }">
+			<div slot="body" class="preloader" v-if="userProfileLoading"><i class="dc-spinner animate-spin"></i></div>
+			<div slot="body" v-if="selectedProfile!=undefined&&selectedProfileRatings!=undefined&&userProfileLoading==false">
+				<i class="dc-cancel close" v-on:click="showProfileModal=false"></i>
+				<div class="profile-photo">
+					<img :src="(selectedProfile) ? selectedProfile.profile_image : '../../assets/img/avatar.svg'" alt="photo" />
+				</div>
+				<div class="personal-pane">
+					<h1>{{ (selectedProfile) ? selectedProfile.first_name+' '+selectedProfile.last_name : 'John Doe' }}</h1>
+					<p>I'm a {{ (selectedProfile&&selectedProfile.preferred_roles.length>0) ? selectedProfile.preferred_roles[0].value : 'Unknown' }} with experience in 
+						{{ (selectedProfile) ? selectedProfile.roles.slice(0, selectedProfile.roles.length - 1).map((a) => { return a.value }).join(", ")+" and "+((selectedProfile.roles.length > 0) ? selectedProfile.roles.slice(-1)[0].value : '') : 'unknown and unknown' }}</p> 
+					<div class="integration">
+						<a v-if="selectedProfile&&selectedProfile.li_username" :href="'https://linkedin.com/in/'+selectedProfile.li_username" target="_new"><i class="dc-linkedin"></i></a>
+						<a v-if="selectedProfile&&selectedProfile.git_username" :href="'https://github.com/'+selectedProfile.git_username" target="_new"><i class="dc-github"></i></a>
+						<a v-if="selectedProfile&&selectedProfile.dribbble_username" :href="'https://dribbble.com/'+selectedProfile.dribbble_username" target="_new"><i class="dc-dribbble"></i></a>
+						<a v-if="selectedProfile&&selectedProfile.behance_username" :href="'https://behance.net/'+selectedProfile.behance_username" target="_new"><i class="dc-behance"></i></a>
+					</div>
+				</div>
+				<div class="language-pane" v-if="selectedProfile&&selectedProfile.languages">
+					<h2>Language and Skills</h2>
+					<div class="taggered" v-for="role in selectedProfile.languages"><div class="title">{{ role.value }}</div><span></span><div class="counter">{{ role.experience }}</div></div>
+				</div>
+				<div class="employment-pane">
+					<h2>Employment</h2>
+					<p v-if="selectedProfileRatings.work_preference.employment_type_contract">Contract</p>
+					<p v-if="selectedProfileRatings.work_preference.employment_type_full_time">Employed</p>
+					<p v-if="selectedProfileRatings.work_preference.employment_type_internship">Unemployed</p>
+					<p v-if="selectedProfileRatings.work_preference.employment_type_remote">Freelancer</p>
+				</div>
+				<div class="rank-pane">
+					<h2>Rank and Rating</h2>
+					<ul class="rank grid grid-2">
+						<li><div>Current rating</div><h1>{{ selectedProfileRatings.user_rating.total }}</h1></li>
+						<li><div>Current rank</div><h1>Level {{ selectedProfileRatings.user_rating.level }}</h1></li>
+					</ul>
+					<ul class="rating grid grid-2">
+						<li>
+							<div class="ratings">
+								<div class="title">Attitude <span>{{ selectedProfileRatings.user_rating.attitude }}/75</span></div>
+								<div class="bar">
+									<span v-for="i in 15" :class="{ active: (i <= (selectedProfileRatings.user_rating.attitude/75)*15) }"></span>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="ratings">
+								<div class="title">Communication <span>{{ selectedProfileRatings.user_rating.communication }}/75</span></div>
+								<div class="bar">
+									<span v-for="i in 15" :class="{ active: (i <= (selectedProfileRatings.user_rating.communication/75)*15) }"></span>
+								</div>
+							</div>
+						</li>
+					</ul>
+					<ul class="rating grid grid-2">
+						<li>
+							<div class="ratings">
+								<div class="title">Quality <span> {{ selectedProfileRatings.user_rating.quality }}/75</span></div>
+								<div class="bar">
+									<span v-for="i in 15" :class="{ active: (i <= (selectedProfileRatings.user_rating.quality/75)*15) }"></span>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="ratings">
+								<div class="title">Timeliness <span> {{ selectedProfileRatings.user_rating.timeliness }}/75</span></div>
+								<div class="bar">
+									<span v-for="i in 15" :class="{ active: (i <= (selectedProfileRatings.user_rating.timeliness/75)*15) }"></span>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
 			</div>
 		</Modal>
 		<div :class="{ active: showShareModal }" class="share-overlay">
@@ -167,7 +250,10 @@
 				showCompletionErrorDialog: false, selectedTalents: [], showBriefErrorDialog: false,
 				talentsLoading: false, talents: [], selectedRoles: [], selectedLangauges: [], 
 				selectedEmploymentStatus: [], talentPaneMode: '', showAssignModal: false,
-				showStatusModal: false, processStatus: '', processLoading: false
+				showStatusModal: false, processStatus: '', processLoading: false, 
+				showProcessSuccessButton: false, processSuccessButtonText: '', processSuccessButtonAction: ()=>{},
+				userProfileLoading: false, selectedProfile: undefined, selectedProfileRatings: undefined,
+				showProfileModal: false
 			} 
 		},
 		components: { Project, ProjectView, Modal, InputDrop, CheckBox, Input, Datepicker },
@@ -181,6 +267,7 @@
 				if(type == 'roles') { (value) ? this.selectedRoles.push(item) : this.selectedRoles.splice(this.selectedRoles.indexOf(item), 1); }
 				if(type == 'stacks') { (value) ? this.selectedLangauges.push(item) : this.selectedLangauges.splice(this.selectedLangauges.indexOf(item), 1); }
 				if(type == 'emp-status') { (value) ? this.selectedEmploymentStatus.push(item) : this.selectedEmploymentStatus.splice(this.selectedEmploymentStatus.indexOf(item), 1); }
+				console.log(this.selectedRoles, this.selectedLangauges, this.selectedEmploymentStatus);
 			},
 			openTalentPane(type) {
 				this.fetchTalents();
@@ -308,6 +395,13 @@
 							if(self.checkProjectCompletion(res.body.extras.project)) {
 								self.showFindTalentModal = true;
 							}
+							store.dispatch('getSession').then(session => {
+								if(session) {
+									session.projects = session.projects.filter((p) => { return p.project_ref != self.selected.project_ref });
+									session.projects.push(self.selected);
+									store.commit("saveProjects", session.projects);
+								}
+							});
 							console.log(res);
 						}).catch(err => { console.log(err); });
 					}
@@ -325,7 +419,7 @@
 				return true;
 			},
 			shareWith(v, talent) {
-				(v) ? this.selectedTalents.push(talent.id) : this.selectedTalents.splice(this.selectedTalents.indexOf(talent.id), 1);
+				(v) ? this.selectedTalents.push(talent) : this.selectedTalents = this.selectedTalents.filter((a) => { return a.id != talent.id });
 				if(this.selectedTalents.length < 1) {
 					this.showShareModal = false; this.showAssignModal = false
 					return;
@@ -355,14 +449,21 @@
 				var self = this;
 				this.processLoading = true;
 				this.showStatusModal = true;
+				this.showAssignModal = false;
 				store.dispatch('getSession').then(session => {
 					if(session == null) self.$router.push("/")
 					else {
-						self.$http.post(store.state.api.development+"project/assign", { project_ref: self.project_ref }, {
+						self.$http.post(store.state.api.development+"project/assign", 
+							{ project_ref: self.project_ref, users: self.selectedTalents.map((t) => { return t.id }) }, {
 							headers: { 'Authorization' : session.token }
 						}).then(res => { 
-							this.processStatus = "Project has been assigned to names";
+							this.processStatus = self.selectedTalents.map((t) => { return t.first_name+" "+t.last_name}).join(", ")+" has been assigned to "+self.selected.project_name;
+							self.processSuccessButtonText = "Assign More Talents";
+							self.showProcessSuccessButton = true;
+							self.processSuccessButtonAction = () => { self.showStatusModal = false; }
 							this.processLoading = false;
+							(self.selected.team_members) ? self.selected.team_members = self.selected.team_members.concat(self.selectedTalents) : self.selected.team_members = self.selectedTalents;
+							self.selectedTalents = [];
 							console.log(res);
 						}).catch(err => { console.log(err); });
 					}
@@ -411,7 +512,30 @@
 							});
 							self.projects.splice(self.projects.indexOf(self.selected), 1);
 							this.processLoading = false;
+							self.showProcessSuccessButton = false;
 							console.log(res);
+						}).catch(err => { console.log(err); });
+					}
+				});
+			},
+			fetchTalentProfile(talent) {
+				var self = this;
+				this.userProfileLoading = true;
+				store.dispatch('getSession').then(session => {
+					if(session == null) self.$router.push("/")
+					else {
+						this.$http.get(store.state.api.development+"get-user-by-username/"+talent.username, {
+							headers: { 'Authorization' : session.token }
+						}).then(res => { 
+							console.log(res);
+							self.selectedProfile = res.body.extras;
+							self.$http.get(store.state.api.development+"profile/get/"+talent.username, {
+								headers: { 'Authorization': session.token }
+							}).then(res => {
+								self.selectedProfileRatings = res.body.extras;
+								console.log(res, self.selectedProfile, self.selectedProfileRatings);
+								self.userProfileLoading = false;
+							})
 						}).catch(err => { console.log(err); });
 					}
 				});

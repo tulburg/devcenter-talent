@@ -40,6 +40,7 @@ Element.prototype.expand = function (complete) {
 	setTimeout(() => { 
 		this.style = "height: "+h+"px; overflow: hidden; transition: all .3s cubic-bezier(.25,.1,.25,1); opacity: 1;"; }, 0.5);
 	if(complete) setTimeout(() => { complete() }, 350);
+	setTimeout(() => { this.style.height='auto'; }, 350);
 }
 Element.prototype.hasClass = function(c) { return (this.className.match(c)) }
 Element.prototype.addClass = function(c) { if(!this.className.match(c)) this.className = this.className+" "+c; }
