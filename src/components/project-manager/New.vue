@@ -54,7 +54,11 @@
 						</ul>
 					</div>
 					<div class="right" v-if="!talentsLoading">
-						<div class="box talent-profile-card" v-for="talent in talents" v-on:click="() => { showProfileModal=true; fetchTalentProfile(talent); }">
+						<div class="box talent-profile-card" v-for="talent in talents" v-if="(
+							(selectedRoles.length>0) ? selectedRoles.find((r) => { return ((talent.roles) ? talent.roles.find((a)=>{ return a.value==r })!=undefined : false )}) : true && 
+							(selectedLangauges.length > 0) ? selectedLangauges.find((r) => { return ((talent.languages) ? talent.languages.find((l) => { return l.value==r })!=undefined : false)}) : true &&
+							(selectedEmploymentStatus.length > 0) ? selectedEmploymentStatus.find((r) => { return (r=='Unemployed') ? talent.employment_type_internship>0 : (r=='Contract') ? talent.employment_type_contract>0 : (r=='Freelancer') ? talent.employment_type_remote>0 : (r=='Employed') ? talent.employment_type_full_time>0 : false })!=undefined : true 
+						)" v-on:click="() => { showProfileModal=true; fetchTalentProfile(talent); }">
 							<div class="profile-photo"><img :src="talent.profile_image" alt="placeholder" /></div>
 							<div class="profile-details">
 								<h3>{{ talent.first_name+" "+talent.last_name }}</h3>
