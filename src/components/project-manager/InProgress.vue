@@ -57,9 +57,9 @@
 						</ul>
 					</div>
 					<div class="right" v-if="!talentsLoading">
-						<div :class="{ disabled: talentPaneMode!='remove' && (selected.team_members) ? selected.team_members.find((t)=>{ return t.id==talent.id })!=undefined : false}" class="box talent-profile-card" v-for="talent in talents" v-on:click="() => { showProfileModal=true; fetchTalentProfile(talent); }">
-							<div class="profile-photo"><img :src="talent.profile_image" alt="placeholder" /></div>
-							<div class="profile-details">
+						<div :class="{ disabled: talentPaneMode!='remove' && (selected.team_members) ? selected.team_members.find((t)=>{ return t.id==talent.id })!=undefined : false}" class="box talent-profile-card" v-for="talent in talents">
+							<div class="profile-photo" v-on:click="() => { showProfileModal=true; fetchTalentProfile(talent); }"><img :src="talent.profile_image" alt="placeholder" /></div>
+							<div class="profile-details" v-on:click="() => { showProfileModal=true; fetchTalentProfile(talent); }">
 								<h3>{{ talent.first_name+" "+talent.last_name }}</h3>
 								<p>{{ (talent.preferred_roles.length > 0) ? talent.preferred_roles[0].value: '' }}, {{ talent.roles.slice(0, talent.roles.length - 1).map((a) => { return a.value }).join(", ")+" and "+((talent.roles.length > 0) ? talent.roles.slice(-1)[0].value : '')}}</p>
 							</div>
