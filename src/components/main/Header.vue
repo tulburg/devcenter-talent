@@ -34,11 +34,11 @@
 					<div class="account-name acc-d">{{ (user) ? user.first_name+" "+user.last_name : "John Doe" }} <i :class="{ upward: showAccountDropDown }" class="dc-caret acc-d"></i></div>
 					<transition name="account-drop">
 						<ul class="account-drop acc-d" v-show="showAccountDropDown">
-							<li v-if="showPMLinks" v-for="i in accountLinks.filter((a) => { return !a.devOnly; })">
+							<li v-if="showPMAccount==true" v-for="i in accountLinks.filter((a) => { return !a.devOnly; })">
 								<router-link :to="i.url" v-if="i.action == undefined">{{ i.title }}</router-link>
 								<a href="" v-on:click.prevent="i.action" v-else>{{ i.title }}</a>
-							</li>
-							<li v-else v-for="i in accountLinks">
+							</li> 
+							<li v-if="showPMAccount==false" v-for="i in accountLinks">
 								<router-link :to="i.url" v-if="i.action == undefined">{{ i.title }}</router-link>
 								<a href="" v-on:click.prevent="i.action" v-else>{{ i.title }}</a>
 							</li>
@@ -69,14 +69,15 @@
 		name: 'Header',
 		data() {
 			var self = this;
-			return { showGrayLogo: false, showLinks: false, showLogin: false, showHome: false, showAccount: false, showSignup: false, showAccountDropDown: false, showPMLinks: false, boot: true, user: undefined,
+			return { showGrayLogo: false, showLinks: false, showLogin: false, showHome: false, showAccount: false, 
+				showSignup: false, showAccountDropDown: false, showPMLinks: false, boot: true, user: undefined,
 				accountLinks: [
 					{ url: "/account/earnings", title: "Earnings", devOnly: true },
 					{ url: "/account/settings", title: "Account Settings" },
 					{ url: "/account/feedback", title: "Feedback", devOnly: true },
 					{ action: function() { self.logOut() }, title: "Log Out" }
 				],
-				activeLink: '', activeSubLink: '', unread : true, 
+				activeLink: '', activeSubLink: '', unread : true, showPMAccount: false
 			}
 		},
 		methods: {
@@ -120,6 +121,7 @@
 				if(this.$route.path.match('/project-manager/talent-pool')){ this.activeLink = '/project-manager/talent-pool'; }
 				else if(this.$route.path.match('/project-manager')) this.activeLink = '/project-manager';
 			});
+			Bus.$on("Header_showPMAccount", (bool) => { self.showPMAccount = bool });
 			Bus.$on("Header_showGrayLogo", (bool) => { self.showGrayLogo = bool });
 			Bus.$on("Header_showAccount", (bool) => { self.showAccount = bool });
 			Bus.$on("Header_showSignup", (bool) => { self.showSignup = bool; });

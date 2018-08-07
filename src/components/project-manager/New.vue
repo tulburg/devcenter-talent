@@ -384,6 +384,7 @@
 			Bus.$emit("Header_showAccount", true);
 			Bus.$emit("Header_showLinks", true);
 			Bus.$emit("Header_showPMLinks", true);
+			Bus.$emit("Header_showPMAccount", true);
 			Bus.$emit("Header_showGrayLogo", true);
 			store.dispatch('getSession').then(session => {
 				if(session) { 
@@ -405,6 +406,7 @@
 			Bus.$emit("Header_showAccount", false);
 			Bus.$emit("Header_showLinks", false);
 			Bus.$emit("Header_showPMLinks", false);
+			Bus.$emit("Header_showPMAccount", false);
 			Bus.$emit("Header_showGrayLogo", false);
 		}
 	}
