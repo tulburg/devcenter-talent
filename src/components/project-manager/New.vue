@@ -29,7 +29,7 @@
 				}" :actions="[
 					{ title: 'Update Project', action: () => { showModal = true; } },
 					{ title: 'View Project Brief', action: () => { (selected.requirement_doc_link&&selected.requirement_doc_link!='') ? this.gotoReqDoc() : showBriefErrorDialog = true; } },
-					{ title: 'Find Talents', action: () => { (checkProjectCompletion(selected)) ? openTalentPane() : showCompletionErrorDialog = true; } }
+					{ title: 'Find Talents', action: () => { (checkProjectCompletion(selected)) ? openTalentPane('find') : showCompletionErrorDialog = true; } }
 				]" :menus="[
 					{ title: 'Archive Project', action: () => { showArchiveModal=true; } }
 				]" />
@@ -54,13 +54,13 @@
 						</ul>
 					</div>
 					<div class="right" v-if="!talentsLoading">
-						<div class="box talent-profile-card" v-for="talent in talents" v-if="(
+						<div :class="{ disabled: talentPaneMode!='remove' && (selected.team_members) ? selected.team_members.find((t)=>{ return t.id==talent.id })!=undefined : false}" class="box talent-profile-card" v-for="talent in talents" v-if="(
 							(selectedRoles.length>0) ? selectedRoles.find((r) => { return ((talent.roles) ? talent.roles.find((a)=>{ return a.value==r })!=undefined : false )}) : true && 
 							(selectedLangauges.length > 0) ? selectedLangauges.find((r) => { return ((talent.languages) ? talent.languages.find((l) => { return l.value==r })!=undefined : false)}) : true &&
 							(selectedEmploymentStatus.length > 0) ? selectedEmploymentStatus.find((r) => { return (r=='Unemployed') ? talent.employment_type_internship>0 : (r=='Contract') ? talent.employment_type_contract>0 : (r=='Freelancer') ? talent.employment_type_remote>0 : (r=='Employed') ? talent.employment_type_full_time>0 : false })!=undefined : true 
-						)" v-on:click="() => { showProfileModal=true; fetchTalentProfile(talent); }">
-							<div class="profile-photo"><img :src="talent.profile_image" alt="placeholder" /></div>
-							<div class="profile-details">
+						)">
+							<div class="profile-photo" v-on:click="() => { showProfileModal=true; fetchTalentProfile(talent); }"><img :src="talent.profile_image" alt="placeholder" /></div>
+							<div class="profile-details" v-on:click="() => { showProfileModal=true; fetchTalentProfile(talent); }">
 								<h3>{{ talent.first_name+" "+talent.last_name }}</h3>
 								<p>{{ (talent.preferred_roles.length > 0) ? talent.preferred_roles[0].value: '' }}, {{ talent.roles.slice(0, talent.roles.length - 1).map((a) => { return a.value }).join(", ")+" and "+((talent.roles.length > 0) ? talent.roles.slice(-1)[0].value : '')}}</p>
 							</div>
@@ -106,7 +106,7 @@
 		<Modal title="Find Talent Modal" :sticky="true" :show="showFindTalentModal" :onclose="() => { showFindTalentModal=false }">
 			<div slot="body">
 				<p>Travel Mall has been updated. Go ahead and find talents for the project</p>
-				<button class="long" v-on:click="openTalentPane();showFindTalentModal=false">Find Talents</button>
+				<button class="long" v-on:click="openTalentPane('talent'); showFindTalentModal=false">Find Talents</button>
 			</div>
 		</Modal>
 		<Modal title="Archive Modal" :stickey="true" :plain="true" :show="showArchiveModal" :onclose="() => { showArchiveModal = false }">
@@ -136,8 +136,12 @@
 		<Modal title="Status Modal" :sticky="true" :plain="true" :show="showStatusModal" :onclose="() => { showStatusModal=false }">
 			<div slot="body" v-if="processLoading" class="preloader"><i class="dc-spinner animate-spin"></i></div>
 			<div slot="body" v-else>
-				<i class="dc-cancel close" v-on:click="showStatusModal=false"></i>
+				<i class="dc-cancel close" v-on:click="() => { showStatusModal=false; processCloseButtonAction() }"></i>
 				<p>{{ processStatus }}</p>
+				<div align="center" v-if="showProcessSuccessButton">
+					<br/>
+					<button class="long" v-on:click="processSuccessButtonAction">{{ processSuccessButtonText }}</button>
+				</div>
 			</div>
 		</Modal>
 		<Modal title="Profile Modal" :plain="true" :sticky="false" :show="showProfileModal" :onclose="() => { showProfileModal=false }">
@@ -243,7 +247,8 @@
 			showCompletionErrorDialog: false, selectedTalents: [], showBriefErrorDialog: false,
 			saveProjectLoading: false, showStatusModal: false, processStatus: '', processLoading: false,
 			userProfileLoading: false, selectedProfile: undefined, selectedProfileRatings: undefined,
-			showProfileModal: false }
+			showProfileModal: false, talentPaneMode: '', showProcessSuccessButton: false, processSuccessButtonText: '', 
+			processSuccessButtonAction: ()=>{}, processCloseButtonAction: () => {} }
 		},
 		components: { Project, ProjectView, Modal, Input, Datepicker, InputDrop, CheckBox },
 		methods: {
@@ -273,9 +278,10 @@
 				$(".project-view-pane").collapse(function(){ self.selected = undefined; });
 				this.$router.go(-1);
 			},
-			openTalentPane() {
+			openTalentPane(type) {
 				$(".project-view-pane").collapse();
 				$(".project-talent-pane").expand();
+				this.talentPaneMode = type;
 				this.fetchTalents();
 			},
 			closeTalentPane() {
@@ -380,7 +386,6 @@
 			checkProjectCompletion(project) {
 				var all = [project.project_name, project.description, project.agreed_cost, project.categories, project.platforms, project.modules, project.deadline, project.requirement_doc_link, project.jira_link]
 				for(var i = 0; i < all.length; i++) {
-					console.log(all[i]);
 					if(!all[i]) { return false; }
 					if(all[i] instanceof Array) {  if(all[i].length < 0) return false; }
 					if(typeof(all[i]) == "string") { if(all[i] == '') return false; }
@@ -389,23 +394,36 @@
 				return true;
 			},
 			shareWith(v, talent) {
-				(v) ? this.selectedTalents.push(talent.id) : this.selectedTalents.splice(this.selectedTalents.indexOf(talent.id), 1);
-				if(this.selectedTalents.length < 1) this.showShareModal = false;
-				else this.showShareModal = true;
-				console.log(this.selectedTalents, talent);
+				(v) ? this.selectedTalents.push(talent) : this.selectedTalents = this.selectedTalents.filter((a) => { return a.id != talent.id });
+				if(this.selectedTalents.length < 1) {
+					this.showShareModal = false; 
+					this.showAssignModal = false; 
+					this.showRemoveModal = false;
+					return;
+				}
+				(this.talentPaneMode == 'find') ? this.showShareModal = true : '';
+				(this.talentPaneMode == 'assign') ? this.showAssignModal = true : '';
+				(this.talentPaneMode == 'remove') ? this.showRemoveModal = true : '';
 			},
 			shareProject() {
 				var self = this;
 				this.processLoading = true;
 				this.showStatusModal = true;
+				this.showShareModal = false;
 				store.dispatch('getSession').then(session => {
 					if(session == null) self.$router.push("/")
 					else {
 						self.$http.post(store.state.api.development+"project/share", { project_ref: self.project_ref }, {
 							headers: { 'Authorization' : session.token }
 						}).then(res => { 
-							this.processStatus = "Project has been shared with names";
+							this.processStatus = self.selected.project_name+" has been shared with "+self.selectedTalents.map((t) => { return t.first_name+" "+t.last_name}).join(", ");
+							self.processSuccessButtonText = "Find More Talents";
+							self.showProcessSuccessButton = true;
+							self.processSuccessButtonAction = () => { self.showStatusModal = false; }
+							self.processCloseButtonAction = () => { console.log("called"); self.closeTalentPane(); self.moveProjectTo('pending'); }
 							this.processLoading = false;
+							(self.selected.team_members) ? self.selected.team_members = self.selected.team_members.concat(self.selectedTalents) : self.selected.team_members = self.selectedTalents;
+							self.selectedTalents = [];
 							console.log(res);
 						}).catch(err => { console.log(err); });
 					}
@@ -428,6 +446,37 @@
 							self.showStatusModal = true;
 							self.processStatus = self.selected.project_name+" has been archived and moved to Closed projects";
 						}).catch(err => { console.log(err); this.archiveLoading = false; });
+					}
+				});
+			},
+			moveProjectTo(stage) {
+				var self = this;
+				var req_stage;
+				(stage == 'pending') ? req_stage = 'fund' : '';
+				(stage == 'inprogress') ? req_stage = 'funded' : '';
+				(stage == 'close') ? req_stage = 'completed' : '';
+				this.processLoading = true;
+				this.showStatusModal = true;
+				store.dispatch('getSession').then(session => {
+					if(session == null) self.$router.push("/")
+					else {
+						self.$http.post(store.state.api.development+"push-project/"+req_stage, { project_ref: self.selected.project_ref.toString() }, {
+							headers: { 'Authorization' : session.token, 'Content-Type': 'application/json' }
+						}).then(res => { 
+							(stage == 'pending') ? this.processStatus = "Project has been moved to Pending": '';
+							(stage == 'inprogress') ? this.processStatus = "Project has been moved to In Progress": '';
+							(stage == 'close') ? this.processStatus = "Project has been moved to Close": '';
+							store.dispatch('getSession').then(session => {
+								if(session) {
+									session.projects.where({project_ref: self.selected.project_ref}).project_stage = res.body.extras.project.project_stage;
+									store.commit("saveProjects", session.projects);
+								}
+							});
+							this.processLoading = false;
+							self.showProcessSuccessButton = false;
+							self.projects.splice(self.projects.indexOf(this.selected), 1);
+							console.log(res);
+						}).catch(err => { console.log(err); });
 					}
 				});
 			},

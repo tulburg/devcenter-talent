@@ -212,7 +212,7 @@
 				selectedEmploymentStatus: [], selectedTalents: [], showShareModal: false, showAssignModal: false,
 				talentPaneMode: '', showRemoveModal: false, showStatusModal: false, processStatus: '', 
 				processLoading: false, showProcessSuccessButton: false, processSuccessButtonText: '', 
-				processSuccessButtonAction: ()=>{}, userProfileLoading: false, selectedProfile: undefined, 
+				processSuccessButtonAction: ()=>{}, processCloseButtonAction: () => {}, userProfileLoading: false, selectedProfile: undefined, 
 				selectedProfileRatings: undefined, showProfileModal: false
 			} 
 		},
@@ -304,14 +304,20 @@
 				var self = this;
 				this.processLoading = true;
 				this.showStatusModal = true;
+				this.showShareModal = false;
 				store.dispatch('getSession').then(session => {
 					if(session == null) self.$router.push("/")
 					else {
 						self.$http.post(store.state.api.development+"project/share", { project_ref: self.project_ref }, {
 							headers: { 'Authorization' : session.token }
 						}).then(res => { 
-							this.processStatus = "Project has been shared with names";
+							this.processStatus = self.selected.project_name+" has been shared with "+self.selectedTalents.map((t) => { return t.first_name+" "+t.last_name}).join(", ");
+							self.processSuccessButtonText = "Find More Talents";
+							self.showProcessSuccessButton = true;
+							self.processSuccessButtonAction = () => { self.showStatusModal = false; }
 							this.processLoading = false;
+							(self.selected.team_members) ? self.selected.team_members = self.selected.team_members.concat(self.selectedTalents) : self.selected.team_members = self.selectedTalents;
+							self.selectedTalents = [];
 							console.log(res);
 						}).catch(err => { console.log(err); });
 					}

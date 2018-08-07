@@ -252,7 +252,7 @@
 				selectedEmploymentStatus: [], talentPaneMode: '', showAssignModal: false,
 				showStatusModal: false, processStatus: '', processLoading: false, 
 				showProcessSuccessButton: false, processSuccessButtonText: '', processSuccessButtonAction: ()=>{},
-				userProfileLoading: false, selectedProfile: undefined, selectedProfileRatings: undefined,
+				processCloseButtonAction: () => {}, userProfileLoading: false, selectedProfile: undefined, selectedProfileRatings: undefined,
 				showProfileModal: false
 			} 
 		},
