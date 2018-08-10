@@ -110,11 +110,14 @@
 							store.dispatch('getSession').then(session => {
 								if(session) {
 									session.projects.where({project_ref: self.selected.project_ref}).project_stage = res.body.extras.project.project_stage;
+									session.projects.where({project_ref: self.selected.project_ref}).archive = res.body.extras.project.archive;
 									store.commit("saveProjects", session.projects);
 								}
 							});
 							self.projects.splice(self.projects.indexOf(self.selected), 1);
 							this.processLoading = false;
+							self.showProcessSuccessButton = false;
+							self.closeProject();
 							console.log(res);
 						}).catch(err => { console.log(err); });
 					}

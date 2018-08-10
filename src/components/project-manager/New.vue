@@ -314,7 +314,14 @@
 							self.saveProjectLoading = false;
 							self.showModal = false;
 							if(self.checkProjectCompletion(res.body.extras.project)) {
-								self.showFindTalentModal = true;
+								self.showStatusModal = true;
+								self.processStatus = self.selected.project_name+" has been updated. Go ahead and find talents for the project";
+								self.processSuccessButtonText = "Find Talents";
+								self.showProcessSuccessButton = true;
+								self.processSuccessButtonAction = () => {
+									self.openTalentPane('find');
+									self.showStatusModal = false;
+								}
 							}
 							store.dispatch('getSession').then(session => {
 								if(session) {
@@ -445,6 +452,7 @@
 							self.showArchiveModal = false;
 							self.showStatusModal = true;
 							self.processStatus = self.selected.project_name+" has been archived and moved to Closed projects";
+							self.moveProjectTo('close');
 						}).catch(err => { console.log(err); this.archiveLoading = false; });
 					}
 				});
@@ -475,6 +483,7 @@
 							this.processLoading = false;
 							self.showProcessSuccessButton = false;
 							self.projects.splice(self.projects.indexOf(this.selected), 1);
+							self.closeProject();
 							console.log(res);
 						}).catch(err => { console.log(err); });
 					}

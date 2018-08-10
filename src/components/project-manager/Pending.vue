@@ -393,7 +393,14 @@
 							self.saveProjectLoading = false;
 							self.showModal = false;
 							if(self.checkProjectCompletion(res.body.extras.project)) {
-								self.showFindTalentModal = true;
+								self.showStatusModal = true;
+								self.processStatus = self.selected.project_name+" has been updated. Go ahead and find talents for the project";
+								self.processSuccessButtonText = "Find Talents";
+								self.showProcessSuccessButton = true;
+								self.processSuccessButtonAction = () => {
+									self.openTalentPane('find');
+									self.showStatusModal = false;
+								}
 							}
 							store.dispatch('getSession').then(session => {
 								if(session) {
@@ -432,14 +439,21 @@
 				var self = this;
 				this.processLoading = true;
 				this.showStatusModal = true;
+				this.showShareModal = false;
 				store.dispatch('getSession').then(session => {
 					if(session == null) self.$router.push("/")
 					else {
 						self.$http.post(store.state.api.development+"project/share", { project_ref: self.project_ref }, {
 							headers: { 'Authorization' : session.token }
 						}).then(res => { 
-							this.processStatus = "Project has been shared with names";
+							this.processStatus = self.selected.project_name+" has been shared with "+self.selectedTalents.map((t) => { return t.first_name+" "+t.last_name}).join(", ");
+							self.processSuccessButtonText = "Find More Talents";
+							self.showProcessSuccessButton = true;
+							self.processSuccessButtonAction = () => { self.showStatusModal = false; }
+							self.processCloseButtonAction = () => { console.log("called"); self.closeTalentPane(); self.moveProjectTo('pending'); }
 							this.processLoading = false;
+							(self.selected.team_members) ? self.selected.team_members = self.selected.team_members.concat(self.selectedTalents) : self.selected.team_members = self.selectedTalents;
+							self.selectedTalents = [];
 							console.log(res);
 						}).catch(err => { console.log(err); });
 					}
@@ -483,6 +497,16 @@
 						).then(res => {
 							self.archiveLoading = false;
 							self.showArchiveModal = false;
+							self.selected.archive = 1;
+							store.dispatch('getSession').then(session => {
+								if(session) {
+									session.projects.where({project_ref: self.selected.project_ref}).archive = 1;
+									store.commit("saveProjects", session.projects);
+								}
+							});
+							self.projects.splice(self.projects.indexOf(self.selected), 1);
+							self.closeProject();
+							console.log(res);
 						}).catch(err => { console.log(err); this.archiveLoading = false; });
 					}
 				});
@@ -513,6 +537,7 @@
 							self.projects.splice(self.projects.indexOf(self.selected), 1);
 							this.processLoading = false;
 							self.showProcessSuccessButton = false;
+							self.closeProject();
 							console.log(res);
 						}).catch(err => { console.log(err); });
 					}

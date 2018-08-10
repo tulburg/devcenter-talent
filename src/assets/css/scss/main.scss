@@ -129,7 +129,7 @@ section.project-manager { flex-direction: column; height: calc(100% - 90px); ali
 		.profile-photo { position: relative; background-color: $primary; display: flex; justify-content: center; align-content: center; height: 160px; width: 160px; margin-top: -120px; border-radius: 80px; align-self: center; margin-bottom: 20px; &:hover .cover { display: flex; } img { width: 100%; border-radius: 100px; } img[alt="placeholder"] { width: 120px; } .cover { background-color: rgba(0,0,0,0.65); position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; border-radius: 100px; display: none; justify-content: center; align-items: center; color: $white; padding: 40px; cursor: pointer;  i { font-size: 60px; color: $white; } } }
 	}
 	#archive-modal { .body { text-align: center; padding-bottom: 24px; h4 { margin-bottom: 0px; } p { color: $light-color; text-align: center; } } .dialog { width: 600px; } i.close { position: absolute; top: 20px; right: 20px; color: $color; } textarea { width: 100%; height: 180px; margin-bottom: 0px; } }
-	#fields-required-modal, #brief-required-modal, #status-modal { .dialog { width: 600px; top: calc(50% - 50px); .body { padding: 24px; p { margin: 0px 80px; text-align: center; } } .footer { padding: 3px; } } i.close { position: absolute; top: 10px; right:10px; color: $color; } }
+	#fields-required-modal, #brief-required-modal, #status-modal, #confirm-modal { .preloader { margin-top: 0px; } .dialog { width: 600px; top: calc(50% - 50px); .body { padding: 24px; p { margin: 0px 80px; text-align: center; } } .footer { padding: 3px; } } i.close { position: absolute; top: 10px; right:10px; color: $color; } }
 	#status-modal { .preloader { margin-top: 0px; } }
 }
 

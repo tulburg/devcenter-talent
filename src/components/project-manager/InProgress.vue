@@ -34,7 +34,7 @@
 				]" :menus="[
 					{ title: 'Move to Pending', action: () => { moveProjectTo('pending') } },
 					{ title: 'Archive Project', action: () => { showArchiveModal=true; } },
-					{ title: 'Close Project', action: () => { moveProjectTo('close') } }
+					{ title: 'Close Project', action: () => { confirm('Are you sure you would like to close this project?', 'Close', () => { moveProjectTo('close') }) } }
 				]" />
 			</div>
 			<div class="project-talent-pane" v-if="selected!=undefined">
@@ -101,6 +101,17 @@
 				<div align="center" v-if="showProcessSuccessButton">
 					<br/>
 					<button class="long" v-on:click="processSuccessButtonAction">{{ processSuccessButtonText }}</button>
+				</div>
+			</div>
+		</Modal>
+		<Modal title="Confirm Modal" :sticky="true" :plain="true" :show="showConfirmModal" :onclose="() => { showConfirmModal=false }">
+			<div slot="body" v-if="processLoading" class="preloader"><i class="dc-spinner animate-spin"></i></div>
+			<div slot="body" v-else>
+				<i class="dc-cancel close" v-on:click="showConfirmModal=false"></i>
+				<p>{{ confirmMessage }}</p>
+				<div align="center">
+					<br/>
+					<button class="long" v-on:click="() => { confirmProcessAction(); showConfirmModal=false }">{{ confirmprocessButtonText }}</button>
 				</div>
 			</div>
 		</Modal>
@@ -213,7 +224,8 @@
 				talentPaneMode: '', showRemoveModal: false, showStatusModal: false, processStatus: '', 
 				processLoading: false, showProcessSuccessButton: false, processSuccessButtonText: '', 
 				processSuccessButtonAction: ()=>{}, processCloseButtonAction: () => {}, userProfileLoading: false, selectedProfile: undefined, 
-				selectedProfileRatings: undefined, showProfileModal: false
+				selectedProfileRatings: undefined, showProfileModal: false, showConfirmModal: false,
+				confirmMessage: '', confirmProcessAction: () => {}, confirmprocessButtonText: ''
 			} 
 		},
 		components: { Project, ProjectView, Modal, Input, CheckBox },
@@ -300,6 +312,12 @@
 				(this.talentPaneMode == 'assign') ? this.showAssignModal = true : '';
 				(this.talentPaneMode == 'remove') ? this.showRemoveModal = true : '';
 			},
+			confirm(message, button, action) {
+				this.showConfirmModal = true;
+				this.confirmMessage = message;
+				this.confirmprocessButtonText = button;
+				this.confirmProcessAction = action;
+			},
 			shareProject() {
 				var self = this;
 				this.processLoading = true;
@@ -366,6 +384,7 @@
 							self.processSuccessButtonAction = () => { self.showStatusModal = false; }
 							(self.selected.team_members) ? self.selected.team_members = self.selected.team_members.filter((t) => { for(var i=0;i<self.selectedTalents.length;i++){ if(self.selectedTalents[i].id==t.id) return false; } return true; }) : self.selected.team_members = [];
 							self.selectedTalents = [];
+							if(self.selected.team_members.length < 1) self.closeTalentPane();
 							self.talentPaneMode == 'remove';
 							self.talents = self.selected.team_members;
 							console.log(res);
@@ -403,6 +422,7 @@
 						).then(res => {
 							self.archiveLoading = false;
 							self.showArchiveModal = false;
+							self.moveProjectTo('close');
 						}).catch(err => { console.log(err); this.archiveLoading = false; });
 					}
 				});
@@ -433,6 +453,7 @@
 							this.processLoading = false;
 							self.showProcessSuccessButton = false;
 							self.projects.splice(self.projects.indexOf(this.selected), 1);
+							self.closeProject();
 							console.log(res);
 						}).catch(err => { console.log(err); });
 					}
