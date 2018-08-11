@@ -134,7 +134,7 @@
 		<Modal title="Status Modal" :sticky="true" :plain="true" :show="showStatusModal" :onclose="() => { showStatusModal=false }">
 			<div slot="body" v-if="processLoading" class="preloader"><i class="dc-spinner animate-spin"></i></div>
 			<div slot="body" v-else>
-				<i class="dc-cancel close" v-on:click="showStatusModal=false"></i>
+				<i class="dc-cancel close" v-on:click="() => { showStatusModal = false; processCloseButtonAction() }"></i>
 				<p>{{ processStatus }}</p>
 				<div align="center" v-if="showProcessSuccessButton">
 					<br/>
@@ -220,7 +220,7 @@
 			<button class="long" v-on:click="shareProject">Share Project</button>
 		</div>
 		<div :class="{ active: showAssignModal }" class="share-overlay">
-			<button class="long" v-on:click="assignProject">Assign Project</button>
+			<button class="long" v-on:click="assignProject">Assign to Project</button>
 		</div>
 	</div>
 </template>
@@ -475,6 +475,7 @@
 							self.processSuccessButtonText = "Assign More Talents";
 							self.showProcessSuccessButton = true;
 							self.processSuccessButtonAction = () => { self.showStatusModal = false; }
+							self.processCloseButtonAction = () => { self.showStatusModal = false; self.closeProject(); }
 							this.processLoading = false;
 							(self.selected.team_members) ? self.selected.team_members = self.selected.team_members.concat(self.selectedTalents) : self.selected.team_members = self.selectedTalents;
 							self.selectedTalents = [];

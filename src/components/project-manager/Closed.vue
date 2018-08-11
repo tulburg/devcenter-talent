@@ -12,6 +12,8 @@
 					description: (project.description.length > 300) ? project.description.substring(0, 300)+'...' : project.description,
 					assigner: project.assigner.first_name+' '+project.assigner.last_name,
 					cost: (project.agreed_cost) ? project.agreed_cost.toLocaleString(): 0,
+					badgeText: (project.closed == 1) ? 'CLOSED' : 'ARCHIVED',
+					badgeStatus: (project.closed == 1) ? 'default' : 'primary'
 				}" />
 			</div>
 			<div class="project-view-pane">
@@ -28,8 +30,8 @@
 					due: (selected.deadline) ? simpleDateFormat(selected.deadline): '',
 					assigned_to: 'Tolu Oluwagbemi',
 					closed: (selected.deadline) ? simpleDateFormat(selected.deadline): '',
-					badgeText: 'CLOSED',
-					badgeStatus: 'primary'
+					badgeText: (selected.closed == 1) ? 'CLOSED' : 'ARCHIVED',
+					badgeStatus: (selected.closed == 1) ? 'default' : 'primary'
 				}" :actions="[
 					{ title: 'View Project Brief', action: () => { (selected.requirement_doc_link&&selected.requirement_doc_link!='') ? this.gotoReqDoc() : showBriefErrorDialog = true; } },
 				]" :menus="[
@@ -83,6 +85,7 @@
 					$(".project-view-pane").expand();
 					$(".project-list-pane").collapse();
 				}, 10);
+				console.log(project);
 			},
 			closeProject() {
 				var self = this;
