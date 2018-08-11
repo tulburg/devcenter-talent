@@ -1707,17 +1707,19 @@ section.project-manager {
     width: 100%;
     height: 180px;
     margin-bottom: 0px; }
-  section.project-manager #fields-required-modal .dialog, section.project-manager #brief-required-modal .dialog, section.project-manager #status-modal .dialog {
+  section.project-manager #fields-required-modal .preloader, section.project-manager #brief-required-modal .preloader, section.project-manager #status-modal .preloader, section.project-manager #confirm-modal .preloader {
+    margin-top: 0px; }
+  section.project-manager #fields-required-modal .dialog, section.project-manager #brief-required-modal .dialog, section.project-manager #status-modal .dialog, section.project-manager #confirm-modal .dialog {
     width: 600px;
     top: calc(50% - 50px); }
-    section.project-manager #fields-required-modal .dialog .body, section.project-manager #brief-required-modal .dialog .body, section.project-manager #status-modal .dialog .body {
+    section.project-manager #fields-required-modal .dialog .body, section.project-manager #brief-required-modal .dialog .body, section.project-manager #status-modal .dialog .body, section.project-manager #confirm-modal .dialog .body {
       padding: 24px; }
-      section.project-manager #fields-required-modal .dialog .body p, section.project-manager #brief-required-modal .dialog .body p, section.project-manager #status-modal .dialog .body p {
+      section.project-manager #fields-required-modal .dialog .body p, section.project-manager #brief-required-modal .dialog .body p, section.project-manager #status-modal .dialog .body p, section.project-manager #confirm-modal .dialog .body p {
         margin: 0px 80px;
         text-align: center; }
-    section.project-manager #fields-required-modal .dialog .footer, section.project-manager #brief-required-modal .dialog .footer, section.project-manager #status-modal .dialog .footer {
+    section.project-manager #fields-required-modal .dialog .footer, section.project-manager #brief-required-modal .dialog .footer, section.project-manager #status-modal .dialog .footer, section.project-manager #confirm-modal .dialog .footer {
       padding: 3px; }
-  section.project-manager #fields-required-modal i.close, section.project-manager #brief-required-modal i.close, section.project-manager #status-modal i.close {
+  section.project-manager #fields-required-modal i.close, section.project-manager #brief-required-modal i.close, section.project-manager #status-modal i.close, section.project-manager #confirm-modal i.close {
     position: absolute;
     top: 10px;
     right: 10px;
