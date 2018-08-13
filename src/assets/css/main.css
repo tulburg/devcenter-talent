@@ -1276,6 +1276,7 @@ section.project-manager {
       left: 0px;
       top: 0px; }
     section.project-manager #project-modal .body .datepicker-select i {
+      cursor: pointer;
       position: absolute;
       right: calc(20% + 8px);
       color: #b3b3b3;
@@ -1693,6 +1694,8 @@ section.project-manager {
       section.project-manager #profile-earnings-modal .profile-photo .cover i {
         font-size: 60px;
         color: #ffffff; }
+  section.project-manager #archive-modal .preloader {
+    margin-top: 0px; }
   section.project-manager #archive-modal .body {
     text-align: center;
     padding-bottom: 24px; }

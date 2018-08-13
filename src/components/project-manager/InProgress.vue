@@ -49,7 +49,7 @@
 						</ul>
 						<div class="collapse-heading" v-on:click="toggleStacks">Stacks/Skills <i :class="{ upward: openStacks }" class="dc-caret"></i></div>
 						<ul class="collapse-body __stacks-collapse">
-							<li v-for="item in selected.modules"><CheckBox :small="true" :checked="true" v-on:change="(v) => { setValue('stacks', v, item) }" /> {{ item }}</li>
+							<li v-for="item in selected.modules"><CheckBox :small="true" v-on:change="(v) => { setValue('stacks', v, item) }" /> {{ item }}</li>
 						</ul>
 						<div class="collapse-heading" v-on:click="toggleEmployment">Employment Status <i :class="{ upward: openEmployment }" class="dc-caret"></i></div>
 						<ul class="collapse-body __employment-collapse">
@@ -428,6 +428,17 @@
 						).then(res => {
 							self.archiveLoading = false;
 							self.showArchiveModal = false;
+							self.showStatusModal = true;
+							self.processStatus = self.selected.project_name+" has been archived and moved to Closed projects";
+							self.showProcessSuccessButton = false;
+							self.processCloseButtonAction = () => { self.showStatusModal = false; }
+							self.selected.archive = 1;
+							store.dispatch('getSession').then(session => {
+								if(session) {
+									session.projects.where({project_ref: self.selected.project_ref}).archive = 1;
+									store.commit("saveProjects", session.projects);
+								}
+							});
 							self.moveProjectTo('close');
 						}).catch(err => { console.log(err); this.archiveLoading = false; });
 					}
