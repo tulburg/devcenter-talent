@@ -486,7 +486,7 @@
 							self.processSuccessButtonText = "Assign More Talents";
 							self.showProcessSuccessButton = true;
 							self.processSuccessButtonAction = () => { self.showStatusModal = false; }
-							self.processCloseButtonAction = () => { self.showStatusModal = false; self.closeProject(); }
+							self.processCloseButtonAction = () => { self.moveProjectTo('inprogress'); }
 							this.processLoading = false;
 							(self.selected.team_members) ? self.selected.team_members = self.selected.team_members.concat(self.selectedTalents) : self.selected.team_members = self.selectedTalents;
 							self.selectedTalents = [];
@@ -552,6 +552,7 @@
 							self.projects.splice(self.projects.indexOf(self.selected), 1);
 							this.processLoading = false;
 							self.showProcessSuccessButton = false;
+							self.processCloseButtonAction = () => { self.showStatusModal = false; }
 							self.closeProject();
 							console.log(res);
 						}).catch(err => { console.log(err); });
