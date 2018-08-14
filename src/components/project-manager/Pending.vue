@@ -486,7 +486,7 @@
 							self.processSuccessButtonText = "Assign More Talents";
 							self.showProcessSuccessButton = true;
 							self.processSuccessButtonAction = () => { self.showStatusModal = false; }
-							self.processCloseButtonAction = () => { self.moveProjectTo('inprogress'); }
+							self.processCloseButtonAction = () => { self.moveProjectTo('inprogress', () => { self.$router.push('/project-manager/in-progress'); }); }
 							this.processLoading = false;
 							(self.selected.team_members) ? self.selected.team_members = self.selected.team_members.concat(self.selectedTalents) : self.selected.team_members = self.selectedTalents;
 							self.selectedTalents = [];
@@ -526,7 +526,7 @@
 					}
 				});
 			},
-			moveProjectTo(stage) {
+			moveProjectTo(stage, closeAction) {
 				var self = this;
 				var req_stage;
 				(stage == 'pending') ? req_stage = 'fund' : '';
@@ -552,7 +552,7 @@
 							self.projects.splice(self.projects.indexOf(self.selected), 1);
 							this.processLoading = false;
 							self.showProcessSuccessButton = false;
-							self.processCloseButtonAction = () => { self.showStatusModal = false; }
+							self.processCloseButtonAction = () => { self.showStatusModal = false; closeAction() }
 							self.closeProject();
 							console.log(res);
 						}).catch(err => { console.log(err); });
