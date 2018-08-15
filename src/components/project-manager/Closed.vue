@@ -12,8 +12,8 @@
 					description: (project.description.length > 300) ? project.description.substring(0, 300)+'...' : project.description,
 					assigner: project.assigner.first_name+' '+project.assigner.last_name,
 					cost: (project.agreed_cost) ? project.agreed_cost.toLocaleString(): 0,
-					badgeText: (project.closed == 1) ? 'CLOSED' : 'ARCHIVED',
-					badgeStatus: (project.closed == 1) ? 'default' : 'primary'
+					badgeText: (project.project_stage == 5) ? 'CLOSED' : 'ARCHIVED',
+					badgeStatus: (project.project_stage == 5) ? 'default' : 'primary'
 				}" />
 			</div>
 			<div class="project-view-pane">
@@ -30,8 +30,8 @@
 					due: (selected.deadline) ? simpleDateFormat(selected.deadline): '',
 					assigned_to: 'Tolu Oluwagbemi',
 					closed: (selected.deadline) ? simpleDateFormat(selected.deadline): '',
-					badgeText: (selected.closed == 1) ? 'CLOSED' : 'ARCHIVED',
-					badgeStatus: (selected.closed == 1) ? 'default' : 'primary'
+					badgeText: (selected.project_stage == 5) ? 'CLOSED' : 'ARCHIVED',
+					badgeStatus: (selected.project_stage == 5) ? 'default' : 'primary'
 				}" :actions="[
 					{ title: 'View Project Brief', action: () => { (selected.requirement_doc_link&&selected.requirement_doc_link!='') ? this.gotoReqDoc() : showBriefErrorDialog = true; } },
 				]" :menus="[
@@ -140,7 +140,7 @@
 				if(session) { 
 					self.user = session.user;
 					// fetch only new projects
-					self.projects = session.projects.filter((a) => { return (a.closed == 1 || a.archive == 1) });
+					self.projects = session.projects.filter((a) => { return (a.project_stage == 5 || a.archive == 1) });
 				}
 			});
 		},
