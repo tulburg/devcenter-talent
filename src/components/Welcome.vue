@@ -90,7 +90,12 @@
 					}else if(user.account_type == 'pm') {
 						Bus.$emit("Header_setBoot", false);
 						setTimeout(() => { Bus.$emit("Header_startBoot", true); }, 1000);
-						this.$router.push("/project-manager");
+						if(!localStorage.getItem("pm_firstime")) {
+							this.$router.push("/project-manager");
+							localStorage.setItem("pm_firstime", 1);
+						}else {
+							this.$router.push("/project-manager/new");
+						}
 					}
 				}).catch(err=>{
 					this.loading = false;

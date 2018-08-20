@@ -49,7 +49,7 @@
 		<Modal title="Status Modal" :sticky="true" :plain="true" :show="showStatusModal" :onclose="() => { showStatusModal=false }">
 			<div slot="body" v-if="processLoading" class="preloader"><i class="dc-spinner animate-spin"></i></div>
 			<div slot="body" v-else>
-				<i class="dc-cancel close" v-on:click="showStatusModal=false"></i>
+				<i class="dc-cancel close" v-on:click="() => { showStatusModal = false; processCloseButtonAction() }"></i>
 				<p>{{ processStatus }}</p>
 			</div>
 		</Modal>
@@ -68,7 +68,7 @@
 	export default {
 		name: 'Closed',
 		data() { return { user: undefined, projects: [], selected: undefined, showBriefErrorDialog: false,
-			showStatusModal: false, processStatus: '', processLoading: false } 
+			showStatusModal: false, processStatus: '', processLoading: false, processCloseButtonAction: () => { this.showStatusModal=false } } 
 		},
 		components: { Project, ProjectView, Modal },
 		methods: {
@@ -120,6 +120,8 @@
 							self.projects.splice(self.projects.indexOf(self.selected), 1);
 							this.processLoading = false;
 							self.showProcessSuccessButton = false;
+							if(stage=='pending') { self.processCloseButtonAction = () => { self.$router.push('/project-manager/pending'); } }
+							if(stage=='inprogress') { self.processCloseButtonAction = () => { self.$router.push('/project-manager/in-progress'); } };
 							self.closeProject();
 							console.log(res);
 						}).catch(err => { console.log(err); });
@@ -136,6 +138,7 @@
 			Bus.$emit("Header_showLinks", true);
 			Bus.$emit("Header_showPMLinks", true);
 			Bus.$emit("Header_showGrayLogo", true);
+			Bus.$emit("Header_showPMAccount", true);
 			store.dispatch('getSession').then(session => {
 				if(session) { 
 					self.user = session.user;
@@ -149,6 +152,7 @@
 			Bus.$emit("Header_showLinks", false);
 			Bus.$emit("Header_showPMLinks", false);
 			Bus.$emit("Header_showGrayLogo", false);
+			Bus.$emit("Header_showPMAccount", false);
 		}
 	}
 </script>

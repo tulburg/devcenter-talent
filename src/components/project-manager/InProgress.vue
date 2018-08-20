@@ -34,7 +34,7 @@
 				]" :menus="[
 					{ title: 'Move to Pending', action: () => { moveProjectTo('pending') } },
 					{ title: 'Archive Project', action: () => { showArchiveModal=true; } },
-					{ title: 'Close Project', action: () => { confirm('Are you sure you would like to close this project?', 'Close', () => { moveProjectTo('close') }) } }
+					{ title: 'Close Project', action: () => { confirm('Are you sure you would like to close this project?', 'Close', () => { moveProjectTo('close', () => { $router.push('/project-manager/closed'); }) }) } }
 				]" />
 			</div>
 			<div class="project-talent-pane" v-if="selected!=undefined">
@@ -444,7 +444,7 @@
 					}
 				});
 			},
-			moveProjectTo(stage) {
+			moveProjectTo(stage, closeAction) {
 				var self = this;
 				var req_stage;
 				(stage == 'pending') ? req_stage = 'fund' : '';
@@ -469,6 +469,7 @@
 							});
 							this.processLoading = false;
 							self.showProcessSuccessButton = false;
+							self.processCloseButtonAction = () => { self.showStatusModal = false, closeAction() }
 							self.projects.splice(self.projects.indexOf(this.selected), 1);
 							self.closeProject();
 							console.log(res);
@@ -518,6 +519,7 @@
 			Bus.$emit("Header_showLinks", true);
 			Bus.$emit("Header_showPMLinks", true);
 			Bus.$emit("Header_showGrayLogo", true);
+			Bus.$emit("Header_showPMAccount", true);
 			store.dispatch('getSession').then(session => {
 				if(session) { 
 					self.user = session.user;
@@ -531,6 +533,7 @@
 			Bus.$emit("Header_showLinks", false);
 			Bus.$emit("Header_showPMLinks", false);
 			Bus.$emit("Header_showGrayLogo", false);
+			Bus.$emit("Header_showPMAccount", false);
 		}
 	}
 </script>
