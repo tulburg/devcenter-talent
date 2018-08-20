@@ -591,6 +591,7 @@
 			Bus.$emit("Header_showLinks", true);
 			Bus.$emit("Header_showPMLinks", true);
 			Bus.$emit("Header_showGrayLogo", true);
+			Bus.$emit("Header_showPMAccount", true);
 			store.dispatch('getSession').then(session => {
 				if(session) { 
 					self.user = session.user;
@@ -611,6 +612,7 @@
 			Bus.$emit("Header_showLinks", false);
 			Bus.$emit("Header_showPMLinks", false);
 			Bus.$emit("Header_showGrayLogo", false);
+			Bus.$emit("Header_showPMAccount", false);
 		}
 	}
 </script>

@@ -72,11 +72,11 @@
 				}).catch(err => {
 					console.log(err);
 				})
-				// this.$http.get(store.state.api.development+"chat-messages/"+session.user.slack_username).then(res => {
-				// 	console.log(res);
-				// }).catch(err => {
-				// 	console.log(err);
-				// })
+				this.$http.get(store.state.api.development+"chat-messages/"+session.user.slack_username).then(res => {
+					console.log(res);
+				}).catch(err => {
+					console.log(err);
+				})
 			})
 		},
 		destroyed() {

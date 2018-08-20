@@ -111,7 +111,6 @@
 				<button class="clear colored">Contact Us <i class="dc-caret right"></i></button>
 			</div>
 		</Modal>
-		<button>Accept</button><button>Decline</button>
 	</div>
 </template>
 
