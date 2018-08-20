@@ -49,7 +49,7 @@
 						</ul>
 						<div class="collapse-heading" v-on:click="toggleStacks">Stacks/Skills <i :class="{ upward: openStacks }" class="dc-caret"></i></div>
 						<ul class="collapse-body __stacks-collapse">
-							<li v-for="item in selected.modules"><CheckBox :small="true" :checked="true" v-on:change="(v) => { setValue('stacks', v, item) }" /> {{ item }}</li>
+							<li v-for="item in selected.modules"><CheckBox :small="true" v-on:change="(v) => { setValue('stacks', v, item) }" /> {{ item }}</li>
 						</ul>
 						<div class="collapse-heading" v-on:click="toggleEmployment">Employment Status <i :class="{ upward: openEmployment }" class="dc-caret"></i></div>
 						<ul class="collapse-body __employment-collapse">
@@ -96,7 +96,7 @@
 		<Modal title="Status Modal" :sticky="true" :plain="true" :show="showStatusModal" :onclose="() => { showStatusModal=false }">
 			<div slot="body" v-if="processLoading" class="preloader"><i class="dc-spinner animate-spin"></i></div>
 			<div slot="body" v-else>
-				<i class="dc-cancel close" v-on:click="showStatusModal=false"></i>
+				<i class="dc-cancel close" v-on:click="() => { showStatusModal = false; processCloseButtonAction() }"></i>
 				<p>{{ processStatus }}</p>
 				<div align="center" v-if="showProcessSuccessButton">
 					<br/>
@@ -193,7 +193,7 @@
 			<button class="long" v-on:click="shareProject">Share Project</button>
 		</div>
 		<div :class="{ active: showAssignModal }" class="share-overlay">
-			<button class="long" v-on:click="assignProject">Assign Project</button>
+			<button class="long" v-on:click="assignProject">Assign to Project</button>
 		</div>
 		<div :class="{ active: showRemoveModal }" class="share-overlay">
 			<button class="long" v-on:click="removeFromProject">Remove from Project</button>
@@ -333,6 +333,7 @@
 							self.processSuccessButtonText = "Find More Talents";
 							self.showProcessSuccessButton = true;
 							self.processSuccessButtonAction = () => { self.showStatusModal = false; }
+							self.processCloseButtonAction = () => { self.showStatusModal; }
 							this.processLoading = false;
 							(self.selected.team_members) ? self.selected.team_members = self.selected.team_members.concat(self.selectedTalents) : self.selected.team_members = self.selectedTalents;
 							self.selectedTalents = [];
@@ -357,6 +358,7 @@
 							self.processSuccessButtonText = "Assign More Talents";
 							self.showProcessSuccessButton = true;
 							self.processSuccessButtonAction = () => { self.showStatusModal = false; }
+							self.processCloseButtonAction = () => { self.closeProject(); }
 							this.processLoading = false;
 							(self.selected.team_members) ? self.selected.team_members = self.selected.team_members.concat(self.selectedTalents) : self.selected.team_members = self.selectedTalents;
 							self.selectedTalents = [];
@@ -378,13 +380,17 @@
 							headers: { 'Authorization' : session.token }
 						}).then(res => { 
 							this.processLoading = false;
-							this.processStatus = self.selectedTalents.map((t) => { return t.first_name+" "+t.last_name}).join(", ")+" has been removed from "+self.selected.project_name;
-							self.processSuccessButtonText = "Remove More Talents";
-							self.showProcessSuccessButton = true;
-							self.processSuccessButtonAction = () => { self.showStatusModal = false; }
 							(self.selected.team_members) ? self.selected.team_members = self.selected.team_members.filter((t) => { for(var i=0;i<self.selectedTalents.length;i++){ if(self.selectedTalents[i].id==t.id) return false; } return true; }) : self.selected.team_members = [];
 							self.selectedTalents = [];
-							if(self.selected.team_members.length < 1) self.closeTalentPane();
+							if(self.selected.team_members.length < 1) {
+								self.closeTalentPane();
+								self.moveProjectTo('pending');
+							}else {
+								this.processStatus = self.selectedTalents.map((t) => { return t.first_name+" "+t.last_name}).join(", ")+" has been removed from "+self.selected.project_name;
+								self.processSuccessButtonText = "Remove More Talents";
+								self.showProcessSuccessButton = true;
+								self.processSuccessButtonAction = () => { self.showStatusModal = false; }
+							}
 							self.talentPaneMode == 'remove';
 							self.talents = self.selected.team_members;
 							console.log(res);
@@ -422,6 +428,17 @@
 						).then(res => {
 							self.archiveLoading = false;
 							self.showArchiveModal = false;
+							self.showStatusModal = true;
+							self.processStatus = self.selected.project_name+" has been archived and moved to Closed projects";
+							self.showProcessSuccessButton = false;
+							self.processCloseButtonAction = () => { self.showStatusModal = false; }
+							self.selected.archive = 1;
+							store.dispatch('getSession').then(session => {
+								if(session) {
+									session.projects.where({project_ref: self.selected.project_ref}).archive = 1;
+									store.commit("saveProjects", session.projects);
+								}
+							});
 							self.moveProjectTo('close');
 						}).catch(err => { console.log(err); this.archiveLoading = false; });
 					}

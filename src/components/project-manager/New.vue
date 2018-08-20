@@ -46,7 +46,7 @@
 						</ul>
 						<div class="collapse-heading" v-on:click="toggleStacks">Stacks/Skills <i :class="{ upward: openStacks }" class="dc-caret"></i></div>
 						<ul class="collapse-body __stacks-collapse">
-							<li v-for="item in selected.modules"><CheckBox :small="true" :checked="true" v-on:change="(v) => { setValue('stacks', v, item) }" /> {{ item }}</li>
+							<li v-for="item in selected.modules"><CheckBox :small="true" v-on:change="(v) => { setValue('stacks', v, item) }" /> {{ item }}</li>
 						</ul>
 						<div class="collapse-heading" v-on:click="toggleEmployment">Employment Status <i :class="{ upward: openEmployment }" class="dc-caret"></i></div>
 						<ul class="collapse-body __employment-collapse">
@@ -83,20 +83,20 @@
 				<InputDrop name="stacks" label="Stacks/Skills" placeholder="Project Stacks and Skills" :options="stacks" v-on:change="fetchStacks" :selected="selected.modules" v-on:selected="(v) => { this.selected.skills = v }" />
 				<ul class="grid grid-2 date-grid">
 					<li>
-						<Datepicker wrapper-class="select datepicker-select" placeholder="Select Deadline" :value="(selected.deadline) ? new Date(selected.deadline.split('-').map((v) => { return (v.length < 2) ? '0'+v : v }).join('-')) : ''" v-on:selected="(v) => { this.selected.deadline = v.getFullYear()+'-'+(v.getMonth()+1)+'-'+v.getDate(); }">
+						<Datepicker wrapper-class="select datepicker-select" placeholder="Select Deadline" :disabled-dates="disabledDates" :value="(selected.deadline) ? new Date(selected.deadline.split('-').map((v) => { return (v.length < 2) ? '0'+v : v }).join('-')) : ''" v-on:selected="(v) => { this.selected.deadline = v.getFullYear()+'-'+(v.getMonth()+1)+'-'+v.getDate(); }">
 							<div slot="afterDateInput">
 								<label>Deadline for Brief</label>
-								<i class="dc-calendar"></i>
+								<i class="dc-calendar" v-on:click="focusPicker"></i>
 							</div>
 						</Datepicker>
 					</li>
 					<li>&nbsp;</li>
 				</ul>
-				<Input label="undefined" placeholder="Product Requirement Link" :value="selected.requirement_doc_link" v-on:change="(v) => { this.selected.requirement_doc_link = v }">
+				<Input label="undefined" placeholder="Product Requirement Link" :value="selected.requirement_doc_link" :showAlert="prdLinkError" :alert="linkError" v-on:change="(v) => { this.selected.requirement_doc_link = v }">
 					<div class="title-label"><label><i class='dc-link'></i> Link to Product Requirement Document</label></div>
 				</Input>
-				<Input label="undefined" placeholder="Project Link on Jira" :value="selected.jira_link" v-on:change="(v) => { this.selected.jira_link = v }">
-					<div class="title-label"><label><i class='dc-link'></i> Link to Project on Jira <p>(This link will be displayed to Talents only)</p></label></div>
+				<Input label="undefined" placeholder="Project Link on Jira" :value="selected.jira_link" :showAlert="jiraLinkError" :alert="linkError" v-on:change="(v) => { this.selected.jira_link = v }">
+					<div class="title-label"><label><i class='dc-link'></i> Link to Project on Jira</label></div>
 				</Input>
 			</div>
 			<div slot="footer" v-if="!saveProjectLoading">
@@ -248,7 +248,8 @@
 			saveProjectLoading: false, showStatusModal: false, processStatus: '', processLoading: false,
 			userProfileLoading: false, selectedProfile: undefined, selectedProfileRatings: undefined,
 			showProfileModal: false, talentPaneMode: '', showProcessSuccessButton: false, processSuccessButtonText: '', 
-			processSuccessButtonAction: ()=>{}, processCloseButtonAction: () => {} }
+			processSuccessButtonAction: ()=>{}, processCloseButtonAction: () => {}, disabledDates: { to: new Date() },
+			prdLinkError: false, jiraLinkError: false, linkError: '' }
 		},
 		components: { Project, ProjectView, Modal, Input, Datepicker, InputDrop, CheckBox },
 		methods: {
@@ -292,6 +293,16 @@
 			},
 			saveProject(v) {
 				var self = this;
+				if(this.selected.jira_link!=null && !this.selected.jira_link.match(/(https?:\/\/[^\s]+)/g)) {
+					self.jiraLinkError = true;
+					self.linkError = "* Please enter a valid link i.e. https://www.example.com";
+					return;
+				}
+				if(this.selected.requirement_doc_link!=null && !this.selected.requirement_doc_link.match(/(https?:\/\/[^\s]+)/g)) {
+					self.prdLinkError = true;
+					self.linkError = "* Please enter a valid link i.e. https://www.example.com";
+					return;
+				}
 				this.saveProjectLoading = true;
 				let param = { 
 					project_ref: this.selected.project_ref, 
@@ -452,6 +463,15 @@
 							self.showArchiveModal = false;
 							self.showStatusModal = true;
 							self.processStatus = self.selected.project_name+" has been archived and moved to Closed projects";
+							self.showProcessSuccessButton = false;
+							self.processCloseButtonAction = () => { self.showStatusModal = false; }
+							self.selected.archive = 1;
+							store.dispatch('getSession').then(session => {
+								if(session) {
+									session.projects.where({project_ref: self.selected.project_ref}).archive = 1;
+									store.commit("saveProjects", session.projects);
+								}
+							});
 							self.moveProjectTo('close');
 						}).catch(err => { console.log(err); this.archiveLoading = false; });
 					}
@@ -546,6 +566,10 @@
 			},
 			gotoReqDoc() {
 				window.open(this.selected.requirement_doc_link, '_blank');
+			},
+			focusPicker() {
+				console.log("Cllicked");
+				$(".datepicker-select").$(">input").click();
 			}
 		},
 		mounted() {

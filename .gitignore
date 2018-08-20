@@ -11,3 +11,10 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+
+
+.babelrc
+.com.greenwor*
+.editorconfig
+.postcss*
+.sass-cache/*

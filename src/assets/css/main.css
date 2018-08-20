@@ -1167,6 +1167,7 @@ section.project-manager {
     margin-top: 100px;
     opacity: 0.7; }
   section.project-manager .project {
+    min-height: 150px;
     position: relative;
     transition: ease-in-out all .5s;
     padding: 0px 15px;
@@ -1186,7 +1187,9 @@ section.project-manager {
     section.project-manager .project li:last-child {
       width: 28%;
       text-align: left;
-      margin-top: 15px; }
+      margin-top: 15px;
+      position: absolute;
+      right: 10px; }
     section.project-manager .project .label {
       color: #9a9a9a;
       font-size: 14px;
@@ -1210,6 +1213,7 @@ section.project-manager {
       section.project-manager .project-view h1 i:hover {
         color: #18a2dc; }
   section.project-manager .project-view .project {
+    min-height: auto;
     user-select: auto;
     cursor: default; }
     section.project-manager .project-view .project p {
@@ -1221,6 +1225,7 @@ section.project-manager {
   section.project-manager .project-view .value {
     font-weight: bold; }
   section.project-manager .project-view .details {
+    margin-top: 40px;
     padding: 15px;
     text-align: left; }
     section.project-manager .project-view .details .value {
@@ -1271,6 +1276,7 @@ section.project-manager {
       left: 0px;
       top: 0px; }
     section.project-manager #project-modal .body .datepicker-select i {
+      cursor: pointer;
       position: absolute;
       right: calc(20% + 8px);
       color: #b3b3b3;
@@ -1688,6 +1694,8 @@ section.project-manager {
       section.project-manager #profile-earnings-modal .profile-photo .cover i {
         font-size: 60px;
         color: #ffffff; }
+  section.project-manager #archive-modal .preloader {
+    margin-top: 0px; }
   section.project-manager #archive-modal .body {
     text-align: center;
     padding-bottom: 24px; }
