@@ -894,7 +894,10 @@ section.inbox {
         height: 100%;
         background-color: #ffffff;
         border-radius: 0px 3px 3px 0px;
-        box-shadow: -4px 0px 3px 3px rgba(0, 0, 0, 0.05); }
+        box-shadow: -4px 0px 3px 3px rgba(0, 0, 0, 0.05);
+        overflow-y: auto; }
+        section.inbox .container .box .right-pane.transiting {
+          overflow-y: hidden; }
   section.inbox .action-bar {
     position: relative;
     padding: 20px 30px;
@@ -1033,6 +1036,37 @@ section.inbox {
       padding-top: 200px; }
       section.inbox .mail-list .placeholder p {
         text-align: center; }
+  section.inbox .message-box {
+    padding: 50px;
+    text-align: left;
+    transition: all .3s ease-out;
+    position: absolute;
+    width: 100%;
+    left: 0px;
+    top: 0px; }
+    section.inbox .message-box.transiting {
+      top: 101%; }
+    section.inbox .message-box.alt.transiting {
+      top: 0%; }
+    section.inbox .message-box.alt {
+      top: -100%; }
+    section.inbox .message-box .header {
+      border-bottom: 1px solid #e6e6e6; }
+      section.inbox .message-box .header h2 {
+        margin: 0px; }
+      section.inbox .message-box .header label {
+        color: #b3b3b3; }
+      section.inbox .message-box .header .subject {
+        color: #000000;
+        margin-top: 20px;
+        margin-bottom: 20px; }
+      section.inbox .message-box .header .right {
+        float: right;
+        text-align: right; }
+    section.inbox .message-box .body {
+      padding-top: 10px; }
+      section.inbox .message-box .body h1 {
+        font-size: 18px; }
 
 section.account {
   flex-direction: column; }
