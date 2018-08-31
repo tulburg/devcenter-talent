@@ -1045,11 +1045,14 @@ section.inbox {
     left: 0px;
     top: 0px; }
     section.inbox .message-box.transiting {
-      top: 101%; }
+      top: 100%;
+      opacity: 0; }
     section.inbox .message-box.alt.transiting {
-      top: 0%; }
+      top: 0%;
+      opacity: 1; }
     section.inbox .message-box.alt {
-      top: -100%; }
+      top: 0%;
+      opacity: 0; }
     section.inbox .message-box .header {
       border-bottom: 1px solid #e6e6e6; }
       section.inbox .message-box .header h2 {
@@ -2351,6 +2354,46 @@ div.modal .footer {
     opacity: 0.1; }
   100% {
     opacity: 1; } }
+@keyframes translate-in {
+  0% {
+    top: -100%;
+    opacity: 0; }
+  100% {
+    top: 0%;
+    opacity: 1; } }
+@keyframes translate-in-down {
+  0% {
+    top: 100%;
+    opacity: 0; }
+  100% {
+    top: 0%;
+    opacity: 1; } }
+@keyframes translate-out {
+  0% {
+    top: 0px;
+    opacity: 1; }
+  100% {
+    top: -100%;
+    opacity: 0; } }
+@keyframes translate-out-down {
+  0% {
+    top: 0px;
+    opacity: 1; }
+  100% {
+    top: 100%;
+    opacity: 0; } }
+.anim-translate-in {
+  animation: translate-in 0.4s cubic-bezier(0.25, 0.1, 0.25, 1); }
+
+.anim-translate-in-alt {
+  animation: translate-in-down 0.4s cubic-bezier(0.25, 0.1, 0.25, 1); }
+
+.anim-translate-out {
+  animation: translate-out 0.4s cubic-bezier(0.25, 0.1, 0.25, 1); }
+
+.anim-translate-out-alt {
+  animation: translate-out-down 0.4s cubic-bezier(0.25, 0.1, 0.25, 1); }
+
 .boot {
   opacity: 0.0; }
 

@@ -93,7 +93,7 @@ section.inbox { flex-direction: column; .container { display: inline-block; marg
 		.search { opacity: 1; transition: all .3s cubic-bezier(0, 0, 0.48, 1.13); flex-grow: 1; position: relative; i { width: 30px; height: 30px; padding-top: 5px; cursor: pointer; float: right; } &.active { opacity: 0; } }
 		.search-box { position: absolute; transition: all .3s cubic-bezier(0, 0, 0.48, 1.13); display: flex; top: 20px; height: 30px; width: calc(100% - 60px); left: calc(100% + 10px); i.dc-cancel { height: 30px; width: 30px; padding-top: 5px; cursor: pointer; } .input-wrapper { display: flex; padding-left: 10px; background-color: $white; border: 1px solid lighten($light-color, 15%); width: 90%; i { font-size: 12px; color: $light-color; align-self: center; } input { width: 100%; font-size: 12px; border: 0px; background-color: transparent; padding-left: 0px; &:focus { box-shadow: none; } } } &.active { left: 30px; } } }
 	.mail-list { width: 100%; overflow-x: hidden; overflow-y: auto; height: calc(100% - 70px); .mail { position: relative; cursor: pointer; text-align: left; padding: 20px; &.active { background-color: darken($white, 4%); } &.active::before { content: ""; position: absolute; left: 0px; top: 0px; width: 4px; height: 100%; background-color: $primary; } &:hover { background-color: lighten($primary, 48%); } &:last-child { border-radius: 0px 0px 3px 3px; } h2 { width: 100%; font-size: 18px; color: darken($color, 10%); margin-top: 0px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;  .unread { height: 8px; width: 8px; background-color: $primary; display: inline-block; vertical-align: middle; border-radius: 4px; margin-left: 5px; margin-bottom: 2px; } } p { margin: 0px; color: darken($light-color, 10%); } } .placeholder { padding: 40px; padding-top: 200px; p { text-align: center; } } }
-	.message-box { padding: 50px; text-align: left; transition: all .3s ease-out; position: absolute; width: 100%; left: 0px; top: 0px; &.transiting { top: 101%; } &.alt.transiting { top: 0%; } &.alt { top: -100%; } .header { border-bottom: 1px solid lighten($light-color, 20%); h2 { margin: 0px; } label { color: $light-color; } .subject { color: $black; margin-top: 20px; margin-bottom: 20px; } .right { float: right; text-align: right; } } .body { padding-top: 10px; h1 { font-size: 18px; } } }
+	.message-box { padding: 50px; text-align: left; transition: all .3s ease-out; position: absolute; width: 100%; left: 0px; top: 0px; &.transiting { top: 100%; opacity: 0; } &.alt.transiting { top: 0%; opacity: 1; } &.alt { top: 0%; opacity: 0; } .header { border-bottom: 1px solid lighten($light-color, 20%); h2 { margin: 0px; } label { color: $light-color; } .subject { color: $black; margin-top: 20px; margin-bottom: 20px; } .right { float: right; text-align: right; } } .body { padding-top: 10px; h1 { font-size: 18px; } } }
 }
 section.account { flex-direction: column; 
 	.settings { display: flex; height: 100vh; width: 100vw; justify-content: center; padding-top: 150px; .box { position: relative; padding-top: 20px; margin-top: -200px; width: 500px; text-align: left; p.success { text-align: center; margin-bottom: 40px; } h1 { text-align: center; } ul.grid li { padding-left: 0px; } label { color: $light-color; font-weight: bold; } p { margin-top: 5px; } label.email { margin-top: 20px; } label.check { color: $color; font-weight: 100; padding-left: 30px; .checkbox { margin-left: -30px; margin-right: 10px; } } .input { label { color: $color; font-weight: 100; }} } } 
@@ -209,6 +209,14 @@ div.modal .footer { position: absolute; left: 0px; top: 100%; background-color: 
 .account-drop-enter-active { animation-name: account-in; animation-duration: .3s; animation-timing-function: cubic-bezier(0, 0, 0.48, 1.13); }
 .account-drop-leave-active { animation-name: account-out; animation-duration: .3s; animation-timing-function: cubic-bezier(0, 0, 0.48, 1.13); }
 @keyframes boot-up { 0%{ opacity: 0.1; } 100% { opacity: 1; } }
+@keyframes translate-in { 0% { top: -100%; opacity: 0; } 100% { top: 0%; opacity: 1; } }
+@keyframes translate-in-down { 0% { top: 100%; opacity: 0; } 100% { top: 0%; opacity: 1; } }
+@keyframes translate-out { 0% { top: 0px; opacity: 1; } 100% { top: -100%; opacity: 0; } }
+@keyframes translate-out-down { 0% { top: 0px; opacity: 1; } 100% { top: 100%; opacity: 0; } }
+.anim-translate-in { animation: translate-in .4s cubic-bezier(.25,.1,.25,1); }
+.anim-translate-in-alt { animation: translate-in-down .4s cubic-bezier(.25,.1,.25,1); }
+.anim-translate-out { animation: translate-out .4s cubic-bezier(.25,.1,.25,1); }
+.anim-translate-out-alt { animation: translate-out-down .4s cubic-bezier(.25,.1,.25,1); }
 .boot { opacity: 0.0; }
 /* Responsiveness definitions */
 @include resolve(mobile) {

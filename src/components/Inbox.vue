@@ -25,17 +25,17 @@
 						</div>
 					</div>
 					<div class="mail-list">
-						<div :class="{ active: mail.subject=='Kayode Ayeni'}" class="mail" v-for="mail in threads" v-on:click="openMail(mail)">
+						<div class="mail" v-for="mail in threads" :class="{ active: selectedMessage!=undefined&&selectedMessage==mail}" v-on:click="openMail(mail)">
 							<h2>{{ mail.last_message }} <span v-if="mail.type=='unread'" class="unread"></span></h2>
 							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
 						</div>
-						<div class="placeholder">
+						<div class="placeholder" v-if="threads.length < 1">
 							<p>No Projects have been shared with you yet</p>
 						</div>
 					</div>
 				</div>
-				<div class="right-pane" :class="{ transiting: transitingMessage }">
-					<div v-if="selectedMessage != undefined" class="message-box" :class="{ transiting: transitingMessage }">
+				<div class="right-pane" :class="{ complete: transitionComplete }">
+					<div v-if="selectedMessage != undefined" class="message-box" :class="{ 'anim-translate-in': (transitioning!=undefined&&transitioning), 'anim-translate-out-alt': (transitioning!=undefined&&!transitioning), 'anim-translate-out': (transitioningAlt!=undefined&&transitioningAlt), 'anim-translate-in-alt': (transitioningAlt!=undefined&&!transitioningAlt) }">
 						<div class="header">
 							<div class="right">
 								<label>{{ formatDate(new Date(selectedMessage.last_message_date)) }}</label>
@@ -54,8 +54,10 @@
 							cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
 							proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 						</div>
+						<!-- <img src="../../static/2.jpg" /> -->
 					</div>
-					<div  v-if="nextMessage != undefined" class="message-box alt" :class="{ transiting: transitingMessage }">
+					<!-- 'anim-translate-in': transitioning, 'anim-translate-out-alt': !transitioning,  -->
+					<div  v-if="nextMessage != undefined" class="message-box alt" :class="{ 'anim-translate-out-alt': (transitioning!=undefined&&transitioning), 'anim-translate-in': (transitioning!=undefined&&!transitioning), 'anim-translate-in-alt': (transitioningAlt!=undefined&&transitioningAlt), 'anim-translate-out': (transitioningAlt!=undefined&&!transitioningAlt) }">
 						<div class="header">
 							<div class="right">
 								<label>{{ formatDate(new Date(nextMessage.last_message_date)) }}</label>
@@ -74,6 +76,7 @@
 							cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
 							proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 						</div>
+						<!-- <img src="../../static/1.jpg" /> -->
 					</div>
 				</div>
 			</div>
@@ -89,8 +92,8 @@
 	export default {
 		name: 'Inbox',
 		data() { return { 
-			showMenu: false, selectedMenu: 'All Inbox', showSearchBox: false, transitingMessage: true, selectedMessage: undefined,
-			nextMessage: undefined, mailState: 0, loadComplete: false, threads: [] 
+			showMenu: false, selectedMenu: 'All Inbox', showSearchBox: false, transitioning: undefined, transitioningAlt: false, selectedMessage: undefined,
+			nextMessage: undefined, mailState: 0, loadComplete: false, threads: [], transitionComplete: false, oldMessage: undefined 
 		} },
 		methods: {
 			formatDate(date) {
@@ -106,16 +109,31 @@
 				}
 			},
 			openMail(mail) {
-				this.transitingMessage = !this.transitingMessage;
-				this.selectedMessage = mail; 
-				this.nextMessage = mail;
-				// if(this.mailState == 0) { this.selectedMessage = mail; this.mailState = 1; this.transitingMessage = true; }
-				// if(this.mailState == 1) { this.nextMessage = mail; this.mailState = 0; this.transitingMessage = false; }
+				var self = this;
+				if(this.selectedMessage != undefined && this.threads.indexOf(mail) < this.threads.indexOf(this.selectedMessage)) {
+					this.transitioningAlt = undefined;
+					this.transitioning = !this.transitioning;
+				}else {
+					this.transitioning = undefined;
+					this.transitioningAlt = !this.transitioningAlt;
+				}
+				this.selectedMessage = mail;
+				if(this.oldMessage != undefined) {
+					if(this.oldMessage == mail) {
+						console.log("its the old one", this.oldMessage, mail);
+					}
+					if(this.transitioning == true) this.nextMessage = this.oldMessage;
+					if(this.transitioningAlt == true) this.nextMessage = mail;
+				}else {
+					this.nextMessage = mail;
+				}
+				setTimeout(() => { self.oldMessage = mail; self.transitionComplete = true }, 350);
 			}
 		},
 		mounted() {
 			Bus.$emit("Header_showAccount", true);
 			Bus.$emit("Header_showLinks", true);
+			Bus.$emit("Header_activeLink", '/inbox');
 			store.dispatch("getSession").then(session => {
 				console.log(session);
 				this.$http.get(store.state.api.development+"get-threads", {
